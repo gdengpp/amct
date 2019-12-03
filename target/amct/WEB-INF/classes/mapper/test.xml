@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.amct.dao.testDao ">
+<select id="queryList" resultType="test">
+select * from amct_test <where><if test="name != null">
+name like #{name,jdbcType=VARCHAR} and </if>
+<if test="1 == 1">1=1</if>
+ limit #{begin},#{end}
+</where></select>
+<delete id="delTable">
+delete from amct_test where id = #{id}
+</delete>
+<insert id="insertTable">
+insert into amct_test value(#{id},#{name},#{age})
+</insert>
+<update id="addTopMenu">
+update amct_test set name=#{name},age=#{age}, where id=#{id}
+</update>
+</mapper>
