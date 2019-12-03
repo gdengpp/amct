@@ -215,8 +215,11 @@ public class amctTopMenuController {
 					MyFileUtil.delFile(createJsp);
 					MyFileUtil.delFile(mapper);
 				}
+			}else{
+				//MyFileUtil.delFile(realPath + "java" + File.separator + "entity");
+				//MyFileUtil.delFile(createJsp);
+				//MyFileUtil.delFile(mapper);
 			}
-			MyFileUtil.delFile(realPath + "java" + File.separator + "entity");
 			return status;
 		} catch (Exception e) {
 			System.out.println(e + "编译文件异常");
