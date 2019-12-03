@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -100,39 +98,32 @@ public class amctTopMenuController {
 		}
 
 		// 创建Java 实体文件
-		String javaFileEntity = null;
 		try {
-			javaFileEntity = CreateJavaUtil.createJavaEntityFile(field,
-					menu_ename, session);
+			CreateJavaUtil.createJavaEntityFile(field, menu_ename, session);
 		} catch (Exception e) {
 			System.out.println(e);
 			return "no";
 		}
 
 		// 创建dao文件========
-		String daoFile = null;
 		try {
-			daoFile = CreateJavaUtil.createJavaDaoFile(field, menu_ename,
-					session);
+			CreateJavaUtil.createJavaDaoFile(field, menu_ename, session);
 		} catch (Exception e) {
 			System.out.println(e);
 			return "no";
 		}
 		// 创建server文件
-		String fileService = null;
 		try {
-			fileService = CreateJavaUtil.createJavaFileService(field,
-					menu_ename, session);
+			CreateJavaUtil.createJavaFileService(field, menu_ename, session);
 		} catch (Exception e) {
 			System.out.println(e);
 			return "no";
 		}
 		// 创建server实现类文件
 
-		String fileServiceImpl = null;
 		try {
-			fileServiceImpl = CreateJavaUtil.createJavaFileServiceImpl(field,
-					menu_ename, session);
+			CreateJavaUtil
+					.createJavaFileServiceImpl(field, menu_ename, session);
 		} catch (Exception e) {
 			System.out.println(e);
 			return "no";
@@ -215,15 +206,17 @@ public class amctTopMenuController {
 					MyFileUtil.delFile(createJsp);
 					MyFileUtil.delFile(mapper);
 				}
-			}else{
-				//MyFileUtil.delFile(realPath + "java" + File.separator + "entity");
-				//MyFileUtil.delFile(createJsp);
-				//MyFileUtil.delFile(mapper);
+			} else {
+				MyFileUtil.delFile(realPath + "java" + File.separator
+						+ "entity");
+				MyFileUtil.delFile(createJsp);
+				MyFileUtil.delFile(mapper);
 			}
 			return status;
 		} catch (Exception e) {
 			System.out.println(e + "编译文件异常");
 			MyFileUtil.delFile(mapper);
+			MyFileUtil.delFile(createJsp);
 			MyFileUtil.delFile(realPath + "java" + File.separator + "entity");
 			return "no";
 		}
@@ -285,11 +278,9 @@ public class amctTopMenuController {
 	 */
 	@ResponseBody
 	@RequestMapping("/topMenuEdit")
-	public String topMenuEdit(String id, String menu_ename, String menu_name,
+	public Integer topMenuEdit(String id, String menu_ename, String menu_name,
 			String menu_display, String menu_remark, String table_field) {
-		String edit = ats.topMenuEdit(id, menu_ename, menu_name, menu_display,
+		return ats.topMenuEdit(id, menu_ename, menu_name, menu_display,
 				menu_remark, table_field);
-		System.out.println(edit);
-		return null;
 	}
 }

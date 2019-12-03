@@ -35,7 +35,7 @@ public interface amctTopMenuService {
 	Integer removeTab(String id, String tab_name);
 
 	// 编辑头部菜单
-	String topMenuEdit(String id,String menu_ename,String menu_name, String menu_display,
+	Integer topMenuEdit(String id,String menu_ename,String menu_name, String menu_display,
 			String menu_remark, String table_field);
 
 }

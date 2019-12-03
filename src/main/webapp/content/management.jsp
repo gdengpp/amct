@@ -7,7 +7,6 @@
 <jsp:include page="../index.jsp"></jsp:include>
 </head>
 
-<body>
-	欢迎使用AMCT管理控制平台
+<body style="background-image: url(../static/image/timg.jpg)">
 </body>
 </html>

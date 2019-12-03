@@ -113,18 +113,10 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 	}
 
 	@Override
-	public String topMenuEdit(String id, String menu_ename,String menu_name, String menu_display,
-			String menu_remark, String table_field) {
-		// TODO Auto-generated method stub
-		//修改菜单前通过id查询，表字段是否改变，改变则去修改表
-		String tab_field = atm.queryTopMenuById(id);
-		if(tab_field.equals(table_field)){
-			//查询出数据，先删除，后新建，在增加
-			atm.delTab("amct_" + menu_ename);
-			
-		}
-		atm.updateTopMenu(id, menu_name, menu_display, menu_remark, table_field);
-		return null;
+	public Integer topMenuEdit(String id, String menu_ename, String menu_name,
+			String menu_display, String menu_remark, String table_field) {
+		
+		return atm.updateTopMenu(id, menu_name, menu_display, menu_remark, table_field);
 	}
 
 }

@@ -5,11 +5,6 @@ import java.util.List;
 
 public class findListDto<E> implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -9160427761830358217L;
-
 	private Integer code;
 
 	private String msg;

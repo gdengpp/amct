@@ -5,12 +5,11 @@ package com.amct.test;
  */
 
 import java.security.MessageDigest;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-
-import com.amct.entity.amctTopMenu;
 
 public class CryptoUtils {
 
@@ -22,15 +21,22 @@ public class CryptoUtils {
 	 */
 	public static void main(String[] args) throws Exception {
 		
+		List<List<String>> lists = new ArrayList<List<String>>();
+		List<String> list = new ArrayList<String>();
+		String str = "{field : 'name',title : '菜单名',align : 'left'}";
+		list.add(str);
+		System.out.println(list);
+		lists.add(list);
+		System.out.println(lists);
 		/**
 		 * @param data:加密的内容
 		 */
-		String data = "Gks_2019@xxkj";
+		/*String data = "Gks_2019@xxkj";
 		String encrypt = encrypt(data);
 		System.out.println("加密后的密码：" + encrypt);
 
 		String decrypt = decrypt("7141zedj722e16467ac51644f435a06cac1e87");
-		System.out.println("解密后的密码：" + decrypt);
+		System.out.println("解密后的密码：" + decrypt);*/
 	}
 
 	public static final String DEFAULT_CODING = "utf-8";

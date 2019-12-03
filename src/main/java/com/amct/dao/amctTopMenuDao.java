@@ -55,8 +55,6 @@ public interface amctTopMenuDao {
 	// 删除left_menu_child
 	void delLeftMenuChildById(@Param("id") String id);
 	
-	//修改菜单前通过id查询，表字段是否改变，改变则去修改表
-	String queryTopMenuById(@Param("id")String id);
 	
 	//修改表结构
 	Integer updateTabFiled();

@@ -12,8 +12,6 @@
 			<div class="layui-fluid">
 				<div class="layui-row layui-col-space10">
 					<div class="layui-col-md4">
-						<h3>横向导航条配置：</h3>
-						<br />
 						<div class="layui-form">
 							<div class="layui-inline">
 								<div class="layui-input-inline">
@@ -39,8 +37,6 @@
 						</div>
 					</div>
 					<div class="layui-col-md4">
-						<h3>纵向导航条配置：</h3>
-						<br />
 						<div class="layui-form">
 							<div class="layui-inline">
 								<div class="layui-btn-group">
@@ -60,8 +56,6 @@
 						</div>
 					</div>
 					<div class="layui-col-md4">
-						<h3>纵向导航条子菜单配置：</h3>
-						<br />
 						<div class="layui-form">
 							<div class="layui-inline">
 								<div class="layui-btn-group">
@@ -235,7 +229,7 @@
 			$(".top_menu_add").click(
 					function() {
 						$("#menu_ename").removeAttr("readonly");
-						$("#menu_ename").css("color","black");
+						$("#menu_ename").css("color", "black");
 						$("#menu_name").val("");
 						$("#menu_ename").val("");
 						$("#menu_remark").val("");
@@ -298,8 +292,8 @@
 										});
 										return false;
 									}
-								}
-								;
+								};
+								layer.load();
 								$.ajax({
 									url : basurl + 'top_menu/topMenuAdd',
 									method : 'get',
@@ -313,6 +307,7 @@
 
 									},
 									success : function(r) {
+									layer.closeAll();
 										if (r == "yes") {
 											table.reload('topMenudatagrid', {
 												page : {
@@ -386,7 +381,9 @@
 							},
 							btn : [ "修改", "关闭" ],
 							yes : function(index, layero) {
-								var menu_display = $("input[name=menu_display]:checked").val();
+								var menu_display = $(
+										"input[name=menu_display]:checked")
+										.val();
 								if (data[0].id == 1) {
 									if (menu_display == 0) {
 										layer.confirm('配置菜单，隐藏只能在数据库中修改显示', {
@@ -397,10 +394,10 @@
 												modifyMenu(data);
 											}
 										});
-									}else{
+									} else {
 										modifyMenu(data);
 									}
-								}else{
+								} else {
 									modifyMenu(data)
 								}
 
@@ -444,8 +441,8 @@
 						});
 						return false;
 					}
-				}
-				;
+				};
+				layer.load();
 				$.ajax({
 					url : basurl + 'top_menu/topMenuEdit',
 					method : 'post',
@@ -458,7 +455,7 @@
 						table_field : table_field
 					},
 					success : function(r) {
-						if (r == "yes") {
+						if (r == "1") {
 							table.reload('topMenudatagrid', {
 								page : {
 									curr : 1

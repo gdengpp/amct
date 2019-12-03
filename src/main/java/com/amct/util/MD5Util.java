@@ -3,11 +3,9 @@ package com.amct.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Calendar;
 import java.util.Random;
 
 import org.apache.shiro.crypto.hash.Md5Hash;
-import org.apache.shiro.util.ByteSource;
 import org.springframework.util.DigestUtils;
 /**
  * 

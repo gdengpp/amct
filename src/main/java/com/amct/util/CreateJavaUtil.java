@@ -3,20 +3,8 @@ package com.amct.util;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.http.HttpSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.amct.dto.findListDto;
-import com.amct.entity.amctTopMenu;
-import com.amct.service.amctTopMenuService;
 
 public class CreateJavaUtil {
 	// 创建实体文件
@@ -33,8 +21,6 @@ public class CreateJavaUtil {
 		// 创健实体文件
 		File fileJava = new File(newJavaEntity);
 		boolean newFile = fileJava.createNewFile();
-		// 创建好之后写入文件
-		String classFile = null;
 		if (newFile) {
 			FileOutputStream out = new FileOutputStream(fileJava, false);
 			StringBuffer data = new StringBuffer();
@@ -114,7 +100,7 @@ public class CreateJavaUtil {
 		}
 		String daoPath = fielName + File.separator + menu_ename + "Dao.java";
 		File fileJava = new File(daoPath);
-		boolean newFile = fileJava.createNewFile();
+		fileJava.createNewFile();
 
 		FileOutputStream out = new FileOutputStream(fileJava, false);
 		StringBuffer data = new StringBuffer();
@@ -161,7 +147,7 @@ public class CreateJavaUtil {
 		String daoPath = fielName + File.separator + menu_ename
 				+ "Service.java";
 		File fileJava = new File(daoPath);
-		boolean newFile = fileJava.createNewFile();
+		fileJava.createNewFile();
 
 		FileOutputStream out = new FileOutputStream(fileJava, false);
 		StringBuffer data = new StringBuffer();
@@ -203,7 +189,7 @@ public class CreateJavaUtil {
 		String daoPath = fielName + File.separator + menu_ename
 				+ "ServiceImpl.java";
 		File fileJava = new File(daoPath);
-		boolean newFile = fileJava.createNewFile();
+		fileJava.createNewFile();
 
 		FileOutputStream out = new FileOutputStream(fileJava, false);
 		StringBuffer data = new StringBuffer();
@@ -269,7 +255,7 @@ public class CreateJavaUtil {
 				+ ".xml";
 		System.out.println(daoPath + "daoPath");
 		File fileJava = new File(daoPath);
-		boolean newFile = fileJava.createNewFile();
+		fileJava.createNewFile();
 
 		FileOutputStream out = new FileOutputStream(fileJava, false);
 		StringBuffer data = new StringBuffer();
@@ -331,7 +317,7 @@ public class CreateJavaUtil {
 		String daoPath = fielName + File.separator + menu_ename
 				+ "Controller.java";
 		File fileJava = new File(daoPath);
-		boolean newFile = fileJava.createNewFile();
+		fileJava.createNewFile();
 
 		FileOutputStream out = new FileOutputStream(fileJava, false);
 		StringBuffer data = new StringBuffer();
