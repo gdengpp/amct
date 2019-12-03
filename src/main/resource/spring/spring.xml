@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx
+						http://www.springframework.org/schema/tx/spring-tx.xsd
+						http://www.springframework.org/schema/mvc
+						http://www.springframework.org/schema/mvc/spring-mvc.xsd
+						http://www.springframework.org/schema/context
+						http://www.springframework.org/schema/context/spring-context.xsd 
+						http://www.springframework.org/schema/aop
+						http://www.springframework.org/schema/aop/spring-aop.xsd ">
+	<!-- 1 包扫描 排除Controller 2 引入小配置文件 3 数据源 4 Spring 整合 mybatis （config [数据源 
+		mapper注册:包扫描 别名:基于包] + mapper(依赖sqlSessionFactory dao 实现 包)） 5 事务 事务管理器 注解式事务 -->
+	<context:component-scan base-package="com.amct.*">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	<!-- -->
+	<context:property-placeholder location="classpath:db.properties" />
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+		<property name="driverClassName" value="${driver}" />
+		<property name="url" value="${url}" />
+		<property name="username" value="${name}" />
+		<property name="password" value="${password}" />
+	</bean>
+
+	<!-- -->
+	<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 依赖数据源 -->
+		<property name="dataSource" ref="dataSource" />
+		<!-- xml 路径 以/ 分割 -->
+		<property name="mapperLocations" value="classpath:mapper/*.xml" />
+		<!-- 别名 -->
+		<property name="typeAliasesPackage" value="com.amct.entity" />
+	</bean>
+	<!-- dao实现 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 依赖工厂 不能写ref -->
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryBean" />
+		<!-- 包 -->
+		<property name="basePackage" value="com.amct.dao" />
+	</bean>
+
+	<!-- shiwu -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<!-- 依赖数据源 -->
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<tx:annotation-driven />
+</beans>
