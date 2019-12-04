@@ -89,7 +89,7 @@ public class amctTopMenuController {
 		String createJsp = null;
 		try {
 			createJsp = CreateJspUtil.createJsp(field, menu_ename, session);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.out.println(e);
 			// 创建JSP文件异常，删除创建的文件，返回
 			MyFileUtil.delFile(realPath + "menu" + File.separator + menu_ename
@@ -142,7 +142,7 @@ public class amctTopMenuController {
 		try {
 			controller = CreateJavaUtil.createJavaFileController(field,
 					menu_ename, session);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.out.println(e);
 			MyFileUtil.delFile(mapper);
 			MyFileUtil.delFile(controller);
@@ -152,25 +152,17 @@ public class amctTopMenuController {
 		System.out.println("编译文件============================");
 
 		String str = "javac -d " + realPath + "WEB-INF" + File.separator
-				+ "classes -encoding utf-8 -cp " + realPath + "WEB-INF"
-				+ File.separator + "lib" + File.separator
-				+ "mybatis-3.2.4.jar;" + realPath + "WEB-INF" + File.separator
-				+ "lib" + File.separator + "spring-web-3.2.4.RELEASE.jar;"
-				+ realPath + "WEB-INF" + File.separator + "lib"
-				+ File.separator + "spring-test-3.2.4.RELEASE.jar;" + realPath
-				+ "WEB-INF" + File.separator + "lib" + File.separator
-				+ "spring-webmvc-3.2.4.RELEASE.jar;" + realPath + "WEB-INF"
-				+ File.separator + "lib" + File.separator
-				+ "spring-beans-3.2.4.RELEASE.jar;" + realPath + "WEB-INF"
-				+ File.separator + "lib" + File.separator
-				+ "spring-context-3.2.4.RELEASE.jar;" + realPath + "WEB-INF"
-				+ File.separator + "classes" + File.separator + "mapper"
-				+ File.separator + "" + menu_ename + ".xml; " + realPath
+				+ "classes -encoding utf-8 -cp " + realPath + "java"
+				+ File.separator + "jar" + File.separator + "*; " + realPath
 				+ "java" + File.separator + "findListDto.java " + realPath
 				+ "java" + File.separator + "entity" + File.separator
 				+ "*.java";
+		// javac -d D:\tomcat\webapps\amct\WEB-INF\classes -encoding utf-8 -cp
+		// D:\tomcat\webapps\amct\WEB-INF\lib\*;
+		// D:\tomcat\webapps\amct\java\findListDto.java
+		// D:\tomcat\webapps\amct\java\entity\*.java
 		try {
-			Thread.sleep(1000 * 2);
+			Thread.sleep(1000 * 1);
 			// 赋权
 			Runtime.getRuntime().exec("/appdata/tomcat/test.py");
 
@@ -181,6 +173,7 @@ public class amctTopMenuController {
 		try {
 			Process process = Runtime.getRuntime().exec(str);
 			System.out.println(process + "编译文件");
+			Thread.sleep(1000 * 1);
 
 			InputStream errorStream = process.getErrorStream();
 			InputStreamReader inputStreamReader = new InputStreamReader(
@@ -205,18 +198,27 @@ public class amctTopMenuController {
 					// 入库不成功，删除文件
 					MyFileUtil.delFile(createJsp);
 					MyFileUtil.delFile(mapper);
+				} else {
+					try {
+						// 重启tomcat
+						Runtime.getRuntime().exec("/appdata/restart_web.py");
+					} catch (Exception e) {
+						System.out.println(e);
+					}
 				}
 			} else {
-				MyFileUtil.delFile(realPath + "java" + File.separator
-						+ "entity");
 				MyFileUtil.delFile(createJsp);
 				MyFileUtil.delFile(mapper);
 			}
+			System.out.println("正常删除entity文件============================");
+			 MyFileUtil.delFile(realPath + "java" + File.separator +
+			 "entity");
 			return status;
 		} catch (Exception e) {
 			System.out.println(e + "编译文件异常");
 			MyFileUtil.delFile(mapper);
 			MyFileUtil.delFile(createJsp);
+			System.out.println("异常删除entity文件============================");
 			MyFileUtil.delFile(realPath + "java" + File.separator + "entity");
 			return "no";
 		}

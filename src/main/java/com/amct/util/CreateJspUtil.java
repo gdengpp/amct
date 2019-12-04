@@ -2,7 +2,6 @@ package com.amct.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +11,7 @@ public class CreateJspUtil {
 
 	// 创建JSP文件
 	public static String createJsp(String table_field, String menu_ename,
-			HttpSession session) throws IOException {
+			HttpSession session) throws Exception {
 		// 获取当前项目的路径
 		String realPath = session.getServletContext().getRealPath(
 				File.separator);
@@ -42,12 +41,12 @@ public class CreateJspUtil {
 			data.append("<body>\n");
 			// JSP正式内容开始=====================================================================
 			// 主体开始---------------------------------------------------------------------------
-			data.append("<div class=\"bgWhite\"><div class=\"bgWhite\"><div class=\"layui-fluid\">\n");
+			data.append("<div class=\"bgWhite\"><div class=\"layui-fluid\">\n");
 			data.append("<div class=\"layui-row layui-col-space10\"><div class=\"layui-col-md12\">\n");
 			data.append("<div class=\"layui-form\"><div class=\"layui-inline\">\n");
 			data.append("<div class=\"layui-input-inline\">\n");
 			data.append("<input type=\"text\" value=\"\" placeholder=\"请输入"
-					+ field[0] + " class=\"layui-input search_input\" />\n");
+					+ field[0] + "\"class=\"layui-input search_input\"/>\n");
 			data.append("</div>\n");
 			data.append("<div class=\"layui-btn-group\">\n");
 			data.append("<a class=\"layui-btn layui-btn-primary search_btn\"> <i class=\"layui-icon\">&#xe615;</i>查询</a>\n");
@@ -75,35 +74,31 @@ public class CreateJspUtil {
 						+ field[i]
 						+ " autocomplete=\"off\" class=\"layui-input\">\n");
 				data.append("</div></div></div>\n");
+				try {
+					data.append("<div class=\"layui-col-md6\">\n");
+					data.append("<div class=\"layui-form-item\">\n");
+					data.append("<label for=" + field[i + 1]
+							+ " class=\"layui-form-label\">" + field[i + 1]
+							+ "</label>\n");
+					data.append("<div class=\"layui-input-inline\">\n");
+					data.append("<input type=\"text\" id=" + field[i + 1]
+							+ " name=" + field[i + 1]
+							+ " autocomplete=\"off\" class=\"layui-input\">\n");
+					data.append("</div></div></div>\n");
+					data.append("</div>\n");
+				} catch (Exception e) {
+					System.out.println(e);
+				}
 
-				data.append("<div class=\"layui-col-md6\">\n");
-				data.append("<div class=\"layui-form-item\">\n");
-				data.append("<label for=" + field[i + 1]
-						+ " class=\"layui-form-label\">" + field[i + 1]
-						+ "</label>\n");
-				data.append("<div class=\"layui-input-inline\">\n");
-				data.append("<input type=\"text\" id=" + field[i + 1]
-						+ " name=" + field[i + 1]
-						+ " autocomplete=\"off\" class=\"layui-input\">\n");
-				data.append("</div></div></div>\n");
-				data.append("</div>\n");
 				i++;
 			}
-
-			data.append("<div class=\"layui-form-item\">\n");
-			data.append("<div class=\"layui-input-block\">\n");
-			data.append("<button type=\"submit\" class=\"layui-btn\" lay-submit=\"\" lay-filter="
-					+ menu_ename + ">立即提交</button>\n");
-			data.append("<button type=\"reset\" class=\"layui-btn layui-btn-primary\">重置</button>\n");
-			data.append("</div>\n");
-			data.append("</div>\n");
 			data.append("</form>\n");
 			data.append("</div>\n");
 			// 新增/编辑结束----------------------------------------------------------------------
-			
-			//script文件开始---------------------------------------------------------------------
+
+			// script文件开始---------------------------------------------------------------------
 			data.append("<script>\n");
-			//回车搜索
+			// 回车搜索
 			data.append("$(document).keyup(function(event) {\n");
 			data.append("if (event.keyCode == 13) {\n");
 			data.append("var is_shade = $(\".layui-layer-shade\").length;\n");
@@ -122,9 +117,8 @@ public class CreateJspUtil {
 			data.append("} else if (is_shade == 0) {\n");
 			data.append("$(btn).click();\n");
 			data.append("}}});\n");
-			
-			data.append("var basurl = '${pageContext.request.contextPath}/';\n");
-			//layui begin 
+
+			// layui begin
 			data.append("layui.use([ 'table', 'form', 'tree', 'layer', 'jquery', 'upload', 'laydate', 'element' ], function() {\n");
 			data.append("table = layui.table;\n");
 			data.append("var layer = layui.layer;\n");
@@ -133,73 +127,172 @@ public class CreateJspUtil {
 			data.append("var $ = layui.$;\n");
 			data.append("form.render();\n");
 			data.append("element.init();\n");
-			
-		    //==================数据表格左侧头部========================================
-			
+
+			// ==================数据表格左侧头部========================================
+
 			List<List<String>> lists = new ArrayList<List<String>>();
 			List<String> list = new ArrayList<String>();
+			list.add("{type : 'checkbox'}");
 			for (int i = 0; i < field.length; i++) {
-				String str ="{field : '"+field[i]+"',title : '"+field[i]+"',align : 'left'}";
+				String str = "{field : '" + field[i] + "',title : '" + field[i]
+						+ "',align : 'left'}";
 				list.add(str);
 			}
-			System.out.println(list);
 			lists.add(list);
-			System.out.println(lists);
 			data.append("table.render({\n");
 			data.append("elem : '#datagrid',\n");
 			data.append("id : 'datagrid',\n");
-			data.append("url : basurl + "+menu_ename+"/findAll\",\n");
+			data.append("url : '${pageContext.request.contextPath}/"
+					+ menu_ename + "/findAll',\n");
 			data.append("height : 'full-100',\n");
+			data.append("where : { " + field[0] + " : null },\n");
 			data.append("limits : [ 10, 20, 30, 50, 100, 300, 600, 1000 ],\n");
 			data.append("page : true,\n");
-			data.append(lists+",\n");
+			data.append("cols:" + lists + ",\n");
 			data.append("done : function(res, curr, count) {\n");
 			data.append("$(\".laytable-cell-checkbox\").css(\"padding\", \"5px\");\n");
-			data.append("signleSelect($, 'topMenudatagrid');\n");
+			data.append("signleSelect($, 'datagrid');\n");
 			data.append("}});\n");
-			//查询
+			// 查询
 			data.append("$(\".search_btn\").click(function() {\n");
 			data.append("table.reload('datagrid', {\n");
-			data.append("where : { name : $(\".search_input\").val() },\n");
+			data.append("where : { " + field[0]
+					+ " : $(\".search_input\").val() },\n");
 			data.append("page : {curr : 1}\n");
 			data.append("});});\n");
-			
-			//新增
-			//data.append("form.on('submit("+menu_ename+")', function(data){\n");
-			//data.append("console.log(\"提交的数据====\",JSON.stringify(data.field))\n");
+
+			// 拼接清空和传递数据
+			String addStr = "";
+			String dataSre = "{";
+			for (int i = 0; i < field.length; i++) {
+				addStr += "$(\"#" + field[i] + "\").val('');";
+				dataSre += field[i] + ":$(\"#" + field[i] + "\").val(),";
+			}
+			dataSre = dataSre.substring(0, dataSre.length() - 1);
+			dataSre += "}";
+			// 新增
+			// data.append("form.on('submit("+menu_ename+")', function(data){\n");
+			// data.append("console.log(\"提交的数据====\",JSON.stringify(data.field))\n");
 			data.append("$(\".search_add\").click(function() {\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			data.append("\n");
-			
+			// 打开之前清空
+			data.append(addStr + "\n");
+			data.append("layui.layer.open({\n");
+			data.append("type : 1,\n");
+			data.append("title : \"新增\",\n");
+			data.append("closeBtn : 1,\n");
+			data.append("anim : 0,\n");
+			data.append("shade : 0.3,\n");
+			data.append("shadeClose : false,\n");
+			data.append("area : [ '700px', '500px' ],\n");
+			data.append("content : $('#addAmdUpdate'),\n");
+			data.append("cancel : function(index, layero) {layer.closeAll();return false;},\n");
+			data.append("btn : [ \"提交\", \"关闭\" ],\n");
+			data.append("yes : function(index, layero) {\n");
+			data.append("var add = layer.load();\n");
+			data.append("$.ajax({\n");
+			data.append("url : '${pageContext.request.contextPath}/"
+					+ menu_ename + "/add',\n");
+			data.append("method : 'post',\n");
+			data.append("data : " + dataSre + ",\n");
+			data.append("success : function(r) {\n");
+			data.append("if (r == \"1\") {\n");
+			data.append("layer.closeAll();\n");
+			data.append("table.reload('datagrid', {\n");
+			data.append("page : {curr : 1}});\n");
+			data.append("layer.msg(\"增加成功\", {icon : 6});\n");
+			data.append("} else {layer.close(add);\n");
+			data.append("layer.msg(\"增加失败，请重试\", {icon : 5});}\n");
+			data.append("},error:function(){layer.close(add);layer.msg(\"修改失败，请重试\", {icon : 5});}});\n");
+			data.append("},\n");
+			data.append("});\n");
+			data.append("});\n");
+
+			// 修改
+			data.append("$(\".search_edit\").click(function() {\n");
+			data.append("var topData = table.checkStatus(\"datagrid\");\n");
+			data.append("var data = topData.data;\n");
+			data.append("if (data.length == 0) {\n");
+			data.append("layer.msg(\"请选择数据\", {icon : 5});\n");
+			data.append("return false;}\n");
+			// 打开弹框前赋值
+			String edataSre = "{id:data[0].id,";
+			for (int j = 0; j < field.length; j++) {
+				data.append("$(\"#" + field[j] + "\").val(data[0]." + field[j]
+						+ ");\n");
+				edataSre += field[j] + ":$(\"#" + field[j] + "\").val(),";
+			}
+			edataSre = edataSre.substring(0, edataSre.length() - 1);
+			edataSre += "}";
+
+			data.append("layui.layer.open({\n");
+			data.append("type : 1,\n");
+			data.append("title : \"编辑\",\n");
+			data.append("closeBtn : 1,\n");
+			data.append("anim : 0,\n");
+			data.append("shade : 0.3,\n");
+			data.append("shadeClose : false,\n");
+			data.append("area : [ '700px', '500px' ],\n");
+			data.append("content : $('#addAmdUpdate'),\n");
+			data.append("cancel : function(index, layero) {layer.closeAll();return false;},\n");
+			data.append("btn : [ \"提交\", \"关闭\" ],\n");
+			data.append("yes : function(index, layero) {\n");
+			data.append("var edit = layer.load();\n");
+			data.append("$.ajax({\n");
+			data.append("url : '${pageContext.request.contextPath}/"
+					+ menu_ename + "/modify',\n");
+			data.append("method : 'post',\n");
+			data.append("data : " + edataSre + ",\n");
+			data.append("success : function(r) {\n");
+			data.append("if (r == \"1\") {\n");
+			data.append("layer.closeAll();\n");
+			data.append("table.reload('datagrid', {\n");
+			data.append("page : {curr : 1}});\n");
+			data.append("layer.msg(\"修改成功\", {icon : 6});\n");
+			data.append("} else {layer.close(edit);\n");
+			data.append("layer.msg(\"修改失败，请重试\", {icon : 5});}\n");
+			data.append("},error:function(){layer.close(edit)	;layer.msg(\"修改失败，请重试\", {icon : 5});}});\n");
+			data.append("},\n");
+			data.append("});\n");
+
+			data.append("});\n");
+
+			// 删除
+			data.append("$(\".search_del \").click(function() {\n");
+			data.append("var topData = table.checkStatus(\"datagrid\");\n");
+			data.append("var data = topData.data;\n");
+			data.append("if (data.length == 0) {\n");
+			data.append("layer.msg(\"未选择数据\", {icon : 5});\n");
+			data.append("return false;}\n");
+			data.append("layer.confirm('是否确定删除？', {\n");
+			data.append("icon : 3,title : '提示'\n");
+			data.append("}, function(index) {\n");
+			data.append("if (index) {\n");
+			data.append("layer.load();\n");
+			data.append("$.ajax({\n");
+			data.append("url :'${pageContext.request.contextPath}/"
+					+ menu_ename + "/remove',\n");
+			data.append("method : 'get',\n");
+			data.append("data : {\n");
+			data.append("id : data[0].id},\n");
+			data.append("success : function(r) {\n");
+			data.append("layer.closeAll();\n");
+			data.append("if (r == 1) {\n");
+			data.append("layer.msg(\"删除成功\", {icon : 6});\n");
+			data.append("table.reload('datagrid', {\n");
+			data.append("page : {curr : 1}});\n");
+			data.append("} else {\n");
+			data.append("layer.msg(\"删除失败\", {icon : 5});\n");
+			data.append("}}});}});});});\n");
+
 			data.append("</script>\n");
-			//script文件结束---------------------------------------------------------------------
+			// script文件结束---------------------------------------------------------------------
 			// JSP正式内容结束=====================================================================
 			data.append("</body>\n");
 			data.append("</html>\n");
 			out.write(data.toString().getBytes("utf-8"));
+			System.out.println("正在写入JSP文件===================");
+			Thread.sleep(1000 * 1);
+			System.out.println("写入JSP完成=====================");
 			out.flush();
 			out.close();
 

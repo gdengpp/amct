@@ -1,19 +1,17 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<!-- 管理控制台，用来配置字典、菜单、用户权限等操作 -->
 <jsp:include page="../index.jsp"></jsp:include>
 </head>
-
 <body>
 	<div class="bgWhite">
 		<div class="bgWhitePadding">
 			<div class="layui-fluid">
 				<div class="layui-row layui-col-space10">
-					<div class="layui-col-md12">
-						<br />
+					<div class="layui-col-md4">
 						<div class="layui-form">
 							<div class="layui-inline">
 								<div class="layui-input-inline">
@@ -38,16 +36,54 @@
 								lay-data="{id: 'topMenudatagrid'}" lay-filter="topTableFilter"></table>
 						</div>
 					</div>
+					<div class="layui-col-md4">
+						<div class="layui-form">
+							<div class="layui-inline">
+								<div class="layui-btn-group">
+									</a> <a class="layui-btn layui-btn-primary apply_auth_btn"> <i
+										class="layui-icon">&#xe654;</i>新增
+									</a> <a class="layui-btn layui-btn-primary return_auth_btn"> <i
+										class="layui-icon">&#xe642;</i>修改
+									</a> </a> <a class="layui-btn layui-btn-primary return_auth_btn"> <i
+										class="layui-icon">&#xe640;</i>删除
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="layui-form left_menu_list">
+							<table class="layui-hide" id="leftMenudatagrid"
+								lay-data="{id: 'leftMenudatagrid'}" lay-filter="leftTableFilter"></table>
+						</div>
+					</div>
+					<div class="layui-col-md4">
+						<div class="layui-form">
+							<div class="layui-inline">
+								<div class="layui-btn-group">
+									</a> <a class="layui-btn layui-btn-primary apply_auth_btn"> <i
+										class="layui-icon">&#xe654;</i>新增
+									</a> <a class="layui-btn layui-btn-primary return_auth_btn"> <i
+										class="layui-icon">&#xe642;</i>修改
+									</a> </a> <a class="layui-btn layui-btn-primary return_auth_btn"> <i
+										class="layui-icon">&#xe640;</i>删除
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="layui-form left_menu_list">
+							<table class="layui-hide" id="leftchildMenudatagrid"
+								lay-data="{id: 'leftchildMenudatagrid'}"
+								lay-filter="leftchildTableFilter"></table>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 	<!-- 头部新增begin======== -->
 	<div id="topMenuAdd" style="display:none;padding:10px;">
-		
+		<div class="layui-row">
+			<div class="layui-col-md12">
 				<form class="layui-form" action="">
-				<div class="layui-row">
-			<div class="layui-col-md6">
 					<div class="layui-form-item">
 						<label for="menu_name" class="layui-form-label"> <span
 							style="color:red">*</span>菜单名
@@ -66,8 +102,6 @@
 								autocomplete="off" class="layui-input">
 						</div>
 					</div>
-					</div>
-					
 					<div class="layui-form-item">
 						<label class="layui-form-label"><span style="color:red">*</span>表字段</label>
 						<div class="layui-input-block">
@@ -98,15 +132,21 @@
 	</div>
 	<script>
 		//回车搜索
-		$(document).keyup(function(event) {
+		$(document)
+				.keyup(
+						function(event) {
 							if (event.keyCode == 13) {
 								var is_shade = $(".layui-layer-shade").length;
-								var btns = [".search_btn", []];
+								var btns = [ ".search_btn", [] ];
 								var btn = btns[0];
 								var l = 0;
 								for ( var i in btns[1]) {
-									if ($(btns[1][i]).parents(".layui-layer-page").length != 0) {
-										var layer_num = parseInt(("" + $(btns[1][i]).parents(".layui-layer-page").attr("id")).replace(/layui-layer/g, ""));
+									if ($(btns[1][i]).parents(
+											".layui-layer-page").length != 0) {
+										var layer_num = parseInt(("" + $(
+												btns[1][i]).parents(
+												".layui-layer-page").attr("id"))
+												.replace(/layui-layer/g, ""));
 										if (layer_num && layer_num > l) {
 											l = layer_num;
 											btn = btns[1][i];
@@ -123,7 +163,8 @@
 
 		var basurl = '${pageContext.request.contextPath}/';
 		//layui begin 
-		layui.use([ 'table', 'form', 'tree', 'layer', 'jquery', 'upload', 'laydate', 'element' ], function() {
+		layui.use([ 'table', 'form', 'tree', 'layer', 'jquery', 'upload',
+				'laydate', 'element' ], function() {
 			table = layui.table;
 			var layer = layui.layer;
 			form = layui.form;
@@ -157,14 +198,21 @@
 				done : function(res, curr, count) {
 					$(".laytable-cell-checkbox").css("padding", "5px");
 					signleSelect($, 'topMenudatagrid');
-				}});
+				}
+			});
 
 			//查询
 			$(".search_btn").click(function() {
 				table.reload('topMenudatagrid', {
-					where : { name : $(".search_input").val() },
-					page : {curr : 1}
-				});});
+					where : {
+						name : $(".search_input").val()
+					},
+					page : {
+						curr : 1
+					//重新从第 1 页开始
+					}
+				});
+			});
 
 			//监听行单击事件（双击事件为：rowDouble）
 			table.on('row(topTableFilter)', function(obj) {
@@ -178,9 +226,10 @@
 			});
 
 			//新增
-			$(".top_menu_add").click(function() {
-						//$("#menu_ename").removeAttr("readonly");
-						$("#menu_ename").css("color","black");
+			$(".top_menu_add").click(
+					function() {
+						$("#menu_ename").removeAttr("readonly");
+						$("#menu_ename").css("color", "black");
 						$("#menu_name").val("");
 						$("#menu_ename").val("");
 						$("#menu_remark").val("");
@@ -243,8 +292,8 @@
 										});
 										return false;
 									}
-								}
-								;
+								};
+								layer.load();
 								$.ajax({
 									url : basurl + 'top_menu/topMenuAdd',
 									method : 'get',
@@ -258,6 +307,7 @@
 
 									},
 									success : function(r) {
+									layer.closeAll();
 										if (r == "yes") {
 											table.reload('topMenudatagrid', {
 												page : {
@@ -310,7 +360,8 @@
 						$("#menu_ename").attr('readonly', 'true');
 						$("#menu_ename").css('color', 'rgb(238, 238, 238)');
 						$("#menu_remark").val(data[0].remark);
-						$("input[name='menu_display'][value="
+						$(
+								"input[name='menu_display'][value="
 										+ data[0].is_display + "]").attr(
 								'checked', true);
 						$(".tableField").val(data[0].tab_field);
@@ -330,7 +381,9 @@
 							},
 							btn : [ "修改", "关闭" ],
 							yes : function(index, layero) {
-								var menu_display = $("input[name=menu_display]:checked").val();
+								var menu_display = $(
+										"input[name=menu_display]:checked")
+										.val();
 								if (data[0].id == 1) {
 									if (menu_display == 0) {
 										layer.confirm('配置菜单，隐藏只能在数据库中修改显示', {
@@ -341,10 +394,10 @@
 												modifyMenu(data);
 											}
 										});
-									}else{
+									} else {
 										modifyMenu(data);
 									}
-								}else{
+								} else {
 									modifyMenu(data)
 								}
 
@@ -388,8 +441,8 @@
 						});
 						return false;
 					}
-				}
-				;
+				};
+				layer.load();
 				$.ajax({
 					url : basurl + 'top_menu/topMenuEdit',
 					method : 'post',
@@ -402,7 +455,7 @@
 						table_field : table_field
 					},
 					success : function(r) {
-						if (r == "yes") {
+						if (r == "1") {
 							table.reload('topMenudatagrid', {
 								page : {
 									curr : 1
@@ -497,6 +550,75 @@
 				});
 			});
 
+			//============================头部结束===========================================
+
+			/*
+			===============================数据表格左侧一级====================================
+			 */
+			table.render({
+				elem : '#leftMenudatagrid',
+				id : 'leftMenudatagrid',
+				height : 'full-100',
+				data : [],
+				limits : [ 10, 20, 30, 50, 100, 300, 600, 1000 ],
+				cols : [ [ {
+					type : 'checkbox'
+				}, {
+					field : 'name',
+					title : '菜单名',
+					align : 'left'
+				}, {
+					field : 'ename',
+					title : '表名',
+					align : 'left'
+				},
+
+				] ],
+				page : true,
+				done : function(res, curr, count) {
+					$(".laytable-cell-checkbox").css("padding", "5px");
+					signleSelect($, 'leftMenudatagrid');
+				}
+			});
+
+			//监听行left_mune单击事件（双击事件为：rowDouble）
+			table.on('row(leftTableFilter)', function(obj) {
+				var data = obj.data;
+				console.log(data.child);
+				table.reload('leftchildMenudatagrid', {
+					data : data.child,
+				});
+			});
+			//======================数据表格左侧一级结束============================
+			/*
+			==========================数据表格左侧二级============================
+			 */
+			table.render({
+				elem : '#leftchildMenudatagrid',
+				id : 'leftchildMenudatagrid',
+				height : 'full-100',
+				limits : [ 10, 20, 30, 50, 100, 300, 600, 1000 ],
+				data : [],
+				cols : [ [ {
+					type : 'checkbox'
+				}, {
+					field : 'name',
+					title : '菜单名',
+					align : 'left'
+				}, {
+					field : 'ename',
+					title : '表名',
+					align : 'left'
+				},
+
+				] ],
+				page : true,
+				done : function(res, curr, count) {
+					$(".laytable-cell-checkbox").css("padding", "5px");
+					signleSelect($, 'leftchildMenudatagrid');
+				}
+			});
+			//==============================数据表格左侧二级=======================
 		});
 	</script>
 </body>

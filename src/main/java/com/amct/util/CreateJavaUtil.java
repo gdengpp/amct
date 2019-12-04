@@ -2,7 +2,6 @@ package com.amct.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 
 import javax.servlet.http.HttpSession;
 
@@ -81,6 +80,9 @@ public class CreateJavaUtil {
 
 			data.append("}");
 			out.write(data.toString().getBytes("utf-8"));
+			System.out.println("正在封装实体文件===================");
+			Thread.sleep(1000 * 1);
+			System.out.println("封装实体完成=====================");
 			out.flush();
 			out.close();
 		}
@@ -119,15 +121,23 @@ public class CreateJavaUtil {
 				+ "\") String "
 				+ field[0]
 				+ ",@Param(\"begin\") Integer begin, @Param(\"end\") Integer end);\n");
+		
+		String str = "@Param(\"id\")String id";
+		for (int i = 0; i < field.length; i++) {
+			str += ",@Param(\""+field[i]+"\")String " + field[i];
+		}
 		// 新增
-		data.append("Integer insertTable(" + menu_ename + " m);\n");
+		data.append("Integer insertTable(" + str + ");\n");
 		// 修改
-		data.append("Integer updateTable(" + menu_ename + " m);\n");
+		data.append("Integer updateTable(" + str + ");\n");
 		// 通过ID删除
-		data.append("Integer delTable(@Param(\"id\") Integer id);\n");
+		data.append("Integer delTable(@Param(\"id\") String id);\n");
 
 		data.append("}\n");
 		out.write(data.toString().getBytes("utf-8"));
+		System.out.println("正在写入DAO文件===================");
+		Thread.sleep(1000 * 1);
+		System.out.println("DAO文件写入完成=====================");
 		out.flush();
 		out.close();
 		return daoPath;
@@ -161,15 +171,27 @@ public class CreateJavaUtil {
 		// 分页查询
 		data.append("List<" + menu_ename + "> findList(String " + field[0]
 				+ ",Integer begin,Integer end);\n");
+		
+		String str = "";
+		String estr = "String id";
+		for (int i = 0; i < field.length; i++) {
+			str += "String " + field[i]+",";
+			estr += ",String " + field[i];
+		}
+		str = str.substring(0, str.length() - 1);
+		
 		// 新增
-		data.append("Integer addTable(" + menu_ename + " m);\n");
+		data.append("Integer addTable(" + str + ");\n");
 		// 修改
-		data.append("Integer modifyTable(" + menu_ename + " m);\n");
+		data.append("Integer modifyTable(" + estr + ");\n");
 		// 通过ID删除
-		data.append("Integer removeTable(Integer id);\n");
+		data.append("Integer removeTable(String id);\n");
 
 		data.append("}\n");
 		out.write(data.toString().getBytes("utf-8"));
+		System.out.println("正在写入Service接口===================");
+		Thread.sleep(1000 * 1);
+		System.out.println("Service接口文件写入完成=====================");
 		out.flush();
 		out.close();
 		return daoPath;
@@ -217,26 +239,48 @@ public class CreateJavaUtil {
 		data.append("}\n");
 		data.append("return a.queryList(" + field[0] + ",page - 1, limit);\n");
 		data.append("}\n");
+		
+		String str = "";
+		String estr = "String id";
+		String dstr = "";
+		String edstr = "id";
+		for (int i = 0; i < field.length; i++) {
+			str += "String " + field[i]+",";
+			dstr +=field[i]+",";
+			estr+=",String " + field[i];
+			edstr +=","+field[i];
+		}
+		str = str.substring(0, str.length() - 1);
+		dstr = dstr.substring(0, dstr.length() - 1);
 		// 新增
 		data.append("@Override\n");
-		data.append("public Integer addTable(" + menu_ename + " m){\n");
-		data.append("m.setId(UUID.randomUUID().toString());\n");
-		data.append("return a.insertTable(m);\n");
+		data.append("public Integer addTable(" + str + "){\n");
+		for (int i = 0; i < field.length; i++) {
+			data.append("System.out.println(\"接收到的数据：Service===\"+"+field[i]+");");
+		}
+		data.append("return a.insertTable(UUID.randomUUID().toString(),"+dstr+");\n");
 		data.append("}\n");
 		// 修改
 		data.append("@Override\n");
-		data.append("public Integer modifyTable(" + menu_ename + " m){\n");
-		data.append("return a.updateTable(m);\n");
+		data.append("public Integer modifyTable(" + estr + "){\n");
+		for (int i = 0; i < field.length; i++) {
+			data.append("System.out.println(\"接收到的数据：Service===\"+"+field[i]+");");
+		}
+		data.append("System.out.println(\"接收到的数据：Service=id==\"+id);");
+		data.append("return a.updateTable("+edstr+");\n");
 		data.append("}\n");
 
 		// 删除
 		data.append("@Override\n");
-		data.append("public Integer removeTable(Integer id){\n");
+		data.append("public Integer removeTable(String id){\n");
 		data.append("return a.delTable(id);\n");
 		data.append("}\n");
 
 		data.append("}\n");
 		out.write(data.toString().getBytes("utf-8"));
+		System.out.println("正在写入Serviceimpl接口===================");
+		Thread.sleep(1000 * 1);
+		System.out.println("Serviceimpl接口文件写入完成=====================");
 		out.flush();
 		out.close();
 		return daoPath;
@@ -244,7 +288,7 @@ public class CreateJavaUtil {
 
 	// 创建mapper文件
 	public static String createMapper(String table_field, String menu_ename,
-			HttpSession session) throws IOException {
+			HttpSession session) throws Exception {
 
 		String[] field = table_field.split(",");
 		String realPath = session.getServletContext().getRealPath(
@@ -268,7 +312,7 @@ public class CreateJavaUtil {
 		data.append("<select id=\"queryList\" resultType=\"" + menu_ename
 				+ "\">\n");
 		data.append("select * from amct_" + menu_ename
-				+ " <where><if test=\"name != null\">\n");
+				+ " <where><if test=\""+field[0]+" != null\">\n");
 		data.append(field[0] + " like #{" + field[0]
 				+ ",jdbcType=VARCHAR} and </if>\n");
 		data.append("<if test=\"1 == 1\">1=1</if>\n");
@@ -281,22 +325,29 @@ public class CreateJavaUtil {
 		// 增加
 		data.append("<insert id=\"insertTable\">\n");
 		String str = "#{id}";
+		String datastr = "id";
 		for (int i = 0; i < field.length; i++) {
 			str += ",#{" + field[i] + "}";
+			datastr+=","+ field[i];
 		}
-		data.append("insert into amct_" + menu_ename + " value(" + str + ")\n");
+		data.append("insert into amct_" + menu_ename + "("+datastr+") value(" + str + ")\n");
 		data.append("</insert>\n");
 		// 修改
 		String strUpdate = "update amct_" + menu_ename + " set ";
 		for (int i = 0; i < field.length; i++) {
 			strUpdate += field[i] + "=#{" + field[i] + "},";
 		}
+		
+		strUpdate = strUpdate.substring(0, strUpdate.length() - 1);
 		strUpdate += " where id=#{id}";
-		data.append("<update id=\"addTopMenu\">\n");
+		data.append("<update id=\"updateTable\">\n");
 		data.append(strUpdate + "\n");
 		data.append("</update>\n");
 		data.append("</mapper>\n");
 		out.write(data.toString().getBytes("utf-8"));
+		System.out.println("正在写入mapper文件===================");
+		Thread.sleep(1000 * 1);
+		System.out.println("mapper文件写入完成=====================");
 		out.flush();
 		out.close();
 		return daoPath;
@@ -304,7 +355,7 @@ public class CreateJavaUtil {
 
 	// 创建Controller文件
 	public static String createJavaFileController(String table_field,
-			String menu_ename, HttpSession session) throws IOException {
+			String menu_ename, HttpSession session) throws Exception {
 
 		String[] field = table_field.split(",");
 		String realPath = session.getServletContext().getRealPath(
@@ -358,24 +409,48 @@ public class CreateJavaUtil {
 		// 删除
 		data.append("@ResponseBody\n");
 		data.append("@RequestMapping(value=\"/remove\",method=RequestMethod.GET)\n");
-		data.append("public Integer remove(@RequestParam(\"id\")Integer id){\n");
+		data.append("public Integer remove(@RequestParam(\"id\")String id){\n");
 		data.append("return am.removeTable(id);\n");
 		data.append("}\n");
+		
+		
+		String str = "";
+		String estr = "@RequestParam(\"id\")String id";
+		String dstr = "";
+		String edstr = "id";
+		for (int i = 0; i < field.length; i++) {
+			str += "@RequestParam(\""+field[i]+"\")String " + field[i]+",";
+			estr+=",@RequestParam(\""+field[i]+"\")String " + field[i];
+			dstr +=field[i]+",";
+			edstr +=","+field[i];
+		}
+		str = str.substring(0, str.length() - 1);
+		dstr = dstr.substring(0, dstr.length() - 1);
+		
 		// 修改
 		data.append("@ResponseBody\n");
 		data.append("@RequestMapping(value=\"/modify\",method=RequestMethod.POST)\n");
-		data.append("public Integer modify(@RequestParam(\"m\")" + menu_ename + " m){\n");
-		data.append("return am.modifyTable(m);\n");
+		data.append("public Integer modify(" + estr + "){\n");
+		for (int i = 0; i < field.length; i++) {
+			data.append("System.out.println(\"接收到的数据：Controller===\"+"+field[i]+");");
+		}
+		data.append("return am.modifyTable("+edstr+");\n");
 		data.append("}\n");
 		// 增加
 		data.append("@ResponseBody\n");
 		data.append("@RequestMapping(value=\"/add\",method=RequestMethod.POST)\n");
-		data.append("public Integer add(@RequestParam(\"m\")" + menu_ename + " m){\n");
-		data.append("return am.addTable(m);\n");
+		data.append("public Integer add(" + str + "){\n");
+		for (int i = 0; i < field.length; i++) {
+			data.append("System.out.println(\"接收到的数据：Controller===\"+"+field[i]+");");
+		}
+		data.append("return am.addTable("+dstr+");\n");
 		data.append("}\n");
 
 		data.append("}\n");
 		out.write(data.toString().getBytes("utf-8"));
+		System.out.println("正在写入Controller文件===================");
+		Thread.sleep(1000 * 1);
+		System.out.println("Controller文件写入完成=====================");
 		out.flush();
 		out.close();
 		return daoPath;
