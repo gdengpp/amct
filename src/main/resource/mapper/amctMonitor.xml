@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.amct.dao.amctMonitorDao">
+
+	<select id="queryAll" resultType="amctMonitor">
+		select * from amct_menu_monitor
+		where menu_id=#{menu_id}
+	</select>
+
+	<delete id="del">
+		delete from amct_menu_monitor where
+		menu_id=#{menu_id}
+	</delete>
+
+	<insert id="insert">
+		insert into
+		amct_menu_monitor(id,menu_id,menu_name,menu_ename)
+		values(#{id},#{menu_id},#{menu_name},#{menu_ename});
+	</insert>
+</mapper>

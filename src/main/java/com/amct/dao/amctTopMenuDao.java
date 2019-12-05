@@ -61,5 +61,5 @@ public interface amctTopMenuDao {
 	
 	//修改头部不菜单
 	Integer updateTopMenu(@Param("id")String id, @Param("menu_name")String menu_name, @Param("menu_display")String menu_display,
-			@Param("menu_remark")String menu_remark, @Param("table_field")String table_field);
+			@Param("menu_remark")String menu_remark);
 }

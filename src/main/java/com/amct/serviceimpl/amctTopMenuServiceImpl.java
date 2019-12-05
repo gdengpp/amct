@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.amct.dao.amctMonitorDao;
 import com.amct.dao.amctTopMenuDao;
 import com.amct.entity.amctSysLogo;
 import com.amct.entity.amctTopMenu;
@@ -17,11 +18,12 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 
 	@Autowired
 	private amctTopMenuDao atm;
+	
+	@Autowired
+	private amctMonitorDao amd;
 
 	@Override
 	public List<amctTopMenu> findAll() {
-		// TODO Auto-generated method stub
-		System.out.println(atm);
 		return atm.queryAll();
 	}
 
@@ -74,8 +76,9 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 				at.setName(menu_name);
 				at.setRemark(menu_remark);
 				at.setUrl(tab_url);
-				at.setTab_field(field);
 				atm.insertMenu(at);
+				//加入子表
+				//waiting
 			} catch (Exception e) {
 				atm.delTab("amct_" + menu_ename);
 				flag = false;
@@ -103,6 +106,8 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 			atm.delTopMenuById(id);
 			atm.delLeftMenuByTopId(id);
 			atm.delLeftMenuChildByTopId(id);
+			//删除子表
+			amd.del(id);
 			inte = 1;
 		} catch (Exception e) {
 			System.out.println(e);
@@ -116,7 +121,7 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 	public Integer topMenuEdit(String id, String menu_ename, String menu_name,
 			String menu_display, String menu_remark, String table_field) {
 		
-		return atm.updateTopMenu(id, menu_name, menu_display, menu_remark, table_field);
+		return atm.updateTopMenu(id, menu_name, menu_display, menu_remark);
 	}
 
 }

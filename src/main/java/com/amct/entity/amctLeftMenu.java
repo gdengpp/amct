@@ -5,10 +5,6 @@ import java.util.List;
 
 public class amctLeftMenu implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8097624194242209831L;
 
 	private String id;
 
@@ -24,9 +20,7 @@ public class amctLeftMenu implements Serializable {
 
 	private String remark;
 
-	private String tab_field;
-
-	private List<amctLeftMenuChild> child;
+	private List<amctTopMenuChild> child;
 
 	public amctLeftMenu() {
 		super();
@@ -34,8 +28,8 @@ public class amctLeftMenu implements Serializable {
 	}
 
 	public amctLeftMenu(String id, String name, String ename, String url,
-			String icon, String is_display, String remark, String tab_field,
-			List<amctLeftMenuChild> child) {
+			String icon, String is_display, String remark,
+			List<amctTopMenuChild> child) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -44,7 +38,6 @@ public class amctLeftMenu implements Serializable {
 		this.icon = icon;
 		this.is_display = is_display;
 		this.remark = remark;
-		this.tab_field = tab_field;
 		this.child = child;
 	}
 
@@ -104,32 +97,20 @@ public class amctLeftMenu implements Serializable {
 		this.remark = remark;
 	}
 
-	public String getTab_field() {
-		return tab_field;
-	}
-
-	public void setTab_field(String tab_field) {
-		this.tab_field = tab_field;
-	}
-
-	public List<amctLeftMenuChild> getChild() {
+	public List<amctTopMenuChild> getChild() {
 		return child;
 	}
 
-	public void setChild(List<amctLeftMenuChild> child) {
+	public void setChild(List<amctTopMenuChild> child) {
 		this.child = child;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 
 	@Override
 	public String toString() {
 		return "amctLeftMenu [id=" + id + ", name=" + name + ", ename=" + ename
 				+ ", url=" + url + ", icon=" + icon + ", is_display="
-				+ is_display + ", remark=" + remark + ", tab_field="
-				+ tab_field + ", child=" + child + "]";
+				+ is_display + ", remark=" + remark + ", child=" + child + "]";
 	}
 
+	
 }

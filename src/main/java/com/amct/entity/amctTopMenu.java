@@ -22,8 +22,6 @@ public class amctTopMenu implements Serializable {
 
 	private String remark;
 
-	private String tab_field;
-
 	private List<amctTopMenuChild> child;
 
 	private List<amctLeftMenu> leftmenu;
@@ -34,8 +32,8 @@ public class amctTopMenu implements Serializable {
 	}
 
 	public amctTopMenu(String id, String name, String ename, String url,
-			String is_display, String remark, String tab_field,
-			List<amctTopMenuChild> child, List<amctLeftMenu> leftmenu) {
+			String is_display, String remark, List<amctTopMenuChild> child,
+			List<amctLeftMenu> leftmenu) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -43,7 +41,6 @@ public class amctTopMenu implements Serializable {
 		this.url = url;
 		this.is_display = is_display;
 		this.remark = remark;
-		this.tab_field = tab_field;
 		this.child = child;
 		this.leftmenu = leftmenu;
 	}
@@ -96,14 +93,6 @@ public class amctTopMenu implements Serializable {
 		this.remark = remark;
 	}
 
-	public String getTab_field() {
-		return tab_field;
-	}
-
-	public void setTab_field(String tab_field) {
-		this.tab_field = tab_field;
-	}
-
 	public List<amctTopMenuChild> getChild() {
 		return child;
 	}
@@ -120,12 +109,15 @@ public class amctTopMenu implements Serializable {
 		this.leftmenu = leftmenu;
 	}
 
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 	@Override
 	public String toString() {
 		return "amctTopMenu [id=" + id + ", name=" + name + ", ename=" + ename
 				+ ", url=" + url + ", is_display=" + is_display + ", remark="
-				+ remark + ", tab_field=" + tab_field + ", child=" + child
-				+ ", leftmenu=" + leftmenu + "]";
+				+ remark + ", child=" + child + ", leftmenu=" + leftmenu + "]";
 	}
 
 }

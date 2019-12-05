@@ -19,8 +19,6 @@ public class amctLeftMenuChild implements Serializable {
 
 	private String remark;
 
-	private String tab_field;
-
 	private String icon;
 
 	public amctLeftMenuChild() {
@@ -29,14 +27,13 @@ public class amctLeftMenuChild implements Serializable {
 	}
 
 	public amctLeftMenuChild(String id, String name, String ename, String url,
-			String remark, String tab_field, String icon) {
+			String remark, String icon) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.ename = ename;
 		this.url = url;
 		this.remark = remark;
-		this.tab_field = tab_field;
 		this.icon = icon;
 	}
 
@@ -80,14 +77,6 @@ public class amctLeftMenuChild implements Serializable {
 		this.remark = remark;
 	}
 
-	public String getTab_field() {
-		return tab_field;
-	}
-
-	public void setTab_field(String tab_field) {
-		this.tab_field = tab_field;
-	}
-
 	public String getIcon() {
 		return icon;
 	}
@@ -103,8 +92,8 @@ public class amctLeftMenuChild implements Serializable {
 	@Override
 	public String toString() {
 		return "amctLeftMenuChild [id=" + id + ", name=" + name + ", ename="
-				+ ename + ", url=" + url + ", remark=" + remark
-				+ ", tab_field=" + tab_field + ", icon=" + icon + "]";
+				+ ename + ", url=" + url + ", remark=" + remark + ", icon="
+				+ icon + "]";
 	}
 
 }

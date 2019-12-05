@@ -9,7 +9,6 @@
 		<id property="url" column="murl" />
 		<id property="is_display" column="mis_display" />
 		<id property="remark" column="mremark" />
-		<id property="tab_field" column="mtab_field" />
 		<collection property="leftmenu" ofType="amctLeftMenu">
 			<id property="id" column="cmid" />
 			<id property="name" column="cmname" />
@@ -18,7 +17,6 @@
 			<id property="icon" column="cmicon" />
 			<id property="is_display" column="cmis_display" />
 			<id property="remark" column="cmremark" />
-			<id property="tab_field" column="cmtab_field" />
 			<collection property="child" ofType="amctLeftMenuChild">
 				<id property="id" column="dmcid" />
 				<id property="name" column="dmcname" />
@@ -26,7 +24,6 @@
 				<id property="url" column="dmcurl" />
 				<id property="icon" column="dmcicon" />
 				<id property="remark" column="dmcremark" />
-				<id property="tab_field" column="dmtab_field" />
 			</collection>
 		</collection>
 	</resultMap>
@@ -38,7 +35,6 @@
 		a.url murl,
 		a.is_display
 		mis_display,
-		a.tab_field mtab_field,
 		a.remark mremark,
 		c.id cmid,
 		c. NAME cmname,
@@ -47,15 +43,13 @@
 		c.is_display cmis_display,
 		c.icon cmicon,
 		c.remark cmremark,
-		c.tab_field cmtab_field,
 		d.id dmcid,
 		d. NAME dmcname,
 		d.ename dmcename,
 		d.url dmcurl,
 		d.icon
 		dmcicon,
-		d.remark dmcremark,
-		d.tab_field  dmtab_field
+		d.remark dmcremark
 		FROM
 		amct_top_menu a
 		LEFT JOIN amct_left_menu
@@ -81,7 +75,6 @@
 		a.url murl,
 		a.is_display
 		mis_display,
-		a.tab_field mtab_field,
 		a.remark mremark,
 		c.id cmid,
 		c. NAME cmname,
@@ -90,15 +83,13 @@
 		c.is_display cmis_display,
 		c.icon cmicon,
 		c.remark cmremark,
-		c.tab_field cmtab_field,
 		d.id dmcid,
 		d. NAME dmcname,
 		d.ename dmcename,
 		d.url dmcurl,
 		d.icon
 		dmcicon,
-		d.remark dmcremark,
-		d.tab_field  dmtab_field
+		d.remark dmcremark
 		FROM
 		amct_top_menu a
 		LEFT JOIN amct_left_menu c ON a.id =
@@ -117,8 +108,8 @@
 	</select>
 	<insert id="insertMenu">
 		insert into
-		amct_top_menu(id,name,ename,url,tab_field,is_display,remark)
-		values(#{id},#{name},#{ename},#{url},#{tab_field},#{is_display},#{remark})
+		amct_top_menu(id,name,ename,url,is_display,remark)
+		values(#{id},#{name},#{ename},#{url},#{is_display},#{remark})
 	</insert>
 	<!-- 创建头部表 -->
 	<update id="addTopMenu">
@@ -151,6 +142,6 @@
 	</delete>
 	<!-- 修改头部菜单 -->
 	<update id="updateTopMenu">
-		update amct_top_menu set name=#{menu_name},is_display=#{menu_display},remark=#{menu_remark},tab_field=#{table_field} where id=#{id}
+		update amct_top_menu set name=#{menu_name},is_display=#{menu_display},remark=#{menu_remark} where id=#{id}
 	</update>
 </mapper>
