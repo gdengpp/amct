@@ -2,7 +2,6 @@ package com.amct.controller;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
 import com.amct.dto.findListDto;
 import com.amct.entity.amctSysLogo;
 import com.amct.entity.amctTopMenu;
@@ -78,6 +78,10 @@ public class amctTopMenuController {
 			String menu_display, String menu_remark, HttpSession session,
 			String table_field, String field) {
 
+		System.out.println(field);
+		@SuppressWarnings("unchecked")
+		List<Object> parse = (List<Object>) JSON.parse(field);
+		
 		String realPath = session.getServletContext().getRealPath(
 				File.separator);
 		/*
@@ -88,7 +92,7 @@ public class amctTopMenuController {
 		// 创建JSP文件=======================================================
 		String createJsp = null;
 		try {
-			createJsp = CreateJspUtil.createJsp(field, menu_ename, session);
+			createJsp = CreateJspUtil.createJsp(parse, menu_ename, session);
 		} catch (Exception e) {
 			System.out.println(e);
 			// 创建JSP文件异常，删除创建的文件，返回
@@ -99,7 +103,7 @@ public class amctTopMenuController {
 
 		// 创建Java 实体文件
 		try {
-			CreateJavaUtil.createJavaEntityFile(field, menu_ename, session);
+			CreateJavaUtil.createJavaEntityFile(parse, menu_ename, session);
 		} catch (Exception e) {
 			System.out.println(e);
 			return "no";
@@ -107,14 +111,14 @@ public class amctTopMenuController {
 
 		// 创建dao文件========
 		try {
-			CreateJavaUtil.createJavaDaoFile(field, menu_ename, session);
+			CreateJavaUtil.createJavaDaoFile(parse, menu_ename, session);
 		} catch (Exception e) {
 			System.out.println(e);
 			return "no";
 		}
 		// 创建server文件
 		try {
-			CreateJavaUtil.createJavaFileService(field, menu_ename, session);
+			CreateJavaUtil.createJavaFileService(parse, menu_ename, session);
 		} catch (Exception e) {
 			System.out.println(e);
 			return "no";
@@ -123,7 +127,7 @@ public class amctTopMenuController {
 
 		try {
 			CreateJavaUtil
-					.createJavaFileServiceImpl(field, menu_ename, session);
+					.createJavaFileServiceImpl(parse, menu_ename, session);
 		} catch (Exception e) {
 			System.out.println(e);
 			return "no";
@@ -131,7 +135,7 @@ public class amctTopMenuController {
 		// 创建mapper文件
 		String mapper = null;
 		try {
-			mapper = CreateJavaUtil.createMapper(field, menu_ename, session);
+			mapper = CreateJavaUtil.createMapper(parse, menu_ename, session);
 		} catch (Exception e) {
 			System.out.println(e);
 			MyFileUtil.delFile(mapper);
@@ -140,7 +144,7 @@ public class amctTopMenuController {
 		// 创建Controller文件
 		String controller = null;
 		try {
-			controller = CreateJavaUtil.createJavaFileController(field,
+			controller = CreateJavaUtil.createJavaFileController(parse,
 					menu_ename, session);
 		} catch (Exception e) {
 			System.out.println(e);
@@ -211,8 +215,7 @@ public class amctTopMenuController {
 				MyFileUtil.delFile(mapper);
 			}
 			System.out.println("正常删除entity文件============================");
-			 MyFileUtil.delFile(realPath + "java" + File.separator +
-			 "entity");
+			// MyFileUtil.delFile(realPath + "java" + File.separator +"entity");
 			return status;
 		} catch (Exception e) {
 			System.out.println(e + "编译文件异常");

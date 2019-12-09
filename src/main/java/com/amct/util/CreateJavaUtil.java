@@ -2,12 +2,16 @@ package com.amct.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 public class CreateJavaUtil {
 	// 创建实体文件
-	public static String createJavaEntityFile(String table_field,
+	public static String createJavaEntityFile(List<Object> parse,
 			String menu_ename, HttpSession session) throws Exception {
 		String realPath = session.getServletContext().getRealPath(
 				File.separator);
@@ -20,21 +24,29 @@ public class CreateJavaUtil {
 		// 创健实体文件
 		File fileJava = new File(newJavaEntity);
 		boolean newFile = fileJava.createNewFile();
-		if (newFile) {
 			FileOutputStream out = new FileOutputStream(fileJava, false);
 			StringBuffer data = new StringBuffer();
 			data.append("package com.amct.entity;\nimport java.io.Serializable;\n");
 			data.append("public class " + menu_ename
 					+ " implements Serializable{\n");
-			String[] field = table_field.split(",");
+			// String[] field = table_field.split(",");
 			String str = "String id,";
-			for (int i = 0; i < field.length; i++) {
-				if (i == 0) {
-					data.append("private String id;\n");
+			data.append("private String id;\n");
+			for (int i = 0; i < parse.size(); i++) {
+				JSONObject jsonObject = JSON.parseObject(parse.get(i)
+						.toString());
+				String s ="String";
+				if (jsonObject.getString("type").equals("String")) {
+					s = "String";
 				}
-				data.append("private String " + field[i] + ";\n");
-				str += "String " + field[i] + ",";
+				if (jsonObject.getString("type").equals("int")) {
+					s = "Integer";
+				}
+				data.append("private " + s + " "
+						+ jsonObject.getString("menu_ename") + ";\n");
+				str += s + " " + jsonObject.getString("menu_ename") + ",";
 			}
+
 			str = str.substring(0, str.length() - 1);
 			// 无参构造函数
 			data.append("public " + menu_ename + "() {\n");
@@ -43,8 +55,11 @@ public class CreateJavaUtil {
 			data.append("public " + menu_ename + "(" + str + ") {\n");
 			data.append("super();\n");
 			data.append("this.id=id;\n");
-			for (int i = 0; i < field.length; i++) {
-				data.append("this." + field[0] + "=" + field[i] + ";\n");
+			for (int i = 0; i < parse.size(); i++) {
+				JSONObject jsonObject = JSON.parseObject(parse.get(i)
+						.toString());
+				data.append("this." + jsonObject.getString("menu_ename") + "="
+						+ jsonObject.getString("menu_ename") + ";\n");
 			}
 			data.append("}\n");
 			// 拼接get,set方法
@@ -54,24 +69,38 @@ public class CreateJavaUtil {
 			data.append("public void setId(String id){\n");
 			data.append("this.id=id;\n");
 			data.append("}\n");
-			for (int i = 0; i < field.length; i++) {
-				String up = field[i];
-				char[] cs = field[i].toCharArray();
+			for (int i = 0; i < parse.size(); i++) {
+				JSONObject jsonObject = JSON.parseObject(parse.get(i)
+						.toString());
+				String up = jsonObject.getString("menu_ename");
+				char[] cs = jsonObject.getString("menu_ename").toCharArray();
 				cs[0] -= 32;
 				String upperCase = String.valueOf(cs);
-				data.append("public String get" + upperCase + "(){\n");
+				String s ="String";
+				if (jsonObject.getString("type").equals("String")) {
+					s = "String";
+				}
+				if (jsonObject.getString("type").equals("int")) {
+					s = "Integer";
+				}
+				data.append("public " + s + " get" + upperCase + "(){\n");
 				data.append("return " + up + ";\n");
 				data.append("}\n");
-				data.append("public void set" + upperCase + "(String "+up+"){\n");
+				data.append("public void set" + upperCase + "(" + s + " " + up
+						+ "){\n");
 				data.append("this." + up + "=" + up + ";\n");
 				data.append("}\n");
+
 			}
 			// toString 方法
 			data.append("@Override\n");
 			data.append("public String toString() {\n");
 			String toStr = "return \"" + menu_ename + "[ id=\"+id+\",";
-			for (int i = 0; i < field.length; i++) {
-				toStr += field[i] + "=\"+" + field[i] + "+\",";
+			for (int i = 0; i < parse.size(); i++) {
+				JSONObject jsonObject = JSON.parseObject(parse.get(i)
+						.toString());
+				toStr += jsonObject.getString("menu_ename") + "=\"+"
+						+ jsonObject.getString("menu_ename") + "+\",";
 			}
 			toStr = toStr.substring(0, toStr.length() - 1);
 			toStr += "]\";\n";
@@ -85,14 +114,13 @@ public class CreateJavaUtil {
 			System.out.println("封装实体完成=====================");
 			out.flush();
 			out.close();
-		}
 		return newJavaEntity;
 	}
 
 	// 创建Dao文件
-	public static String createJavaDaoFile(String table_field,
+	public static String createJavaDaoFile(List<Object> parse,
 			String menu_ename, HttpSession session) throws Exception {
-		String[] field = table_field.split(",");
+		// String[] field = table_field.split(",");
 		String realPath = session.getServletContext().getRealPath(
 				File.separator);
 		String fielName = realPath + "java" + File.separator + "entity";
@@ -113,18 +141,30 @@ public class CreateJavaUtil {
 		data.append("import com.amct.entity." + menu_ename + ";\n");
 
 		data.append("public interface " + menu_ename + "Dao {\n");
+		JSONObject jsonObject = JSON.parseObject(parse.get(parse.size()-1)
+				.toString());
 		// 分页查询
 		data.append("List<"
 				+ menu_ename
 				+ "> queryList(@Param(\""
-				+ field[0]
+				+ jsonObject.getString("menu_ename")
 				+ "\") String "
-				+ field[0]
+				+ jsonObject.getString("menu_ename")
 				+ ",@Param(\"begin\") Integer begin, @Param(\"end\") Integer end);\n");
-		
+
 		String str = "@Param(\"id\")String id";
-		for (int i = 0; i < field.length; i++) {
-			str += ",@Param(\""+field[i]+"\")String " + field[i];
+
+		for (int i = 0; i < parse.size(); i++) {
+			JSONObject json = JSON.parseObject(parse.get(i).toString());
+			String s ="String";
+			if (json.getString("type").equals("String")) {
+				s = "String";
+			}
+			if (json.getString("type").equals("int")) {
+				s = "Integer";
+			}
+			str += ",@Param(\"" + json.getString("menu_ename") + "\")" + s
+					+ " " + json.getString("menu_ename");
 		}
 		// 新增
 		data.append("Integer insertTable(" + str + ");\n");
@@ -144,9 +184,9 @@ public class CreateJavaUtil {
 	}
 
 	// 创建Server接口文件
-	public static String createJavaFileService(String table_field,
+	public static String createJavaFileService(List<Object> parse,
 			String menu_ename, HttpSession session) throws Exception {
-		String[] field = table_field.split(",");
+		// String[] field = table_field.split(",");
 		String realPath = session.getServletContext().getRealPath(
 				File.separator);
 		String fielName = realPath + "java" + File.separator + "entity";
@@ -169,17 +209,35 @@ public class CreateJavaUtil {
 		data.append("@Service\n");
 		data.append("public interface " + menu_ename + "Service {\n");
 		// 分页查询
-		data.append("List<" + menu_ename + "> findList(String " + field[0]
+		JSONObject jsonObject = JSON.parseObject(parse.get(parse.size()-1)
+				.toString());
+		String stype = "String";
+		if (jsonObject.getString("type").equals("String")) {
+			stype = "String";
+		}
+		if (jsonObject.getString("type").equals("int")) {
+			stype = "Integer";
+		}
+		data.append("List<" + menu_ename + "> findList(" + stype + " "
+				+ jsonObject.getString("menu_name")
 				+ ",Integer begin,Integer end);\n");
-		
+
 		String str = "";
 		String estr = "String id";
-		for (int i = 0; i < field.length; i++) {
-			str += "String " + field[i]+",";
-			estr += ",String " + field[i];
+		for (int i = 0; i < parse.size(); i++) {
+			JSONObject json = JSON.parseObject(parse.get(i).toString());
+			String s ="String";
+			if (json.getString("type").equals("String")) {
+				s = "String";
+			}
+			if (json.getString("type").equals("int")) {
+				s = "Integer";
+			}
+			str += s + " " + json.getString("menu_ename") + ",";
+			estr += "," + s + " " + json.getString("menu_ename");
 		}
 		str = str.substring(0, str.length() - 1);
-		
+
 		// 新增
 		data.append("Integer addTable(" + str + ");\n");
 		// 修改
@@ -198,9 +256,9 @@ public class CreateJavaUtil {
 	}
 
 	// 创建server实现类
-	public static String createJavaFileServiceImpl(String table_field,
+	public static String createJavaFileServiceImpl(List<Object> parse,
 			String menu_ename, HttpSession session) throws Exception {
-		String[] field = table_field.split(",");
+		// String[] field = table_field.split(",");
 		String realPath = session.getServletContext().getRealPath(
 				File.separator);
 		String fielName = realPath + "java" + File.separator + "entity";
@@ -229,45 +287,62 @@ public class CreateJavaUtil {
 		data.append("@Autowired\n");
 		data.append("private " + menu_ename + "Dao a;\n");
 		// 分页查询
+		JSONObject jsonObject = JSON.parseObject(parse.get(parse.size()-1)
+				.toString());
+		String s ="String";
+		if (jsonObject.getString("type").equals("String")) {
+			s = "String";
+		}
+		if (jsonObject.getString("type").equals("int")) {
+			s = "Integer";
+		}
 		data.append("@Override\n");
-		data.append("public List<" + menu_ename + "> findList(String "
-				+ field[0] + ",Integer page,Integer limit) {\n");
+		data.append("public List<" + menu_ename + "> findList(" + s + " "
+				+ jsonObject.getString("menu_ename")
+				+ ",Integer page,Integer limit) {\n");
 		data.append("System.out.println(\"=========Server文件========\");\n");
 		data.append("System.out.println(\"=========Dao \"+a+\"========\");\n");
-		data.append("if (" + field[0] + " != null) {\n");
-		data.append(field[0] + "=\"%\"+" + field[0] + "+\"%\";\n");
+		data.append("if (" + jsonObject.getString("menu_ename")
+				+ " != null) {\n");
+		data.append(jsonObject.getString("menu_ename") + "=\"%\"+"
+				+ jsonObject.getString("menu_ename") + "+\"%\";\n");
 		data.append("}\n");
-		data.append("return a.queryList(" + field[0] + ",page - 1, limit);\n");
+		data.append("return a.queryList(" + jsonObject.getString("menu_ename")
+				+ ",page - 1, limit);\n");
 		data.append("}\n");
-		
+
 		String str = "";
 		String estr = "String id";
 		String dstr = "";
 		String edstr = "id";
-		for (int i = 0; i < field.length; i++) {
-			str += "String " + field[i]+",";
-			dstr +=field[i]+",";
-			estr+=",String " + field[i];
-			edstr +=","+field[i];
+		for (int i = 0; i < parse.size(); i++) {
+			String ss = "String";
+			JSONObject json = JSON.parseObject(parse.get(i).toString());
+			if (json.getString("type").equals("String")) {
+				ss = "String";
+			}
+			if (json.getString("type").equals("int")) {
+				ss = "Integer";
+			}
+			str += ss + " " + json.getString("menu_ename") + ",";
+			dstr += json.getString("menu_ename") + ",";
+			estr += "," + ss + " " + json.getString("menu_ename");
+			edstr += "," + json.getString("menu_ename");
 		}
+
 		str = str.substring(0, str.length() - 1);
 		dstr = dstr.substring(0, dstr.length() - 1);
 		// 新增
 		data.append("@Override\n");
 		data.append("public Integer addTable(" + str + "){\n");
-		for (int i = 0; i < field.length; i++) {
-			data.append("System.out.println(\"接收到的数据：Service===\"+"+field[i]+");");
-		}
-		data.append("return a.insertTable(UUID.randomUUID().toString(),"+dstr+");\n");
+		data.append("System.out.println(\"Service新增传到Dao===================\");");
+		data.append("return a.insertTable(UUID.randomUUID().toString()," + dstr
+				+ ");\n");
 		data.append("}\n");
 		// 修改
 		data.append("@Override\n");
 		data.append("public Integer modifyTable(" + estr + "){\n");
-		for (int i = 0; i < field.length; i++) {
-			data.append("System.out.println(\"接收到的数据：Service===\"+"+field[i]+");");
-		}
-		data.append("System.out.println(\"接收到的数据：Service=id==\"+id);");
-		data.append("return a.updateTable("+edstr+");\n");
+		data.append("return a.updateTable(" + edstr + ");\n");
 		data.append("}\n");
 
 		// 删除
@@ -287,10 +362,10 @@ public class CreateJavaUtil {
 	}
 
 	// 创建mapper文件
-	public static String createMapper(String table_field, String menu_ename,
+	public static String createMapper(List<Object> parse, String menu_ename,
 			HttpSession session) throws Exception {
 
-		String[] field = table_field.split(",");
+		// String[] field = table_field.split(",");
 		String realPath = session.getServletContext().getRealPath(
 				File.separator);
 		System.out.println(realPath + "realPath");
@@ -311,9 +386,12 @@ public class CreateJavaUtil {
 		// 查询
 		data.append("<select id=\"queryList\" resultType=\"" + menu_ename
 				+ "\">\n");
-		data.append("select * from amct_" + menu_ename
-				+ " <where><if test=\""+field[0]+" != null\">\n");
-		data.append(field[0] + " like #{" + field[0]
+		JSONObject jsonObject = JSON.parseObject(parse.get(parse.size()-1)
+				.toString());
+		data.append("select * from amct_" + menu_ename + " <where><if test=\""
+				+ jsonObject.getString("menu_ename") + " != null\">\n");
+		data.append(jsonObject.getString("menu_ename") + " like #{"
+				+ jsonObject.getString("menu_ename")
 				+ ",jdbcType=VARCHAR} and </if>\n");
 		data.append("<if test=\"1 == 1\">1=1</if>\n");
 		data.append(" limit #{begin},#{end}\n");
@@ -326,18 +404,26 @@ public class CreateJavaUtil {
 		data.append("<insert id=\"insertTable\">\n");
 		String str = "#{id}";
 		String datastr = "id";
-		for (int i = 0; i < field.length; i++) {
-			str += ",#{" + field[i] + "}";
-			datastr+=","+ field[i];
+
+		for (int i = 0; i < parse.size(); i++) {
+			JSONObject json = JSON.parseObject(parse.get(i).toString());
+			str += ",#{" + json.getString("menu_ename") + "}";
+			datastr += "," + json.getString("menu_ename");
 		}
-		data.append("insert into amct_" + menu_ename + "("+datastr+") value(" + str + ")\n");
+
+		data.append("insert into amct_" + menu_ename + "(" + datastr
+				+ ") value(" + str + ")\n");
 		data.append("</insert>\n");
 		// 修改
+
 		String strUpdate = "update amct_" + menu_ename + " set ";
-		for (int i = 0; i < field.length; i++) {
-			strUpdate += field[i] + "=#{" + field[i] + "},";
+
+		for (int i = 0; i < parse.size(); i++) {
+			JSONObject json = JSON.parseObject(parse.get(i).toString());
+			strUpdate += json.getString("menu_ename") + "=#{"
+					+ json.getString("menu_ename") + "},";
 		}
-		
+
 		strUpdate = strUpdate.substring(0, strUpdate.length() - 1);
 		strUpdate += " where id=#{id}";
 		data.append("<update id=\"updateTable\">\n");
@@ -354,10 +440,10 @@ public class CreateJavaUtil {
 	}
 
 	// 创建Controller文件
-	public static String createJavaFileController(String table_field,
+	public static String createJavaFileController(List<Object> parse,
 			String menu_ename, HttpSession session) throws Exception {
 
-		String[] field = table_field.split(",");
+		// String[] field = table_field.split(",");
 		String realPath = session.getServletContext().getRealPath(
 				File.separator);
 		String fielName = realPath + "java" + File.separator + "entity";
@@ -391,18 +477,34 @@ public class CreateJavaUtil {
 		// 分页查询
 		data.append("@ResponseBody\n");
 		data.append("@RequestMapping(value = \"/findAll\",method=RequestMethod.GET)\n");
-		data.append("public findListDto<" + menu_ename + "> findAll(@RequestParam(\""+field[0]+"\")String "
-				+ field[0] + ",@RequestParam(\"page\")Integer page,@RequestParam(\"limit\")Integer limit) {\n");
+		JSONObject jsonObject = JSON.parseObject(parse.get(parse.size()-1)
+				.toString());
+		String stype = "String";
+		if (jsonObject.getString("type").equals("String")) {
+			stype = "String";
+		}
+		if (jsonObject.getString("type").equals("int")) {
+			stype = "Integer";
+		}
+		data.append("public findListDto<"
+				+ menu_ename
+				+ "> findAll(@RequestParam(\""
+				+ jsonObject.getString("menu_ename")
+				+ "\")"
+				+ stype
+				+ " "
+				+ jsonObject.getString("menu_ename")
+				+ ",@RequestParam(\"page\")Integer page,@RequestParam(\"limit\")Integer limit) {\n");
 		data.append("System.out.println(\"=========Controller文件========\");\n");
-		data.append("List<" + menu_ename
-				+ "> list = am.findList("+ field[0] +", page, limit);\n");
+		data.append("List<" + menu_ename + "> list = am.findList(" +jsonObject.getString("menu_ename")
+				+ ", page, limit);\n");
 		data.append("findListDto<" + menu_ename + "> fd = new findListDto<"
 				+ menu_ename + ">();\n");
 		data.append("fd.setData(list);\n");
 		data.append("fd.setCode(0);\n");
 		data.append("fd.setCount(list.size());\n");
 		data.append("fd.setMsg(\"查询成功\");\n");
-		
+
 		data.append("System.out.println(\"=========Controller文件查询成功========\");\n");
 		data.append("return fd;\n");
 		data.append("}\n");
@@ -410,40 +512,46 @@ public class CreateJavaUtil {
 		data.append("@ResponseBody\n");
 		data.append("@RequestMapping(value=\"/remove\",method=RequestMethod.GET)\n");
 		data.append("public Integer remove(@RequestParam(\"id\")String id){\n");
+		data.append("System.out.println(\"Controller文件删除===================\"+id);");
 		data.append("return am.removeTable(id);\n");
 		data.append("}\n");
-		
-		
+
 		String str = "";
 		String estr = "@RequestParam(\"id\")String id";
 		String dstr = "";
 		String edstr = "id";
-		for (int i = 0; i < field.length; i++) {
-			str += "@RequestParam(\""+field[i]+"\")String " + field[i]+",";
-			estr+=",@RequestParam(\""+field[i]+"\")String " + field[i];
-			dstr +=field[i]+",";
-			edstr +=","+field[i];
+		for (int i = 0; i < parse.size(); i++) {
+			JSONObject json = JSON.parseObject(parse.get(i).toString());
+			String s = "String";
+			if (json.getString("type").equals("String")) {
+				s="String";
+			}
+			if (json.getString("type").equals("int")) {
+				s="Integer";
+			}
+			str += "@RequestParam(\"" +json.getString("menu_ename") + "\")"+s+" " + json.getString("menu_ename")
+					+ ",";
+			estr += ",@RequestParam(\"" + json.getString("menu_ename") + "\")"+s+" " +json.getString("menu_ename");
+			dstr += json.getString("menu_ename") + ",";
+			edstr += "," + json.getString("menu_ename");
 		}
+		
 		str = str.substring(0, str.length() - 1);
 		dstr = dstr.substring(0, dstr.length() - 1);
-		
+
 		// 修改
 		data.append("@ResponseBody\n");
 		data.append("@RequestMapping(value=\"/modify\",method=RequestMethod.POST)\n");
 		data.append("public Integer modify(" + estr + "){\n");
-		for (int i = 0; i < field.length; i++) {
-			data.append("System.out.println(\"接收到的数据：Controller===\"+"+field[i]+");");
-		}
-		data.append("return am.modifyTable("+edstr+");\n");
+		data.append("System.out.println(\"Controller修改传到impl===================\");");
+		data.append("return am.modifyTable(" + edstr + ");\n");
 		data.append("}\n");
 		// 增加
 		data.append("@ResponseBody\n");
 		data.append("@RequestMapping(value=\"/add\",method=RequestMethod.POST)\n");
 		data.append("public Integer add(" + str + "){\n");
-		for (int i = 0; i < field.length; i++) {
-			data.append("System.out.println(\"接收到的数据：Controller===\"+"+field[i]+");");
-		}
-		data.append("return am.addTable("+dstr+");\n");
+		data.append("System.out.println(\"Controller新增传到impl===================\");");
+		data.append("return am.addTable(" + dstr + ");\n");
 		data.append("}\n");
 
 		data.append("}\n");
