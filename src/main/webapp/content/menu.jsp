@@ -176,11 +176,7 @@
 
 	var basurl = '${pageContext.request.contextPath}/';
 	//layui begin 
-	layui
-			.use(
-					[ 'table', 'form', 'tree', 'layer', 'jquery', 'upload',
-							'laydate', 'element' ],
-					function() {
+	layui.use([ 'table', 'form', 'tree', 'layer', 'jquery', 'upload','laydate', 'element' ],function() {
 						var table = layui.table;
 						var layer = layui.layer;
 						var form = layui.form;
@@ -188,6 +184,10 @@
 						var $ = layui.$;
 						form.render();
 						element.init();
+					
+						//在修改字段的时候使用						
+						var addField=[];//新增的字段
+						var delField=[];//删除的字段
 						/*
 						    ==================数据表格左侧头部========================================
 						 */
@@ -261,7 +261,7 @@
 														anim : 0,
 														shade : 0.3,
 														shadeClose : false, //显示模态窗口
-														area : [ '700px',
+														area : [ '800px',
 																'600px' ], //宽高
 														content : $('#topMenuAdd'),
 														cancel : function(
@@ -311,7 +311,7 @@
 																					templet : function(
 																							d) {
 																						var select = {};
-																						if (d.type == "string") {
+																						if (d.type == "String") {
 																							select.o1 = 'selected="selected"';
 																						} else if (d.type == "int") {
 																							select.o2 = 'selected="selected"';
@@ -320,7 +320,7 @@
 																						html = '<form class="layui-form" action="">\
 									                                                <div class="layui-form-item">\
 									                                                    <select name="res" lay-filter="typeFilter">\
-									                                                        <option value="string" '+ select.o1 + '>String</option>\
+									                                                        <option value="String" '+ select.o1 + '>String</option>\
 									                                                        <option value="int" '+ select.o2 + '>int</option>\
 									                                                    </select>\
 									                                                </div>\
@@ -334,6 +334,14 @@
 																					edit : 'text',
 																					align : 'center',
 																				},
+																				{field:'is_query', title:'查询字段', width:110, unresize: true,
+																						templet: function(d){
+																					if(d.is_query=="1"){
+																					 return "<input type=\"checkbox\" name=\"lock\" value=\"1\" title=\"是\" lay-filter=\"lockDemo\" checked = 'true'>";
+																					 }
+																					 return "<input type=\"checkbox\" name=\"lock\" value=\"1\" title=\"是\" lay-filter=\"lockDemo\">";
+																					}
+																					}
 
 																		] ],
 																		limit : 100000,
@@ -387,8 +395,10 @@
 																var obj = {
 																	menu_name:table_field[i].menu_name,
 																	menu_ename:table_field[i].menu_ename,
-																	type:table_field[i].type
-																}
+																	type:table_field[i].type,
+																	len:table_field[i].len,
+																	is_query:table_field[i].is_query
+																};
 																tab_field_data.push(obj);
 																var type;
 																if(table_field[i].type=="String"){
@@ -482,13 +492,11 @@
 										});
 
 						//修改
-						$(".top_menu_edit")
-								.click(
-										function() {
+						$(".top_menu_edit").click(function() {
 											var topData = table
 													.checkStatus("topMenudatagrid");
-											console.log(topData);
 											var data = topData.data;
+											console.log(data);
 											if (data.length == 0) {
 												layer.msg("未选择数据", {
 													icon : 5
@@ -503,23 +511,27 @@
 													'rgb(238, 238, 238)');
 											$("#menu_remark").val(
 													data[0].remark);
-											$(
-													"input[name='menu_display'][value="
+											$("input[name='menu_display'][value="
 															+ data[0].is_display
 															+ "]").attr(
 													'checked', true);
-											$(".tableField").val(
-													data[0].tab_field);
-											form.render();
-											layui.layer
-													.open({
+											//查询子表
+											$.ajax({
+												url:basurl + 'monitor/findMonitorList',
+												method:'get',
+												data:{
+													menu_id:data[0].id
+												},
+												success:function(r){
+													form.render();
+											layui.layer.open({
 														type : 1, //弹窗类型
-														title : "新增菜单", //显示标题
+														title : "修改菜单", //显示标题
 														closeBtn : 1, //是否显示关闭按钮
 														anim : 0,
 														shade : 0.3,
 														shadeClose : false, //显示模态窗口
-														area : [ '700px',
+														area : [ '800px',
 																'600px' ], //宽高
 														content : $('#topMenuAdd'),
 														cancel : function(
@@ -527,17 +539,109 @@
 															layer.closeAll();
 															return false;
 														},
+														success : function() {
+															//==============================表字段展示Table=======================
+															table.render({
+																		id : 'monitor',
+																		elem : '#monitor',
+																		//height:'full-100',
+																		data:r,
+																		toolbar : '#toolbarDemo',
+																		defaultToolbar : [
+																				'filter',
+																				'exports',
+																				'print',
+																				{ //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+																					title : '提示',
+																					layEvent : 'LAYTABLE_TIPS',
+																					icon : 'layui-icon-tips',
+																				} ],
+																		cols : [ [
+																				{
+																					field : 'id',
+																					type : 'checkbox',
+																				},
+																				{
+																					field : 'menu_name',
+																					title : '展示名称',
+																					edit : 'text',
+																					align : 'center',
+																				},
+																				{
+																					field : 'menu_ename',
+																					title : '名称',
+																					edit : 'text',
+																					align : 'center',
+																				},
+																				{
+																					field : 'type',
+																					title : '类型',
+																					event : 'type_event',
+																					align : 'center',
+																					templet : function(
+																							d) {
+																						var select = {};
+																						if (d.type == "String") {
+																							select.o1 = 'selected="selected"';
+																						} else if (d.type == "int") {
+																							select.o2 = 'selected="selected"';
+																						}
+
+																						html = '<form class="layui-form" action="">\
+									                                                <div class="layui-form-item">\
+									                                                    <select name="res" lay-filter="typeFilter">\
+									                                                        <option value="String" '+ select.o1 + '>String</option>\
+									                                                        <option value="int" '+ select.o2 + '>int</option>\
+									                                                    </select>\
+									                                                </div>\
+									                                            </from>';
+																						return html;
+																					}
+																				},
+																				{
+																					field : 'len',
+																					title : '长度',
+																					edit : 'text',
+																					align : 'center',
+																				},
+																				{field:'is_query', title:'查询字段', width:110, unresize: true,
+																					templet: function(d){
+																				if(d.is_query=="1"){
+																					 return "<input type=\"checkbox\" name=\"lock\" value=\"1\" title=\"是\" lay-filter=\"lockDemo\" checked = 'true'>";
+																					 }
+																					 return "<input type=\"checkbox\" name=\"lock\" value=\"1\" title=\"是\" lay-filter=\"lockDemo\">";
+																					}
+																				}
+
+																		] ],
+																		limit : 100000,
+																		done : function(
+																				res,
+																				curr,
+																				count) {
+																				console.log(res)
+																			signleSelect($,'monitor');
+																			form.render();
+																			$("[data-field='type'] [class$=4]").find("input")
+																					.css({'max-width' : '100%'});
+																			for (var i = 1; i < $("[data-field='type'] [class$=4]").length; i++) {
+																				$($("[data-field='type'] [class$=4]")[i]).css({
+																									'overflow' : 'visible',
+																									"padding" : "0px"
+																								});
+																			}
+
+																		}
+																	});
+																	
+															//==============================表字段展示Table=======================
+														},
 														btn : [ "修改", "关闭" ],
-														yes : function(index,
-																layero) {
-															var menu_display = $(
-																	"input[name=menu_display]:checked")
-																	.val();
+														yes : function(index,layero) {
+															var menu_display = $("input[name=menu_display]:checked").val();
 															if (data[0].id == 1) {
 																if (menu_display == 0) {
-																	layer
-																			.confirm(
-																					'配置菜单，隐藏只能在数据库中修改显示',
+																	layer.confirm('配置菜单，隐藏只能在数据库中修改显示',
 																					{
 																						icon : 3,
 																						title : '提示'
@@ -557,7 +661,8 @@
 
 														},
 													});
-
+												}
+											});
 										});
 
 						function modifyMenu(data) {
@@ -566,7 +671,8 @@
 							var menu_display = $(
 									"input[name=menu_display]:checked").val();
 							var menu_remark = $("#menu_remark").val();
-							var table_field = $(".tableField").val();
+							var table_field = tables = table.cache.monitor;
+							var field = JSON.stringify(table_field);
 							if (!table_field) {
 								layer.msg("请填写表字段", {
 									icon : 5
@@ -596,9 +702,8 @@
 									});
 									return false;
 								}
-							}
-							;
-							layer.load();
+							};
+							var edit = layer.load();
 							$.ajax({
 								url : basurl + 'top_menu/topMenuEdit',
 								method : 'post',
@@ -608,10 +713,11 @@
 									menu_name : menu_name,
 									menu_display : menu_display,
 									menu_remark : menu_remark,
-									table_field : table_field
+									field : field
+									
 								},
 								success : function(r) {
-									if (r == "1") {
+									if (r == 1) {
 										table.reload('topMenudatagrid', {
 											page : {
 												curr : 1
@@ -635,11 +741,16 @@
 											icon : 6
 										});
 									} else {
+									layer.close(edit);
 										layer.msg("修改失败", {
 											icon : 5
 										});
 									}
-								}
+								},
+									error:function(){
+													layer.msg("修改失败，请稍后重试",{icon : 5});
+													layer.close(edit);
+												}
 							});
 						}
 						//删除
@@ -818,18 +929,20 @@
 								break;
 							//自定义头工具栏右侧图标 - 提示
 							case 'LAYTABLE_TIPS':
-								layer.alert('配置字段，类型');
+								layer.alert('配置字段，第一个字段请选择用默认String类型，查询字段：是否定义页面通过此字段进行查询,修改字段类型请保证数据库中有值的数据类型相匹配');
 								break;
 							}
 							;
 						});
+						
 						//新增
 						function addMonitorTable(data) {
 							var obj = {
 								menu_name : "",
 								menu_ename : "",
 								type : "String",
-								len : ""
+								len : "",
+								is_query:0
 							};
 							data.unshift(obj);
 							table.reload('monitor', {
@@ -845,13 +958,7 @@
 								});
 								return false;
 							}
-							var deldialog = layer
-									.confirm(
-											'您是否要删除已选信息？',
-											{
-												btn : [ '确定', '取消' ]
-											//按钮
-											},
+							var deldialog = layer.confirm('您是否要删除已选信息？',{btn : [ '确定', '取消' ]},
 											function() {
 												var del = layer.load();
 												var datas = tables = table.cache.monitor;
@@ -859,7 +966,7 @@
 													if (datas[i].len == data[0].len
 															&& datas[i].menu_ename == data[0].menu_ename
 															&& datas[i].menu_name == data[0].menu_name
-															&& datas[i].type == data[0].type) {
+															&& datas[i].type == data[0].type&& datas[i].is_query == data[0].is_query) {
 														datas.splice(i, 1);
 													}
 												}
@@ -882,7 +989,7 @@
 									"top" : "33px"
 								});
 							}
-						})
+						});
 
 						//监听select
 						form.on('select(typeFilter)', function(data) {
@@ -892,7 +999,21 @@
 							var tab_data = tables = table.cache.monitor;
 							tab_data[tdElem].type = data.value;
 							$(this).parent("dl").hide();
-						})
+						});
+						
+						//监听锁定操作
+					  form.on('checkbox(lockDemo)', function(obj){
+							var selectElem = $(obj.elem); //获取下拉框
+							var tdElem = selectElem.closest('tr').attr(
+									"data-index"); //父元素td
+							var tab_data = tables = table.cache.monitor;
+					    if(obj.elem.checked){
+							tab_data[tdElem].is_query = 1;
+					    }else{
+					    	tab_data[tdElem].is_query = 0;
+					    }
+					    console.log(tab_data)
+					  });
 
 					});
 </script>

@@ -14,7 +14,7 @@
 
 	<insert id="insert">
 		insert into
-		amct_menu_monitor(id,menu_id,menu_name,menu_ename)
-		values(#{id},#{menu_id},#{menu_name},#{menu_ename});
+		amct_menu_monitor(id,menu_id,menu_name,menu_ename,type,len,is_query)
+		values(#{id},#{menu_id},#{menu_name},#{menu_ename},#{type},#{len},#{is_query});
 	</insert>
 </mapper>

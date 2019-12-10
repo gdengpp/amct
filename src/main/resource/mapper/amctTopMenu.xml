@@ -144,4 +144,8 @@
 	<update id="updateTopMenu">
 		update amct_top_menu set name=#{menu_name},is_display=#{menu_display},remark=#{menu_remark} where id=#{id}
 	</update>
+	
+	<update id="updateTabFiled">
+		${str}
+	</update>
 </mapper>

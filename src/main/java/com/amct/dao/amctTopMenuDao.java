@@ -57,7 +57,7 @@ public interface amctTopMenuDao {
 	
 	
 	//修改表结构
-	Integer updateTabFiled();
+	Integer updateTabFiled(@Param("str")String str);
 	
 	//修改头部不菜单
 	Integer updateTopMenu(@Param("id")String id, @Param("menu_name")String menu_name, @Param("menu_display")String menu_display,

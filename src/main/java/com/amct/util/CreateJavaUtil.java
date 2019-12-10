@@ -23,7 +23,7 @@ public class CreateJavaUtil {
 		String newJavaEntity = fielName + File.separator + menu_ename + ".java";
 		// 创健实体文件
 		File fileJava = new File(newJavaEntity);
-		boolean newFile = fileJava.createNewFile();
+		 fileJava.createNewFile();
 			FileOutputStream out = new FileOutputStream(fileJava, false);
 			StringBuffer data = new StringBuffer();
 			data.append("package com.amct.entity;\nimport java.io.Serializable;\n");
@@ -141,15 +141,32 @@ public class CreateJavaUtil {
 		data.append("import com.amct.entity." + menu_ename + ";\n");
 
 		data.append("public interface " + menu_ename + "Dao {\n");
-		JSONObject jsonObject = JSON.parseObject(parse.get(parse.size()-1)
-				.toString());
+		
+		String query_ename = null;
+		String stype = null;
+		for (int i = parse.size()-1; i >= 0; i--) {
+			JSONObject json = JSON.parseObject(parse.get(i).toString());
+			System.out.println(json.getString("is_query"));
+			if (json.getString("is_query") != null
+					&& json.getString("is_query") != ""
+					&& json.getString("is_query").equals("1")) {
+				query_ename = json.getString("menu_ename");
+				
+				if (json.getString("type").equals("String")) {
+					stype = "String";
+				}
+				if (json.getString("type").equals("int")) {
+					stype = "Integer";
+				}
+			}
+		}
 		// 分页查询
 		data.append("List<"
 				+ menu_ename
 				+ "> queryList(@Param(\""
-				+ jsonObject.getString("menu_ename")
-				+ "\") String "
-				+ jsonObject.getString("menu_ename")
+				+ query_ename
+				+ "\") "+stype+" "
+				+ query_ename
 				+ ",@Param(\"begin\") Integer begin, @Param(\"end\") Integer end);\n");
 
 		String str = "@Param(\"id\")String id";
@@ -209,17 +226,26 @@ public class CreateJavaUtil {
 		data.append("@Service\n");
 		data.append("public interface " + menu_ename + "Service {\n");
 		// 分页查询
-		JSONObject jsonObject = JSON.parseObject(parse.get(parse.size()-1)
-				.toString());
-		String stype = "String";
-		if (jsonObject.getString("type").equals("String")) {
-			stype = "String";
-		}
-		if (jsonObject.getString("type").equals("int")) {
-			stype = "Integer";
+		String query_ename = null;
+		String stype = null;
+		for (int i = parse.size()-1; i >= 0; i--) {
+			JSONObject json = JSON.parseObject(parse.get(i).toString());
+			System.out.println(json.getString("is_query"));
+			if (json.getString("is_query") != null
+					&& json.getString("is_query") != ""
+					&& json.getString("is_query").equals("1")) {
+				query_ename = json.getString("menu_ename");
+				
+				if (json.getString("type").equals("String")) {
+					stype = "String";
+				}
+				if (json.getString("type").equals("int")) {
+					stype = "Integer";
+				}
+			}
 		}
 		data.append("List<" + menu_ename + "> findList(" + stype + " "
-				+ jsonObject.getString("menu_name")
+				+ query_ename
 				+ ",Integer begin,Integer end);\n");
 
 		String str = "";
@@ -287,27 +313,38 @@ public class CreateJavaUtil {
 		data.append("@Autowired\n");
 		data.append("private " + menu_ename + "Dao a;\n");
 		// 分页查询
-		JSONObject jsonObject = JSON.parseObject(parse.get(parse.size()-1)
-				.toString());
-		String s ="String";
-		if (jsonObject.getString("type").equals("String")) {
-			s = "String";
-		}
-		if (jsonObject.getString("type").equals("int")) {
-			s = "Integer";
+		String query_ename = null;
+		String stype = null;
+		for (int i = parse.size()-1; i >= 0; i--) {
+			JSONObject json = JSON.parseObject(parse.get(i).toString());
+			System.out.println(json.getString("is_query"));
+			if (json.getString("is_query") != null
+					&& json.getString("is_query") != ""
+					&& json.getString("is_query").equals("1")) {
+				query_ename = json.getString("menu_ename");
+				
+				if (json.getString("type").equals("String")) {
+					stype = "String";
+				}
+				if (json.getString("type").equals("int")) {
+					stype = "Integer";
+				}
+			}
 		}
 		data.append("@Override\n");
-		data.append("public List<" + menu_ename + "> findList(" + s + " "
-				+ jsonObject.getString("menu_ename")
+		data.append("public List<" + menu_ename + "> findList(" + stype + " "
+				+ query_ename
 				+ ",Integer page,Integer limit) {\n");
 		data.append("System.out.println(\"=========Server文件========\");\n");
 		data.append("System.out.println(\"=========Dao \"+a+\"========\");\n");
-		data.append("if (" + jsonObject.getString("menu_ename")
-				+ " != null) {\n");
-		data.append(jsonObject.getString("menu_ename") + "=\"%\"+"
-				+ jsonObject.getString("menu_ename") + "+\"%\";\n");
-		data.append("}\n");
-		data.append("return a.queryList(" + jsonObject.getString("menu_ename")
+		if(stype == "String"){
+			data.append("if (" + query_ename
+					+ " != null) {\n");
+			data.append(query_ename + "=\"%\"+"
+					+ query_ename + "+\"%\";\n");
+			data.append("}\n");
+		}
+		data.append("return a.queryList(" + query_ename
 				+ ",page - 1, limit);\n");
 		data.append("}\n");
 
@@ -386,12 +423,24 @@ public class CreateJavaUtil {
 		// 查询
 		data.append("<select id=\"queryList\" resultType=\"" + menu_ename
 				+ "\">\n");
-		JSONObject jsonObject = JSON.parseObject(parse.get(parse.size()-1)
-				.toString());
+		
+		
+		String query_ename = null;
+		for (int i = parse.size()-1; i >= 0; i--) {
+			JSONObject json = JSON.parseObject(parse.get(i).toString());
+			System.out.println(json.getString("is_query"));
+			if (json.getString("is_query") != null
+					&& json.getString("is_query") != ""
+					&& json.getString("is_query").equals("1")) {
+				query_ename = json.getString("menu_ename");
+			}
+		}
+		
+		
 		data.append("select * from amct_" + menu_ename + " <where><if test=\""
-				+ jsonObject.getString("menu_ename") + " != null\">\n");
-		data.append(jsonObject.getString("menu_ename") + " like #{"
-				+ jsonObject.getString("menu_ename")
+				+ query_ename + " != null\">\n");
+		data.append(query_ename + " like #{"
+				+ query_ename
 				+ ",jdbcType=VARCHAR} and </if>\n");
 		data.append("<if test=\"1 == 1\">1=1</if>\n");
 		data.append(" limit #{begin},#{end}\n");
@@ -477,26 +526,37 @@ public class CreateJavaUtil {
 		// 分页查询
 		data.append("@ResponseBody\n");
 		data.append("@RequestMapping(value = \"/findAll\",method=RequestMethod.GET)\n");
-		JSONObject jsonObject = JSON.parseObject(parse.get(parse.size()-1)
-				.toString());
-		String stype = "String";
-		if (jsonObject.getString("type").equals("String")) {
-			stype = "String";
+		String query_ename = null;
+		String stype = null;
+		for (int i = parse.size()-1; i >= 0; i--) {
+			JSONObject json = JSON.parseObject(parse.get(i).toString());
+			System.out.println(json.getString("is_query"));
+			if (json.getString("is_query") != null
+					&& json.getString("is_query") != ""
+					&& json.getString("is_query").equals("1")) {
+				query_ename = json.getString("menu_ename");
+				
+				if (json.getString("type").equals("String")) {
+					stype = "String";
+				}
+				if (json.getString("type").equals("int")) {
+					stype = "Integer";
+				}
+			}
 		}
-		if (jsonObject.getString("type").equals("int")) {
-			stype = "Integer";
-		}
+		
+		
 		data.append("public findListDto<"
 				+ menu_ename
 				+ "> findAll(@RequestParam(\""
-				+ jsonObject.getString("menu_ename")
+				+ query_ename
 				+ "\")"
 				+ stype
 				+ " "
-				+ jsonObject.getString("menu_ename")
+				+ query_ename
 				+ ",@RequestParam(\"page\")Integer page,@RequestParam(\"limit\")Integer limit) {\n");
 		data.append("System.out.println(\"=========Controller文件========\");\n");
-		data.append("List<" + menu_ename + "> list = am.findList(" +jsonObject.getString("menu_ename")
+		data.append("List<" + menu_ename + "> list = am.findList(" +query_ename
 				+ ", page, limit);\n");
 		data.append("findListDto<" + menu_ename + "> fd = new findListDto<"
 				+ menu_ename + ">();\n");

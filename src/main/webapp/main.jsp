@@ -193,10 +193,12 @@
 													"a span")[0].innerText;
 											var leftHtml = "";
 											for (var i = 0; i < r.length; i++) {
-												var bodyhtml = "<iframe src="
-														+ r[i].url
-														+ " frameborder='0' scrolling='no' style='width: 100%;height: 98%;'></iframe>";
-												$(".dbody").html(bodyhtml);
+												if (firstname == r[i].name) {
+													var bodyhtml = "<iframe src="
+															+ r[i].url
+															+ " frameborder='0' scrolling='no' style='width: 100%;height: 98%;'></iframe>";
+													$(".dbody").html(bodyhtml);
+												}
 												if (r[i].leftmenu.length > 0) {
 													var leftMenu = r[i].leftmenu;
 													if (firstname == r[i].name) {

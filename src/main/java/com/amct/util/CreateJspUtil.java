@@ -29,10 +29,20 @@ public class CreateJspUtil {
 				+ ".jsp";
 		// 创健实体文件
 		File fileJSP = new File(newJSP);
-		boolean newFile = fileJSP.createNewFile();
-		// String[] field = table_field.split(",");
-		JSONObject jsonObject = JSON.parseObject(parse.get(parse.size() - 1)
-				.toString());
+		fileJSP.createNewFile();
+		String query_name = null;
+		String query_ename = null;
+		for (int i = parse.size() - 1; i >= 0; i--) {
+			JSONObject json = JSON.parseObject(parse.get(i).toString());
+			System.out.println(json.getString("is_query"));
+			if (json.getString("is_query") != null
+					&& json.getString("is_query") != ""
+					&& json.getString("is_query").equals("1")) {
+				query_name = json.getString("menu_name");
+				query_ename = json.getString("menu_ename");
+			}
+		}
+
 		// 创建成功，写入文件
 		FileOutputStream out = new FileOutputStream(fileJSP, false);
 		StringBuffer data = new StringBuffer();
@@ -50,8 +60,7 @@ public class CreateJspUtil {
 		data.append("<div class=\"layui-form\"><div class=\"layui-inline\">\n");
 		data.append("<div class=\"layui-input-inline\">\n");
 		data.append("<input type=\"text\" value=\"\" placeholder=\"请输入"
-				+ jsonObject.getString("menu_name")
-				+ "\"class=\"layui-input search_input\"/>\n");
+				+ query_name + "\"class=\"layui-input search_input\"/>\n");
 		data.append("</div>\n");
 		data.append("<div class=\"layui-btn-group\">\n");
 		data.append("<a class=\"layui-btn layui-btn-primary search_btn\"> <i class=\"layui-icon\">&#xe615;</i>查询</a>\n");
@@ -60,14 +69,17 @@ public class CreateJspUtil {
 		data.append("<a class=\"layui-btn layui-btn-primary search_del\"> <i class=\"layui-icon\">&#xe640;</i>删除 </a>\n");
 		data.append("</div></div></div>\n");
 		data.append("<div class=\"layui-form top_menu_list\">\n");
-		data.append("<table class=\"layui-hide\" id=\"datagrid\" lay-data=\"{id: 'datagrid'}\" lay-filter=\"datagridFilter\"></table>\n");
+		data.append("<table class=\"layui-hide\" id=\"datagrid_" + menu_ename
+				+ "\" lay-data=\"{id: 'datagrid_" + menu_ename
+				+ "'}\" lay-filter=\"datagrid_" + menu_ename
+				+ "Filter\"></table>\n");
 		data.append("</div></div></div></div></div>\n");
 		// 主体结束--------------------------------------------------------------------------
 
 		// 新增/编辑开始----------------------------------------------------------------------
 		data.append("<div id=\"addAmdUpdate\" style=\"display:none;padding:10px;\">\n");
 		data.append("<form class=\"layui-form\" action=\"\">\n");
-		for (int i = parse.size()-1; i >= 0; i--) {
+		for (int i = parse.size() - 1; i >= 0; i--) {
 			JSONObject json = JSON.parseObject(parse.get(i).toString());
 			data.append("<div class=\"layui-row\">\n");
 			data.append("<div class=\"layui-col-md6\">\n");
@@ -143,7 +155,7 @@ public class CreateJspUtil {
 		List<List<String>> lists = new ArrayList<List<String>>();
 		List<String> list = new ArrayList<String>();
 		list.add("{type : 'checkbox'}");
-		for (int i = parse.size()-1; i >= 0; i--) {
+		for (int i = parse.size() - 1; i >= 0; i--) {
 			JSONObject json = JSON.parseObject(parse.get(i).toString());
 			String str = "{field : '" + json.getString("menu_ename")
 					+ "',title : '" + json.getString("menu_name")
@@ -152,24 +164,23 @@ public class CreateJspUtil {
 		}
 		lists.add(list);
 		data.append("table.render({\n");
-		data.append("elem : '#datagrid',\n");
-		data.append("id : 'datagrid',\n");
+		data.append("elem : '#datagrid_" + menu_ename + "',\n");
+		data.append("id : 'datagrid_" + menu_ename + "',\n");
 		data.append("url : '${pageContext.request.contextPath}/" + menu_ename
 				+ "/findAll',\n");
 		data.append("height : 'full-100',\n");
-		data.append("where : { " + jsonObject.getString("menu_ename")
-				+ " : null },\n");
+		data.append("where : { " + query_ename + " : null },\n");
 		data.append("limits : [ 10, 20, 30, 50, 100, 300, 600, 1000 ],\n");
 		data.append("page : true,\n");
 		data.append("cols:" + lists + ",\n");
 		data.append("done : function(res, curr, count) {\n");
 		data.append("$(\".laytable-cell-checkbox\").css(\"padding\", \"5px\");\n");
-		data.append("signleSelect($, 'datagrid');\n");
+		data.append("signleSelect($, 'datagrid_" + menu_ename + "');\n");
 		data.append("}});\n");
 		// 查询
 		data.append("$(\".search_btn\").click(function() {\n");
-		data.append("table.reload('datagrid', {\n");
-		data.append("where : { " + jsonObject.getString("menu_ename")
+		data.append("table.reload('datagrid_" + menu_ename + "', {\n");
+		data.append("where : { " + query_ename
 				+ " : $(\".search_input\").val() },\n");
 		data.append("page : {curr : 1}\n");
 		data.append("});});\n");
@@ -180,13 +191,14 @@ public class CreateJspUtil {
 		for (int i = 0; i < parse.size(); i++) {
 			JSONObject json = JSON.parseObject(parse.get(i).toString());
 			addStr += "$(\"#" + json.getString("menu_ename") + "\").val('');";
-			String str="";
+			String str = "";
 			if (json.getString("type").equals("int")) {
-				str = "parseInt($(\"#"+ json.getString("menu_ename") + "\").val())";
-			}else{
-				str = "$(\"#"+ json.getString("menu_ename") + "\").val()";
+				str = "parseInt($(\"#" + json.getString("menu_ename")
+						+ "\").val())";
+			} else {
+				str = "$(\"#" + json.getString("menu_ename") + "\").val()";
 			}
-			dataSre += json.getString("menu_ename") + ":"+str+",";
+			dataSre += json.getString("menu_ename") + ":" + str + ",";
 		}
 		dataSre = dataSre.substring(0, dataSre.length() - 1);
 		dataSre += "}";
@@ -217,7 +229,7 @@ public class CreateJspUtil {
 		data.append("success : function(r) {\n");
 		data.append("if (r == \"1\") {\n");
 		data.append("layer.closeAll();\n");
-		data.append("table.reload('datagrid', {\n");
+		data.append("table.reload('datagrid_" + menu_ename + "', {\n");
 		data.append("page : {curr : 1}});\n");
 		data.append("layer.msg(\"增加成功\", {icon : 6});\n");
 		data.append("} else {layer.close(add);\n");
@@ -229,7 +241,8 @@ public class CreateJspUtil {
 
 		// 修改
 		data.append("$(\".search_edit\").click(function() {\n");
-		data.append("var topData = table.checkStatus(\"datagrid\");\n");
+		data.append("var topData = table.checkStatus(\"datagrid_" + menu_ename
+				+ "\");\n");
 		data.append("var data = topData.data;\n");
 		data.append("if (data.length == 0) {\n");
 		data.append("layer.msg(\"请选择数据\", {icon : 5});\n");
@@ -268,7 +281,7 @@ public class CreateJspUtil {
 		data.append("success : function(r) {\n");
 		data.append("if (r == \"1\") {\n");
 		data.append("layer.closeAll();\n");
-		data.append("table.reload('datagrid', {\n");
+		data.append("table.reload('datagrid_" + menu_ename + "', {\n");
 		data.append("page : {curr : 1}});\n");
 		data.append("layer.msg(\"修改成功\", {icon : 6});\n");
 		data.append("} else {layer.close(edit);\n");
@@ -281,7 +294,8 @@ public class CreateJspUtil {
 
 		// 删除
 		data.append("$(\".search_del \").click(function() {\n");
-		data.append("var topData = table.checkStatus(\"datagrid\");\n");
+		data.append("var topData = table.checkStatus(\"datagrid_" + menu_ename
+				+ "\");\n");
 		data.append("var data = topData.data;\n");
 		data.append("if (data.length == 0) {\n");
 		data.append("layer.msg(\"未选择数据\", {icon : 5});\n");
@@ -301,7 +315,7 @@ public class CreateJspUtil {
 		data.append("layer.closeAll();\n");
 		data.append("if (r == 1) {\n");
 		data.append("layer.msg(\"删除成功\", {icon : 6});\n");
-		data.append("table.reload('datagrid', {\n");
+		data.append("table.reload('datagrid_" + menu_ename + "', {\n");
 		data.append("page : {curr : 1}});\n");
 		data.append("} else {\n");
 		data.append("layer.msg(\"删除失败\", {icon : 5});\n");
