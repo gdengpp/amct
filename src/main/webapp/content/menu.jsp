@@ -555,8 +555,8 @@
 
 														},
 														success : function(r) {
-															layer.closeAll();
 															if (r == "yes") {
+															layer.closeAll();
 																table
 																		.reload(
 																				'topMenudatagrid',
