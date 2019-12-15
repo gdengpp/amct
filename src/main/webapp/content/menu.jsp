@@ -59,12 +59,12 @@
 						<div class="layui-form">
 							<div class="layui-inline">
 								<div class="layui-btn-group">
-									</a> <a class="layui-btn layui-btn-primary apply_auth_btn"> <i
-										class="layui-icon">&#xe654;</i>新增
-									</a> <a class="layui-btn layui-btn-primary return_auth_btn"> <i
-										class="layui-icon">&#xe642;</i>修改
-									</a> </a> <a class="layui-btn layui-btn-primary return_auth_btn"> <i
-										class="layui-icon">&#xe640;</i>删除
+									</a> <a class="layui-btn layui-btn-primary left_child_menu_add">
+										<i class="layui-icon">&#xe654;</i>新增
+									</a> <a class="layui-btn layui-btn-primary left_child_menu_edit">
+										<i class="layui-icon">&#xe642;</i>修改
+									</a> </a> <a class="layui-btn layui-btn-primary left_child_menu_del">
+										<i class="layui-icon">&#xe640;</i>删除
 									</a>
 								</div>
 							</div>
@@ -114,6 +114,17 @@
 						<div class="layui-input-block" style="width: 78%;">
 							<table class="layui-hide" id="monitor" lay-data="{id: 'monitor'}"
 								lay-filter="monitor"></table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-row tubiao" style="display:none">
+				<div class="layui-col-md12">
+					<div class="layui-form-item">
+						<label class="layui-form-label">图标</label>
+						<div class="layui-input-block">
+							<input type="text" id="icon" name="icon" autocomplete="off"
+								class="layui-input">
 						</div>
 					</div>
 				</div>
@@ -190,8 +201,6 @@
 						element.init();
 
 						//在修改字段的时候使用						
-						var addField = [];//新增的字段
-						var delField = [];//删除的字段
 						/*
 						    ==================数据表格左侧头部========================================
 						 */
@@ -248,13 +257,18 @@
 						});
 
 						//新增
-						$(".top_menu_add").click(function() {
-							add("topMenudatagrid", "top_menu/topMenuAdd");
-						});
+						$(".top_menu_add").click(
+								function() {
+									add("topMenudatagrid",
+											"top_menu/topMenuAdd", "top");
+								});
 
 						//修改
-						$(".top_menu_edit").click(function() {
-							modify("topMenudatagrid","monitor/findMonitorList","top_menu/topMenuEdit");
+						$(".top_menu_edit").click(
+								function() {
+									modify("topMenudatagrid",
+											"monitor/findMonitorList",
+											"top_menu/topMenuEdit", "top");
 								});
 
 						//删除
@@ -303,6 +317,26 @@
 								data : data.child,
 							});
 						});
+
+						//新增
+						$(".left_menu_add").click(
+								function() {
+									add("leftMenudatagrid",
+											"left_menu/leftMenuAdd", "left");
+								});
+
+						//修改
+						$(".left_menu_edit").click(
+								function() {
+									modify("leftMenudatagrid",
+											"monitor/findMonitorList",
+											"left_menu/leftMenuEdit", "left");
+								});
+
+						//删除
+						$(".left_menu_del").click(function() {
+							remove("leftMenudatagrid", "left_menu/removeTab");
+						});
 						//======================数据表格左侧一级结束============================
 						/*
 						==========================数据表格左侧二级============================
@@ -334,11 +368,59 @@
 								signleSelect($, 'leftchildMenudatagrid');
 							}
 						});
+
+						//新增
+						$(".left_child_menu_add").click(
+								function() {
+									add("leftchildMenudatagrid",
+											"left_child_menu/leftChildMenuAdd",
+											"left_child");
+								});
+
+						//修改
+						$(".left_child_menu_edit")
+								.click(
+										function() {
+											modify(
+													"leftchildMenudatagrid",
+													"monitor/findMonitorList",
+													"left_child_menu/leftChildMenuEdit",
+													"left_child");
+										});
+
+						//删除
+						$(".left_child_menu_del").click(
+								function() {
+									remove("leftchildMenudatagrid",
+											"left_child_menu/removeTab");
+								});
 						//==============================数据表格左侧二级=======================
 
 						//========================方法共用开始======================================================================================
 						//-----------------------增加add------------------------------------------------------------------------------------------
-						function add(model_id, url) {
+						function add(model_id, url, menu) {
+							var pid = null;
+							var data_menu;
+							if (menu == "top") {
+								$(".tubiao").css("display", "none");
+								$("#icon").val("");
+							} else {
+								$(".tubiao").css("display", "block");
+								if (menu == "left") {
+									data_menu = table
+											.checkStatus("topMenudatagrid").data;
+									console.log(data_menu, "left");
+									pid = data_menu[0].id;
+									console.log(pid, "leftpid");
+								} else {
+									data_menu = table
+											.checkStatus("leftMenudatagrid").data;
+									console.log(data_menu, "left_child");
+									pid = data_menu[0].id;
+									console.log(pid, "left_childtpid");
+								}
+
+							}
 							$("#menu_ename").removeAttr("readonly");
 							$("#menu_ename").css("color", "black");
 							$("#menu_name").val("");
@@ -545,47 +627,32 @@
 														url : basurl + url,
 														method : 'post',
 														data : {
+															pid : pid,
 															menu_name : menu_name,
 															menu_ename : menu_ename,
 															menu_display : menu_display,
 															menu_remark : menu_remark,
 															table_field : str,
+															icon : $("#icon")
+																	.val(),
 															field : JSON
 																	.stringify(tab_field_data)
 
 														},
 														success : function(r) {
 															if (r == "yes") {
-															layer.closeAll();
-																table
-																		.reload(
-																				'topMenudatagrid',
-																				{
-																					page : {
-																						curr : 1
-																					//重新从第 1 页开始
-																					}
-																				});
-																table
-																		.reload(
-																				'leftMenudatagrid',
-																				{
-																					page : {
-																						curr : 1
-																					//重新从第 1 页开始
-																					}
-																				});
-																table
-																		.reload(
-																				'leftchildMenudatagrid',
-																				{
-																					page : {
-																						curr : 1
-																					//重新从第 1 页开始
-																					}
-																				});
 																layer
 																		.closeAll();
+																table
+																		.reload(
+																				"topMenudatagrid",
+																				{
+																					page : {
+																						curr : 1
+																					//重新从第 1 页开始
+																					}
+																				});
+
 																layer
 																		.msg(
 																				"增加成功，请刷新页面显示结束",
@@ -593,6 +660,8 @@
 																					icon : 6
 																				});
 															} else {
+																layer
+																		.closeAll(add);
 																layer
 																		.msg(
 																				"增加失败，请检查是否存在表名",
@@ -615,10 +684,16 @@
 									});
 						}
 						//---------------------------------修改modify-----------------------------------------------------------------------------
-						function modify(model_id, monitor_url, url) {
-
+						function modify(model_id, monitor_url, url, menu) {
+							if (menu == "top") {
+								$(".tubiao").css("display", "none");
+								$("#icon").val("");
+							} else {
+								$(".tubiao").css("display", "block");
+							}
 							var topData = table.checkStatus(model_id);
 							var data = topData.data;
+							$("#icon").val(data[0].icon);
 							console.log(data);
 							if (data.length == 0) {
 								layer.msg("未选择数据", {
@@ -904,7 +979,7 @@
 						}
 
 						//修改
-						function modifyMenu(data, url) {
+						function modifyMenu( data, url) {
 							var menu_name = $("#menu_name").val();
 							var menu_ename = $("#menu_ename").val();
 							var menu_display = $(
@@ -953,24 +1028,13 @@
 									menu_name : menu_name,
 									menu_display : menu_display,
 									menu_remark : menu_remark,
+									icon : $("#icon").val(),
 									field : field
 
 								},
 								success : function(r) {
 									if (r == 1) {
-										table.reload('topMenudatagrid', {
-											page : {
-												curr : 1
-											//重新从第 1 页开始
-											}
-										});
-										table.reload('leftMenudatagrid', {
-											page : {
-												curr : 1
-											//重新从第 1 页开始
-											}
-										});
-										table.reload('leftchildMenudatagrid', {
+										table.reload("topMenudatagrid", {
 											page : {
 												curr : 1
 											//重新从第 1 页开始

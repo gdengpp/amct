@@ -17,9 +17,13 @@ public class amctLeftMenuChild implements Serializable {
 
 	private String url;
 
+	private String is_display;
+
 	private String remark;
 
 	private String icon;
+
+	private String parentid;
 
 	public amctLeftMenuChild() {
 		super();
@@ -27,14 +31,16 @@ public class amctLeftMenuChild implements Serializable {
 	}
 
 	public amctLeftMenuChild(String id, String name, String ename, String url,
-			String remark, String icon) {
+			String is_display, String remark, String icon, String parentid) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.ename = ename;
 		this.url = url;
+		this.is_display = is_display;
 		this.remark = remark;
 		this.icon = icon;
+		this.parentid = parentid;
 	}
 
 	public String getId() {
@@ -61,6 +67,34 @@ public class amctLeftMenuChild implements Serializable {
 		this.ename = ename;
 	}
 
+	public String getIs_display() {
+		return is_display;
+	}
+
+	public void setIs_display(String is_display) {
+		this.is_display = is_display;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
+	public String getParentid() {
+		return parentid;
+	}
+
+	public void setParentid(String parentid) {
+		this.parentid = parentid;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 	public String getUrl() {
 		return url;
 	}
@@ -77,23 +111,12 @@ public class amctLeftMenuChild implements Serializable {
 		this.remark = remark;
 	}
 
-	public String getIcon() {
-		return icon;
-	}
-
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
 	@Override
 	public String toString() {
 		return "amctLeftMenuChild [id=" + id + ", name=" + name + ", ename="
-				+ ename + ", url=" + url + ", remark=" + remark + ", icon="
-				+ icon + "]";
+				+ ename + ", url=" + url + ", is_display=" + is_display
+				+ ", remark=" + remark + ", icon=" + icon + ", parentid="
+				+ parentid + "]";
 	}
 
 }

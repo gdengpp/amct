@@ -5,7 +5,6 @@ import java.util.List;
 
 public class amctLeftMenu implements Serializable {
 
-
 	private String id;
 
 	private String name;
@@ -22,6 +21,8 @@ public class amctLeftMenu implements Serializable {
 
 	private List<amctTopMenuChild> child;
 
+	private String top_menu_id;
+
 	public amctLeftMenu() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -29,7 +30,7 @@ public class amctLeftMenu implements Serializable {
 
 	public amctLeftMenu(String id, String name, String ename, String url,
 			String icon, String is_display, String remark,
-			List<amctTopMenuChild> child) {
+			List<amctTopMenuChild> child, String top_menu_id) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -39,6 +40,7 @@ public class amctLeftMenu implements Serializable {
 		this.is_display = is_display;
 		this.remark = remark;
 		this.child = child;
+		this.top_menu_id = top_menu_id;
 	}
 
 	public String getId() {
@@ -105,12 +107,20 @@ public class amctLeftMenu implements Serializable {
 		this.child = child;
 	}
 
+	public String getTop_menu_id() {
+		return top_menu_id;
+	}
+
+	public void setTop_menu_id(String top_menu_id) {
+		this.top_menu_id = top_menu_id;
+	}
+
 	@Override
 	public String toString() {
 		return "amctLeftMenu [id=" + id + ", name=" + name + ", ename=" + ename
 				+ ", url=" + url + ", icon=" + icon + ", is_display="
-				+ is_display + ", remark=" + remark + ", child=" + child + "]";
+				+ is_display + ", remark=" + remark + ", child=" + child
+				+ ", top_menu_id=" + top_menu_id + "]";
 	}
 
-	
 }
