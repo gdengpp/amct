@@ -409,15 +409,23 @@
 								if (menu == "left") {
 									data_menu = table
 											.checkStatus("topMenudatagrid").data;
-									console.log(data_menu, "left");
+									if (data_menu.length == 0) {
+										layer.msg("未选择父元素", {
+											icon : 5
+										});
+										return false;
+									}
 									pid = data_menu[0].id;
-									console.log(pid, "leftpid");
 								} else {
 									data_menu = table
 											.checkStatus("leftMenudatagrid").data;
-									console.log(data_menu, "left_child");
+									if (data_menu.length == 0) {
+										layer.msg("未选择父元素", {
+											icon : 5
+										});
+										return false;
+									}
 									pid = data_menu[0].id;
-									console.log(pid, "left_childtpid");
 								}
 
 							}
@@ -685,15 +693,8 @@
 						}
 						//---------------------------------修改modify-----------------------------------------------------------------------------
 						function modify(model_id, monitor_url, url, menu) {
-							if (menu == "top") {
-								$(".tubiao").css("display", "none");
-								$("#icon").val("");
-							} else {
-								$(".tubiao").css("display", "block");
-							}
 							var topData = table.checkStatus(model_id);
 							var data = topData.data;
-							$("#icon").val(data[0].icon);
 							console.log(data);
 							if (data.length == 0) {
 								layer.msg("未选择数据", {
@@ -701,6 +702,13 @@
 								});
 								return false;
 							}
+							if (menu == "top") {
+								$(".tubiao").css("display", "none");
+								$("#icon").val("");
+							} else {
+								$(".tubiao").css("display", "block");
+							}
+							$("#icon").val(data[0].icon);
 							$("#menu_name").val(data[0].name);
 							$("#menu_ename").val(data[0].ename);
 							$("#menu_ename").attr('readonly', 'true');
@@ -979,7 +987,7 @@
 						}
 
 						//修改
-						function modifyMenu( data, url) {
+						function modifyMenu(data, url) {
 							var menu_name = $("#menu_name").val();
 							var menu_ename = $("#menu_ename").val();
 							var menu_display = $(

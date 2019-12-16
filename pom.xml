@@ -316,6 +316,7 @@
 											[2.5,)
 										</versionRange>
 										<goals>
+											<goal>resources</goal>
 											<goal>testResources</goal>
 										</goals>
 									</pluginExecutionFilter>
