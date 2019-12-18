@@ -1,5 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.amct.dao.amctIconImgDao">
-	
+
+	<select id="queryAll" resultType="amctIconImg">
+		select * from amct_icon_img
+	</select>
+
+	<select id="query" resultType="amctIconImg">
+		select * from amct_icon_img
+		<where>
+			<if test="icon_name != null">
+				icon_name like #{icon_name,jdbcType=VARCHAR} and
+			</if>
+			<if test="1 == 1">
+				1=1
+			</if>
+			<!-- 判断是否有name查询 -->
+			limit #{begin},#{end}
+		</where>
+	</select>
+
+	<insert id="add">
+		insert into
+		amct_icon_img(id,icon_class,icon_name,icon_code,remark)
+		value(#{id},#{icon_class},#{icon_name},#{icon_code},#{remark})
+	</insert>
+
+	<update id="update">
+		update amct_icon_img set
+		icon_class=#{icon_class},icon_name=#{icon_name},icon_code=#{icon_code},remark=#{remark}
+		where id=#{id}
+	</update>
+
+	<delete id="del">
+		DELETE from amct_icon_img where id=#{id}
+	</delete>
 </mapper>

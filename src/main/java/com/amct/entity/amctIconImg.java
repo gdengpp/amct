@@ -2,17 +2,21 @@ package com.amct.entity;
 
 import java.io.Serializable;
 
-public class amctIconImg implements Serializable{
+public class amctIconImg implements Serializable {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1185479011846742843L;
+	private static final long serialVersionUID = 1L;
 
 	private String id;
-	
-	private String url;
-	
+
+	private String icon_class;
+
+	private String icon_name;
+
+	private String icon_code;
+
 	private String remark;
 
 	public amctIconImg() {
@@ -20,10 +24,13 @@ public class amctIconImg implements Serializable{
 		// TODO Auto-generated constructor stub
 	}
 
-	public amctIconImg(String id, String url, String remark) {
+	public amctIconImg(String id, String icon_class, String icon_name,
+			String icon_code, String remark) {
 		super();
 		this.id = id;
-		this.url = url;
+		this.icon_class = icon_class;
+		this.icon_name = icon_name;
+		this.icon_code = icon_code;
 		this.remark = remark;
 	}
 
@@ -35,12 +42,28 @@ public class amctIconImg implements Serializable{
 		this.id = id;
 	}
 
-	public String getUrl() {
-		return url;
+	public String getIcon_class() {
+		return icon_class;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setIcon_class(String icon_class) {
+		this.icon_class = icon_class;
+	}
+
+	public String getIcon_name() {
+		return icon_name;
+	}
+
+	public void setIcon_name(String icon_name) {
+		this.icon_name = icon_name;
+	}
+
+	public String getIcon_code() {
+		return icon_code;
+	}
+
+	public void setIcon_code(String icon_code) {
+		this.icon_code = icon_code;
 	}
 
 	public String getRemark() {
@@ -53,8 +76,9 @@ public class amctIconImg implements Serializable{
 
 	@Override
 	public String toString() {
-		return "amctIconImg []";
+		return "amctIconImg [id=" + id + ", icon_class=" + icon_class
+				+ ", icon_name=" + icon_name + ", icon_code=" + icon_code
+				+ ", remark=" + remark + "]";
 	}
-	
-	
+
 }

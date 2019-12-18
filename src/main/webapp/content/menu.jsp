@@ -88,9 +88,9 @@
 						<label for="menu_name" class="layui-form-label"> <span
 							style="color:red">*</span>菜单名
 						</label>
-						<div class="layui-input-inline">
+						<div class="layui-input-block">
 							<input type="text" id="menu_name" name="menu_name"
-								autocomplete="off" class="layui-input">
+								autocomplete="off" class="layui-input" style="width: 77%;">
 						</div>
 					</div>
 				</div>
@@ -99,9 +99,9 @@
 						<label for="menu_ename" class="layui-form-label"> <span
 							style="color:red">*</span>表名
 						</label>
-						<div class="layui-input-inline">
+						<div class="layui-input-block">
 							<input type="text" id="menu_ename" name="menu_ename"
-								autocomplete="off" class="layui-input">
+								autocomplete="off" class="layui-input" style="width: 77%;">
 						</div>
 					</div>
 				</div>
@@ -118,15 +118,19 @@
 					</div>
 				</div>
 			</div>
-			<div class="layui-row tubiao" style="display:none">
-				<div class="layui-col-md12">
+
+			<div class="layui-row tubiao" style="display:none;width:99%">
+				<div class="layui-col-md10">
 					<div class="layui-form-item">
 						<label class="layui-form-label">图标</label>
 						<div class="layui-input-block">
-							<input type="text" id="icon" name="icon" autocomplete="off"
+							<input type="text" id="icon" name="icon" autocomplete="off" placeholder="请输入【  &amp;#xe60c; 】格式"
 								class="layui-input">
 						</div>
 					</div>
+				</div>
+				<div class="layui-col-md2">
+					<button type="button" class="layui-btn search_icon">图标库</button>
 				</div>
 			</div>
 			<div class="layui-row">
@@ -153,6 +157,10 @@
 				</div>
 			</div>
 		</form>
+	</div>
+	<!-- 图标model -->
+	<div id="icon_model" style="display:none;padding:10px;">
+		
 	</div>
 </body>
 <script>
@@ -399,6 +407,7 @@
 						//========================方法共用开始======================================================================================
 						//-----------------------增加add------------------------------------------------------------------------------------------
 						function add(model_id, url, menu) {
+							$("#icon").val("");
 							var pid = null;
 							var data_menu;
 							if (menu == "top") {
@@ -669,7 +678,7 @@
 																				});
 															} else {
 																layer
-																		.closeAll(add);
+																		.close(add);
 																layer
 																		.msg(
 																				"增加失败，请检查是否存在表名",
@@ -693,9 +702,9 @@
 						}
 						//---------------------------------修改modify-----------------------------------------------------------------------------
 						function modify(model_id, monitor_url, url, menu) {
+							$("#icon").val("");
 							var topData = table.checkStatus(model_id);
 							var data = topData.data;
-							console.log(data);
 							if (data.length == 0) {
 								layer.msg("未选择数据", {
 									icon : 5
@@ -704,7 +713,6 @@
 							}
 							if (menu == "top") {
 								$(".tubiao").css("display", "none");
-								$("#icon").val("");
 							} else {
 								$(".tubiao").css("display", "block");
 							}
@@ -1176,7 +1184,57 @@
 							}
 							console.log(tab_data)
 						});
-
+						//字体图标
+						$(".search_icon").click(function() {
+						$("#icon_model").html("");
+							layui.layer.open({
+								type : 1, //弹窗类型
+								title : '图标信息', //显示标题
+								shade : 0.2,
+								closeBtn : 1, //是否显示关闭按钮
+								shadeClose : false, //显示模态窗口
+								maxmin : true,
+								area : [ '70%', '700px' ], //宽高
+								content : $('#icon_model'),
+								cancel : function(index, layero) {
+									layer.close(index);
+								},
+								success : function() {
+									$.ajax({
+										url : basurl + "amct_icon/queryAll",
+										method : 'get',
+										success : function(data) {
+											var html="<ul class=\"site-doc-icon\" style=\"margin-bottom: 50px;font-size: 0;\">";
+											var reg = new RegExp("&","g");//g,表示全部替换。
+											for(var i=0;i<data.length;i++){
+												html+="<li>";
+												html+="<i class=\""+data[i].icon_class+"\"></i>";
+												html+="<div class='doc-icon-name'>"+data[i].icon_name+"</div>";
+												html+="<div class='doc-icon-code'>"+data[i].icon_code.replace(reg,"&amp;");+"</div>";
+												html+="<div class='doc-icon-fontclass'>"+data[i].remark+"</div>";
+												html+="</li>";
+											}
+											html+="</ul>";
+											html+="<style>";
+											html+=".site-doc-icon{margin-bottom: 50px; font-size: 0;}";
+											html+=".site-doc-icon li{display: inline-block; vertical-align: middle; width: 127px; height: 105px; line-height: 25px; padding: 20px 0; margin-right: -1px; margin-bottom: -1px; border: 1px solid #e2e2e2; font-size: 14px; text-align: center; color: #666; transition: all .3s; -webkit-transition: all .3s;}";
+											html+=".site-doc-anim li{height: auto;}";
+											html+=".site-doc-icon li .layui-icon{display: inline-block; font-size: 36px;}";
+											html+=".site-doc-icon li .doc-icon-name,.site-doc-icon li .doc-icon-code{color: #c2c2c2;}";
+											html+=".site-doc-icon li .doc-icon-fontclass{height: 40px; line-height: 20px; padding: 0 5px; font-size: 13px; color: #333; }";
+											html+=".site-doc-icon li:hover{background-color: #f2f2f2; color: #000;}";
+											html+="</style>";
+											$("#icon_model").html(html);
+										},
+										error : function() {
+											layer.msg("图标查询失败", {
+												icon : 5
+											});
+										}
+									});
+								}
+							});
+						});
 					});
 </script>
 <script type="text/html" id="toolbarDemo">

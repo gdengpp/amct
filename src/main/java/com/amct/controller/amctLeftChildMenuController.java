@@ -33,7 +33,7 @@ public class amctLeftChildMenuController {
 	 */
 	@ResponseBody
 	@RequestMapping("/leftChildMenuAdd")
-	public String topMenuAdd(String pid,String menu_name, String menu_ename,
+	public String topMenuAdd(String pid, String menu_name, String menu_ename,
 			String menu_display, String icon, String menu_remark,
 			HttpSession session, String table_field, String field) {
 
@@ -43,6 +43,12 @@ public class amctLeftChildMenuController {
 
 		String realPath = session.getServletContext().getRealPath(
 				File.separator);
+		try {
+			System.out.println("进入增加优先删除entity文件============================");
+			MyFileUtil.delFile(realPath + "java" + File.separator + "entity");
+		} catch (Exception e) {
+
+		}
 		/*
 		 * 获取菜单名和英文名，通过英文名来创建菜单的文件，放在menu文件夹中
 		 */
@@ -114,16 +120,13 @@ public class amctLeftChildMenuController {
 		// 都创建完成之后编译java文件，把编译后的class文件copy到对应的位置
 		System.out.println("编译文件============================");
 
+		// windows下：
 		String str = "javac -d " + realPath + "WEB-INF" + File.separator
-				+ "classes -encoding utf-8 -cp " + realPath + "java"
-				+ File.separator + "jar" + File.separator + "*; " + realPath
-				+ "java" + File.separator + "findListDto.java " + realPath
-				+ "java" + File.separator + "entity" + File.separator
-				+ "*.java";
-		// javac -d D:\tomcat\webapps\amct\WEB-INF\classes -encoding utf-8 -cp
-		// D:\tomcat\webapps\amct\WEB-INF\lib\*;
-		// D:\tomcat\webapps\amct\java\findListDto.java
-		// D:\tomcat\webapps\amct\java\entity\*.java
+				+ "classes -encoding utf-8 -cp D:" + File.separator + "java"
+				+ File.separator + "jar" + File.separator + "*; D:"
+				+ File.separator + "java" + File.separator
+				+ "findListDto.java " + realPath + "java" + File.separator
+				+ "entity" + File.separator + "*.java";
 		try {
 			Thread.sleep(1000 * 1);
 			// 赋权
@@ -154,8 +157,9 @@ public class amctLeftChildMenuController {
 				System.out.println("编译文件成功============================");
 				System.out.println("开始入库============================");
 				// 入库
-				status = ats.addleftChildMenu(pid,menu_name, menu_ename, menu_display,icon,
-						menu_remark, table_field, tab_url, parse);
+				status = ats.addleftChildMenu(pid, menu_name, menu_ename,
+						menu_display, icon, menu_remark, table_field, tab_url,
+						parse);
 				System.out.println("入库status" + status);
 				if (status == "no") {
 					// 入库不成功，删除文件
@@ -173,15 +177,11 @@ public class amctLeftChildMenuController {
 				MyFileUtil.delFile(createJsp);
 				MyFileUtil.delFile(mapper);
 			}
-			System.out.println("正常删除entity文件============================");
-			MyFileUtil.delFile(realPath + "java" + File.separator + "entity");
 			return status;
 		} catch (Exception e) {
 			System.out.println(e + "编译文件异常");
 			MyFileUtil.delFile(mapper);
 			MyFileUtil.delFile(createJsp);
-			System.out.println("异常删除entity文件============================");
-			MyFileUtil.delFile(realPath + "java" + File.separator + "entity");
 			return "no";
 		}
 	}
@@ -192,7 +192,7 @@ public class amctLeftChildMenuController {
 	@ResponseBody
 	@RequestMapping("/leftChildMenuEdit")
 	public Integer topMenuEdit(String id, String menu_ename, String menu_name,
-			String menu_display, String menu_remark,String icon, String field,
+			String menu_display, String menu_remark, String icon, String field,
 			HttpSession session) {
 		/**
 		 * 先删除，后从新编译
@@ -355,7 +355,7 @@ public class amctLeftChildMenuController {
 				System.out.println("开始入库============================");
 				// 更新
 				status = ats.leftChildMenuEdit(id, menu_ename, menu_name,
-						menu_display, menu_remark,icon, parse);
+						menu_display, menu_remark, icon, parse);
 				System.out.println("更新status" + status);
 				if (status == 0) {
 					// 入库不成功，删除文件

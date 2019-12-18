@@ -19,7 +19,6 @@ import com.amct.entity.amctUser;
 import com.amct.service.amctTopMenuService;
 
 @Service
-
 public class amctTopMenuServiceImpl implements amctTopMenuService {
 
 	@Autowired
@@ -55,7 +54,8 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 		if (name != null) {
 			name = "%" + name + "%";
 		}
-		return atm.queryList(name, page - 1, limit);
+		Integer begin = (page - 1) * limit;
+		return atm.queryList(name, begin, limit);
 	}
 
 	@Override
@@ -171,17 +171,15 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 					 * 先修改字段类型
 					 */
 					try {
-						String str = "alter table amct_" + menu_ename + " modify column "
-								+ a.getMenu_ename() + " "
-								+ stype
-								+ "(" + len + ") DEFAULT NULL";
+						String str = "alter table amct_" + menu_ename
+								+ " modify column " + a.getMenu_ename() + " "
+								+ stype + "(" + len + ") DEFAULT NULL";
 						System.out.println(str);
 						atm.updateTabFiled(str);
 					} catch (Exception e) {
 						System.out.println(e);
 					}
-					
-					
+
 					String str = "alter table amct_" + menu_ename + " change "
 							+ a.getMenu_ename() + " "
 							+ jsonO.getString("menu_ename") + "  " + stype
@@ -189,7 +187,7 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 					System.out.println(str);
 					atm.updateTabFiled(str);
 				}
-				
+
 			}
 			/**
 			 * jsonO.getString("id") 为空，证明是新增字段
@@ -204,23 +202,22 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 		}
 
 		/**
-		 * 找出新增或删除的字段
-		 * ids数组装好了页面传过来的id ,判断数据库查询出来的id是否在ids里面，不存在，则表示已经被删除
+		 * 找出新增或删除的字段 ids数组装好了页面传过来的id ,判断数据库查询出来的id是否在ids里面，不存在，则表示已经被删除
 		 */
-		
+
 		for (amctMonitor a : list) {
-			
-			
-			if(!ids.contains(a.getId())){
+
+			if (!ids.contains(a.getId())) {
 				System.out.println(a.getId());
 				System.out.println(ids.contains(a.getId()));
 				/**
 				 * 删除字段
 				 */
-				String addstr = "alter table amct_" + menu_ename + " DROP "+a.getMenu_ename();
+				String addstr = "alter table amct_" + menu_ename + " DROP "
+						+ a.getMenu_ename();
 				System.out.println(addstr);
 				atm.updateTabFiled(addstr);
-				
+
 			}
 		}
 
