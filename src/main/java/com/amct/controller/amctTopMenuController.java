@@ -1,9 +1,6 @@
 package com.amct.controller;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -23,6 +20,7 @@ import com.amct.service.amctTopMenuService;
 import com.amct.util.CreateJavaUtil;
 import com.amct.util.CreateJspUtil;
 import com.amct.util.MyFileUtil;
+import com.amct.util.logger;
 
 @Controller
 @RequestMapping("/top_menu")
@@ -59,7 +57,7 @@ public class amctTopMenuController {
 	@ResponseBody
 	@RequestMapping("/findTopMenuList")
 	public findListDto<amctTopMenu> findMenuList(String name, Integer page,
-			Integer limit) {
+			Integer limit,HttpSession session) {
 		List<amctTopMenu> list = ats.findList(name, page, limit);
 		findListDto<amctTopMenu> fd = new findListDto<amctTopMenu>();
 		List<amctTopMenu> list2 = ats.findAll();
@@ -78,18 +76,17 @@ public class amctTopMenuController {
 	public String topMenuAdd(String menu_name, String menu_ename,
 			String menu_display, String menu_remark, HttpSession session,
 			String table_field, String field) {
-		
-		System.out.println(field);
+
 		@SuppressWarnings("unchecked")
 		List<Object> parse = (List<Object>) JSON.parse(field);
-		
+
 		String realPath = session.getServletContext().getRealPath(
 				File.separator);
 		try {
-			System.out.println("进入增加优先删除entity文件============================");
-			MyFileUtil.delFile(realPath + "java" + File.separator +"entity");
+			MyFileUtil.delFile(realPath + "java" + File.separator + "entity");
 		} catch (Exception e) {
-			
+			logger.log(session.getAttribute("login_name"), "进入增加优先删除异常" + e,
+					"error","top_menu");
 		}
 		/*
 		 * 获取菜单名和英文名，通过英文名来创建菜单的文件，放在menu文件夹中
@@ -101,7 +98,8 @@ public class amctTopMenuController {
 		try {
 			createJsp = CreateJspUtil.createJsp(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件JSP异常" + e,
+					"error","top_menu");
 			// 创建JSP文件异常，删除创建的文件，返回
 			MyFileUtil.delFile(realPath + "menu" + File.separator + menu_ename
 					+ ".jsp");
@@ -112,7 +110,8 @@ public class amctTopMenuController {
 		try {
 			CreateJavaUtil.createJavaEntityFile(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件java 实体异常" + e,
+					"error","top_menu");
 			return "no";
 		}
 
@@ -120,14 +119,16 @@ public class amctTopMenuController {
 		try {
 			CreateJavaUtil.createJavaDaoFile(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"),
+					"创建文件java dao异常" + e, "error","top_menu");
 			return "no";
 		}
 		// 创建server文件
 		try {
 			CreateJavaUtil.createJavaFileService(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件java service异常"
+					+ e, "error","top_menu");
 			return "no";
 		}
 		// 创建server实现类文件
@@ -136,7 +137,8 @@ public class amctTopMenuController {
 			CreateJavaUtil
 					.createJavaFileServiceImpl(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"),
+					"创建文件java serviceImpl异常" + e, "error","top_menu");
 			return "no";
 		}
 		// 创建mapper文件
@@ -144,7 +146,8 @@ public class amctTopMenuController {
 		try {
 			mapper = CreateJavaUtil.createMapper(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件java mapper异常"
+					+ e, "error","top_menu");
 			MyFileUtil.delFile(mapper);
 			return "no";
 		}
@@ -154,54 +157,39 @@ public class amctTopMenuController {
 			controller = CreateJavaUtil.createJavaFileController(parse,
 					menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"),
+					"创建文件java controller异常" + e, "error","top_menu");
 			MyFileUtil.delFile(mapper);
 			MyFileUtil.delFile(controller);
 			return "no";
 		}
 		// 都创建完成之后编译java文件，把编译后的class文件copy到对应的位置
-		System.out.println("编译文件============================");
-		
-		//windows下：
+
+		// windows下：
 		String str = "javac -d " + realPath + "WEB-INF" + File.separator
 				+ "classes -encoding utf-8 -cp D:" + File.separator + "java"
-				+ File.separator + "jar" + File.separator + "*; D:" + File.separator
-				+ "java" + File.separator + "findListDto.java " + realPath
-				+ "java" + File.separator + "entity" + File.separator
-				+ "*.java";
+				+ File.separator + "jar" + File.separator + "*; D:"
+				+ File.separator + "java" + File.separator
+				+ "findListDto.java " + realPath + "java" + File.separator
+				+ "entity" + File.separator + "*.java";
 		try {
 			Thread.sleep(1000 * 1);
 			// 赋权
 			Runtime.getRuntime().exec("/appdata/tomcat/test.py");
 
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"),
+					"创建文件java 后赋权异常" + e, "error","top_menu");
 		}
-		System.out.println("编译文件===========" + str + "=================");
 		try {
 			Process process = Runtime.getRuntime().exec(str);
-			System.out.println(process + "编译文件");
 			Thread.sleep(1000 * 1);
-
-			InputStream errorStream = process.getErrorStream();
-			InputStreamReader inputStreamReader = new InputStreamReader(
-					errorStream);
-			BufferedReader bufferedReader = new BufferedReader(
-					inputStreamReader);
-			String line = null;
-			while ((line = bufferedReader.readLine()) != null) {
-				System.out.println(line);
-			}
 			int exitVal = process.waitFor();
-			System.out.println("Process exitValue: " + exitVal);
 			String status = "no";
 			if (exitVal == 0) {
-				System.out.println("编译文件成功============================");
-				System.out.println("开始入库============================");
 				// 入库
 				status = ats.addTouMenu(menu_name, menu_ename, menu_display,
 						menu_remark, table_field, tab_url, parse);
-				System.out.println("入库status" + status);
 				if (status == "no") {
 					// 入库不成功，删除文件
 					MyFileUtil.delFile(createJsp);
@@ -211,7 +199,8 @@ public class amctTopMenuController {
 						// 重启tomcat
 						Runtime.getRuntime().exec("/appdata/restart_web.py");
 					} catch (Exception e) {
-						System.out.println(e);
+						logger.log(session.getAttribute("login_name"),
+								"创建文件java 后重启tomcat" + e, "error","top_menu");
 					}
 				}
 			} else {
@@ -220,7 +209,8 @@ public class amctTopMenuController {
 			}
 			return status;
 		} catch (Exception e) {
-			System.out.println(e + "编译文件异常");
+			logger.log(session.getAttribute("login_name"), "文件编辑异常" + e,
+					"error","top_menu");
 			MyFileUtil.delFile(mapper);
 			MyFileUtil.delFile(createJsp);
 			return "no";
@@ -284,12 +274,13 @@ public class amctTopMenuController {
 	@ResponseBody
 	@RequestMapping("/topMenuEdit")
 	public Integer topMenuEdit(String id, String menu_ename, String menu_name,
-			String menu_display, String menu_remark,String field,HttpSession session) {
+			String menu_display, String menu_remark, String field,
+			HttpSession session) {
 		/**
 		 * 先删除，后从新编译
 		 */
 		Integer status = 0;
-		//=========================删除文件=============================
+		// =========================删除文件=============================
 
 		String realPath = session.getServletContext().getRealPath(
 				File.separator);
@@ -299,43 +290,42 @@ public class amctTopMenuController {
 		MyFileUtil.delFile(newJSP);
 		// 删除java文件
 		// entity
-		MyFileUtil.delFile(realPath + "WEB-INF" + File.separator
-				+ "classes" + File.separator + "com" + File.separator
-				+ "amct" + File.separator + "entity" + File.separator
-				+ menu_ename + ".class");
+		MyFileUtil.delFile(realPath + "WEB-INF" + File.separator + "classes"
+				+ File.separator + "com" + File.separator + "amct"
+				+ File.separator + "entity" + File.separator + menu_ename
+				+ ".class");
 
 		// Controller
-		MyFileUtil.delFile(realPath + "WEB-INF" + File.separator
-				+ "classes" + File.separator + "com" + File.separator
-				+ "amct" + File.separator + "controller" + File.separator
-				+ menu_ename + "Controller.class");
+		MyFileUtil.delFile(realPath + "WEB-INF" + File.separator + "classes"
+				+ File.separator + "com" + File.separator + "amct"
+				+ File.separator + "controller" + File.separator + menu_ename
+				+ "Controller.class");
 		// service
-		MyFileUtil.delFile(realPath + "WEB-INF" + File.separator
-				+ "classes" + File.separator + "com" + File.separator
-				+ "amct" + File.separator + "service" + File.separator
-				+ menu_ename + "Service.class");
+		MyFileUtil.delFile(realPath + "WEB-INF" + File.separator + "classes"
+				+ File.separator + "com" + File.separator + "amct"
+				+ File.separator + "service" + File.separator + menu_ename
+				+ "Service.class");
 
 		// serviceIpml
-		MyFileUtil.delFile(realPath + "WEB-INF" + File.separator
-				+ "classes" + File.separator + "com" + File.separator
-				+ "amct" + File.separator + "serviceimpl" + File.separator
-				+ menu_ename + "ServiceImpl.class");
+		MyFileUtil.delFile(realPath + "WEB-INF" + File.separator + "classes"
+				+ File.separator + "com" + File.separator + "amct"
+				+ File.separator + "serviceimpl" + File.separator + menu_ename
+				+ "ServiceImpl.class");
 		// Dao
-		MyFileUtil.delFile(realPath + "WEB-INF" + File.separator
-				+ "classes" + File.separator + "com" + File.separator
-				+ "amct" + File.separator + "dao" + File.separator
-				+ menu_ename + "Dao.class");
+		MyFileUtil.delFile(realPath + "WEB-INF" + File.separator + "classes"
+				+ File.separator + "com" + File.separator + "amct"
+				+ File.separator + "dao" + File.separator + menu_ename
+				+ "Dao.class");
 
 		// mapper
-		MyFileUtil.delFile(realPath + "WEB-INF" + File.separator
-				+ "classes" + File.separator + "mapper" + File.separator
-				+ menu_ename + ".xml");
-		//=========================删除文件=============================
-		
-		System.out.println(field);
+		MyFileUtil.delFile(realPath + "WEB-INF" + File.separator + "classes"
+				+ File.separator + "mapper" + File.separator + menu_ename
+				+ ".xml");
+		// =========================删除文件=============================
+
 		@SuppressWarnings("unchecked")
 		List<Object> parse = (List<Object>) JSON.parse(field);
-		
+
 		/*
 		 * 获取菜单名和英文名，通过英文名来创建菜单的文件，放在menu文件夹中
 		 */
@@ -345,7 +335,8 @@ public class amctTopMenuController {
 		try {
 			createJsp = CreateJspUtil.createJsp(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件JSP异常" + e,
+					"error","top_menu");
 			// 创建JSP文件异常，删除创建的文件，返回
 			MyFileUtil.delFile(realPath + "menu" + File.separator + menu_ename
 					+ ".jsp");
@@ -356,7 +347,8 @@ public class amctTopMenuController {
 		try {
 			CreateJavaUtil.createJavaEntityFile(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件java 实体异常" + e,
+					"error","top_menu");
 			return status;
 		}
 
@@ -364,14 +356,16 @@ public class amctTopMenuController {
 		try {
 			CreateJavaUtil.createJavaDaoFile(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件java dao实体异常"
+					+ e, "error","top_menu");
 			return status;
 		}
 		// 创建server文件
 		try {
 			CreateJavaUtil.createJavaFileService(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"),
+					"创建文件java service实体异常" + e, "error","top_menu");
 			return status;
 		}
 		// 创建server实现类文件
@@ -380,7 +374,8 @@ public class amctTopMenuController {
 			CreateJavaUtil
 					.createJavaFileServiceImpl(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"),
+					"创建文件java service impl实体异常" + e, "error","top_menu");
 			return status;
 		}
 		// 创建mapper文件
@@ -388,7 +383,8 @@ public class amctTopMenuController {
 		try {
 			mapper = CreateJavaUtil.createMapper(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"),
+					"创建文件java mapper实体异常" + e, "error","top_menu");
 			MyFileUtil.delFile(mapper);
 			return status;
 		}
@@ -398,55 +394,37 @@ public class amctTopMenuController {
 			controller = CreateJavaUtil.createJavaFileController(parse,
 					menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"),
+					"创建文件javaController 实体异常" + e, "error","top_menu");
 			MyFileUtil.delFile(mapper);
 			MyFileUtil.delFile(controller);
 			return status;
 		}
 		// 都创建完成之后编译java文件，把编译后的class文件copy到对应的位置
-		System.out.println("编译文件============================");
 
 		String str = "javac -d " + realPath + "WEB-INF" + File.separator
-				+ "classes -encoding utf-8 -cp " + realPath + "java"
-				+ File.separator + "jar" + File.separator + "*; " + realPath
-				+ "java" + File.separator + "findListDto.java " + realPath
-				+ "java" + File.separator + "entity" + File.separator
-				+ "*.java";
-		// javac -d D:\tomcat\webapps\amct\WEB-INF\classes -encoding utf-8 -cp
-		// D:\tomcat\webapps\amct\WEB-INF\lib\*;
-		// D:\tomcat\webapps\amct\java\findListDto.java
-		// D:\tomcat\webapps\amct\java\entity\*.java
+				+ "classes -encoding utf-8 -cp D:" + File.separator + "java"
+				+ File.separator + "jar" + File.separator + "*; D:"
+				+ File.separator + "java" + File.separator
+				+ "findListDto.java " + realPath + "java" + File.separator
+				+ "entity" + File.separator + "*.java";
 		try {
 			Thread.sleep(1000 * 1);
 			// 赋权
 			Runtime.getRuntime().exec("/appdata/tomcat/test.py");
 
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件java 后赋权" + e,
+					"error","top_menu");
 		}
-		System.out.println("编译文件===========" + str + "=================");
 		try {
 			Process process = Runtime.getRuntime().exec(str);
-			System.out.println(process + "编译文件");
 			Thread.sleep(1000 * 1);
-
-			InputStream errorStream = process.getErrorStream();
-			InputStreamReader inputStreamReader = new InputStreamReader(
-					errorStream);
-			BufferedReader bufferedReader = new BufferedReader(
-					inputStreamReader);
-			String line = null;
-			while ((line = bufferedReader.readLine()) != null) {
-				System.out.println(line);
-			}
 			int exitVal = process.waitFor();
-			System.out.println("Process exitValue: " + exitVal);
 			if (exitVal == 0) {
-				System.out.println("编译文件成功============================");
-				System.out.println("开始入库============================");
 				// 更新
-				status = ats.topMenuEdit(id, menu_ename, menu_name, menu_display,menu_remark,parse);
-				System.out.println("更新status" + status);
+				status = ats.topMenuEdit(id, menu_ename, menu_name,
+						menu_display, menu_remark, parse);
 				if (status == 0) {
 					// 入库不成功，删除文件
 					MyFileUtil.delFile(createJsp);
@@ -456,25 +434,24 @@ public class amctTopMenuController {
 						// 重启tomcat
 						Runtime.getRuntime().exec("/appdata/restart_web.py");
 					} catch (Exception e) {
-						System.out.println(e);
+						logger.log(session.getAttribute("login_name"),
+								"重启tomcat" + e, "error","top_menu");
 					}
 				}
 			} else {
 				MyFileUtil.delFile(createJsp);
 				MyFileUtil.delFile(mapper);
 			}
-			System.out.println("正常删除entity文件============================");
-			MyFileUtil.delFile(realPath + "java" + File.separator +"entity");
-			
+			MyFileUtil.delFile(realPath + "java" + File.separator + "entity");
+
 		} catch (Exception e) {
-			System.out.println(e + "编译文件异常");
 			MyFileUtil.delFile(mapper);
 			MyFileUtil.delFile(createJsp);
-			System.out.println("异常删除entity文件============================");
 			MyFileUtil.delFile(realPath + "java" + File.separator + "entity");
-			
+			logger.log(session.getAttribute("login_name"), "创建文件异常" + e,
+					"error","top_menu");
 		}
-		
+
 		return status;
 	}
 }

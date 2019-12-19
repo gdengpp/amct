@@ -5,6 +5,11 @@ import java.util.List;
 
 public class amctLeftMenu implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private String id;
 
 	private String name;
@@ -19,9 +24,9 @@ public class amctLeftMenu implements Serializable {
 
 	private String remark;
 
-	private List<amctTopMenuChild> child;
-
 	private String top_menu_id;
+
+	private List<amctLeftMenuChild> child;
 
 	public amctLeftMenu() {
 		super();
@@ -29,8 +34,8 @@ public class amctLeftMenu implements Serializable {
 	}
 
 	public amctLeftMenu(String id, String name, String ename, String url,
-			String icon, String is_display, String remark,
-			List<amctTopMenuChild> child, String top_menu_id) {
+			String icon, String is_display, String remark, String top_menu_id,
+			List<amctLeftMenuChild> child) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -39,8 +44,16 @@ public class amctLeftMenu implements Serializable {
 		this.icon = icon;
 		this.is_display = is_display;
 		this.remark = remark;
-		this.child = child;
 		this.top_menu_id = top_menu_id;
+		this.child = child;
+	}
+
+	@Override
+	public String toString() {
+		return "amctLeftMenu [id=" + id + ", name=" + name + ", ename=" + ename
+				+ ", url=" + url + ", icon=" + icon + ", is_display="
+				+ is_display + ", remark=" + remark + ", top_menu_id="
+				+ top_menu_id + ", child=" + child + "]";
 	}
 
 	public String getId() {
@@ -99,14 +112,6 @@ public class amctLeftMenu implements Serializable {
 		this.remark = remark;
 	}
 
-	public List<amctTopMenuChild> getChild() {
-		return child;
-	}
-
-	public void setChild(List<amctTopMenuChild> child) {
-		this.child = child;
-	}
-
 	public String getTop_menu_id() {
 		return top_menu_id;
 	}
@@ -115,12 +120,16 @@ public class amctLeftMenu implements Serializable {
 		this.top_menu_id = top_menu_id;
 	}
 
-	@Override
-	public String toString() {
-		return "amctLeftMenu [id=" + id + ", name=" + name + ", ename=" + ename
-				+ ", url=" + url + ", icon=" + icon + ", is_display="
-				+ is_display + ", remark=" + remark + ", child=" + child
-				+ ", top_menu_id=" + top_menu_id + "]";
+	public List<amctLeftMenuChild> getChild() {
+		return child;
+	}
+
+	public void setChild(List<amctLeftMenuChild> child) {
+		this.child = child;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 }

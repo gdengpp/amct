@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.amct.dto.findListDto;
 import com.amct.entity.amctIconImg;
 import com.amct.service.amctIconImgService;
+import com.amct.service.logService;
 
 @Controller
 @RequestMapping("/amct_icon")
@@ -19,6 +20,9 @@ public class amctIconImgController {
 
 	@Autowired
 	private amctIconImgService a;
+	
+	@Autowired
+	private logService log;
 
 	@RequestMapping("/queryAll")
 	@ResponseBody

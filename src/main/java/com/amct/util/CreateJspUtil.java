@@ -34,7 +34,6 @@ public class CreateJspUtil {
 		String query_ename = null;
 		for (int i = parse.size() - 1; i >= 0; i--) {
 			JSONObject json = JSON.parseObject(parse.get(i).toString());
-			System.out.println(json.getString("is_query"));
 			if (json.getString("is_query") != null
 					&& json.getString("is_query") != ""
 					&& json.getString("is_query").equals("1")) {
@@ -57,13 +56,18 @@ public class CreateJspUtil {
 		// 主体开始---------------------------------------------------------------------------
 		data.append("<div class=\"bgWhite\"><div class=\"layui-fluid\">\n");
 		data.append("<div class=\"layui-row layui-col-space10\"><div class=\"layui-col-md12\">\n");
-		data.append("<div class=\"layui-form\"><div class=\"layui-inline\">\n");
-		data.append("<div class=\"layui-input-inline\">\n");
-		data.append("<input type=\"text\" value=\"\" placeholder=\"请输入"
-				+ query_name + "\"class=\"layui-input search_input\"/>\n");
-		data.append("</div>\n");
+		data.append("<div class=\"layui-form\">\n");
+		data.append("<div class=\"layui-inline\">\n");
+		if (query_name != null) {
+			data.append("<div class=\"layui-input-inline\">\n");
+			data.append("<input type=\"text\" value=\"\" placeholder=\"请输入"
+					+ query_name + "\"class=\"layui-input search_input\"/>\n");
+			data.append("</div>\n");
+		}
 		data.append("<div class=\"layui-btn-group\">\n");
-		data.append("<a class=\"layui-btn layui-btn-primary search_btn\"> <i class=\"layui-icon\">&#xe615;</i>查询</a>\n");
+		if (query_name != null) {
+			data.append("<a class=\"layui-btn layui-btn-primary search_btn\"> <i class=\"layui-icon\">&#xe615;</i>查询</a>\n");
+		}
 		data.append("<a class=\"layui-btn layui-btn-primary search_add\"> <i class=\"layui-icon\">&#xe654;</i>新增</a>\n");
 		data.append("<a class=\"layui-btn layui-btn-primary search_edit\"> <i class=\"layui-icon\">&#xe642;</i>修改</a>\n");
 		data.append("<a class=\"layui-btn layui-btn-primary search_del\"> <i class=\"layui-icon\">&#xe640;</i>删除 </a>\n");
@@ -109,7 +113,8 @@ public class CreateJspUtil {
 				data.append("</div></div></div>\n");
 				data.append("</div>\n");
 			} catch (Exception e) {
-				System.out.println(e);
+				logger.log(session.getAttribute("login_name"), "创建文件JSP 循环字段异常"
+						+ e, "error", "jsp");
 			}
 
 			i--;
@@ -327,9 +332,7 @@ public class CreateJspUtil {
 		data.append("</body>\n");
 		data.append("</html>\n");
 		out.write(data.toString().getBytes("utf-8"));
-		System.out.println("正在写入JSP文件===================");
 		Thread.sleep(1000 * 1);
-		System.out.println("写入JSP完成=====================");
 		out.flush();
 		out.close();
 

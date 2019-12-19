@@ -124,8 +124,8 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">图标</label>
 						<div class="layui-input-block">
-							<input type="text" id="icon" name="icon" autocomplete="off" placeholder="请输入【  &amp;#xe60c; 】格式"
-								class="layui-input">
+							<input type="text" id="icon" name="icon" autocomplete="off"
+								placeholder="请输入【  &amp;#xe60c; 】格式" class="layui-input">
 						</div>
 					</div>
 				</div>
@@ -159,9 +159,7 @@
 		</form>
 	</div>
 	<!-- 图标model -->
-	<div id="icon_model" style="display:none;padding:10px;">
-		
-	</div>
+	<div id="icon_model" style="display:none;padding:10px;"></div>
 </body>
 <script>
 	//回车搜索
@@ -280,9 +278,11 @@
 								});
 
 						//删除
-						$(".top_menu_del").click(function() {
-							remove("topMenudatagrid", "top_menu/removeTab");
-						});
+						$(".top_menu_del").click(
+								function() {
+									remove("topMenudatagrid",
+											"top_menu/removeTab", "top_menu");
+								});
 
 						//============================头部结束===========================================
 
@@ -342,9 +342,13 @@
 								});
 
 						//删除
-						$(".left_menu_del").click(function() {
-							remove("leftMenudatagrid", "left_menu/removeTab");
-						});
+						$(".left_menu_del")
+								.click(
+										function() {
+											remove("leftMenudatagrid",
+													"left_menu/removeTab",
+													"left_menu");
+										});
 						//======================数据表格左侧一级结束============================
 						/*
 						==========================数据表格左侧二级============================
@@ -400,7 +404,8 @@
 						$(".left_child_menu_del").click(
 								function() {
 									remove("leftchildMenudatagrid",
-											"left_child_menu/removeTab");
+											"left_child_menu/removeTab",
+											"left_child_menu");
 								});
 						//==============================数据表格左侧二级=======================
 
@@ -908,7 +913,7 @@
 									});
 						}
 						//-----------------------------------删除 remove---------------------------------------------------------------------------
-						function remove(model_id, url) {
+						function remove(model_id, url, menu_code) {
 							var topData = table.checkStatus(model_id);
 							var data = topData.data;
 							if (data.length == 0) {
@@ -922,6 +927,21 @@
 									icon : 5
 								});
 								return false;
+							}
+							if (menu_code == "top_menu") {
+								if (data[0].leftmenu.length > 0) {
+									layer.msg("子菜单存在，不可直接删除", {
+										icon : 5
+									});
+									return false;
+								}
+							} else if (menu_code == "left_menu") {
+								if (data[0].child.length > 0) {
+									layer.msg("子菜单存在，不可直接删除", {
+										icon : 5
+									});
+									return false;
+								}
 							}
 							layer
 									.confirm(
@@ -1185,56 +1205,80 @@
 							console.log(tab_data)
 						});
 						//字体图标
-						$(".search_icon").click(function() {
-						$("#icon_model").html("");
-							layui.layer.open({
-								type : 1, //弹窗类型
-								title : '图标信息', //显示标题
-								shade : 0.2,
-								closeBtn : 1, //是否显示关闭按钮
-								shadeClose : false, //显示模态窗口
-								maxmin : true,
-								area : [ '70%', '700px' ], //宽高
-								content : $('#icon_model'),
-								cancel : function(index, layero) {
-									layer.close(index);
-								},
-								success : function() {
-									$.ajax({
-										url : basurl + "amct_icon/queryAll",
-										method : 'get',
-										success : function(data) {
-											var html="<ul class=\"site-doc-icon\" style=\"margin-bottom: 50px;font-size: 0;\">";
-											var reg = new RegExp("&","g");//g,表示全部替换。
-											for(var i=0;i<data.length;i++){
-												html+="<li>";
-												html+="<i class=\""+data[i].icon_class+"\"></i>";
-												html+="<div class='doc-icon-name'>"+data[i].icon_name+"</div>";
-												html+="<div class='doc-icon-code'>"+data[i].icon_code.replace(reg,"&amp;");+"</div>";
-												html+="<div class='doc-icon-fontclass'>"+data[i].remark+"</div>";
-												html+="</li>";
-											}
-											html+="</ul>";
-											html+="<style>";
-											html+=".site-doc-icon{margin-bottom: 50px; font-size: 0;}";
-											html+=".site-doc-icon li{display: inline-block; vertical-align: middle; width: 127px; height: 105px; line-height: 25px; padding: 20px 0; margin-right: -1px; margin-bottom: -1px; border: 1px solid #e2e2e2; font-size: 14px; text-align: center; color: #666; transition: all .3s; -webkit-transition: all .3s;}";
-											html+=".site-doc-anim li{height: auto;}";
-											html+=".site-doc-icon li .layui-icon{display: inline-block; font-size: 36px;}";
-											html+=".site-doc-icon li .doc-icon-name,.site-doc-icon li .doc-icon-code{color: #c2c2c2;}";
-											html+=".site-doc-icon li .doc-icon-fontclass{height: 40px; line-height: 20px; padding: 0 5px; font-size: 13px; color: #333; }";
-											html+=".site-doc-icon li:hover{background-color: #f2f2f2; color: #000;}";
-											html+="</style>";
-											$("#icon_model").html(html);
-										},
-										error : function() {
-											layer.msg("图标查询失败", {
-												icon : 5
-											});
-										}
-									});
-								}
-							});
-						});
+						$(".search_icon")
+								.click(
+										function() {
+											$("#icon_model").html("");
+											layui.layer
+													.open({
+														type : 1, //弹窗类型
+														title : '图标信息', //显示标题
+														shade : 0.2,
+														closeBtn : 1, //是否显示关闭按钮
+														shadeClose : false, //显示模态窗口
+														maxmin : true,
+														area : [ '70%', '700px' ], //宽高
+														content : $('#icon_model'),
+														cancel : function(
+																index, layero) {
+															layer.close(index);
+														},
+														success : function() {
+															$
+																	.ajax({
+																		url : basurl
+																				+ "amct_icon/queryAll",
+																		method : 'get',
+																		success : function(
+																				data) {
+																			var html = "<ul class=\"site-doc-icon\" style=\"margin-bottom: 50px;font-size: 0;\">";
+																			var reg = new RegExp(
+																					"&",
+																					"g");//g,表示全部替换。
+																			for (var i = 0; i < data.length; i++) {
+																				html += "<li>";
+																				html += "<i class=\""+data[i].icon_class+"\"></i>";
+																				html += "<div class='doc-icon-name'>"
+																						+ data[i].icon_name
+																						+ "</div>";
+																				html += "<div class='doc-icon-code'>"
+																						+ data[i].icon_code
+																								.replace(
+																										reg,
+																										"&amp;");
+																				+"</div>";
+																				html += "<div class='doc-icon-fontclass'>"
+																						+ data[i].remark
+																						+ "</div>";
+																				html += "</li>";
+																			}
+																			html += "</ul>";
+																			html += "<style>";
+																			html += ".site-doc-icon{margin-bottom: 50px; font-size: 0;}";
+																			html += ".site-doc-icon li{display: inline-block; vertical-align: middle; width: 127px; height: 105px; line-height: 25px; padding: 20px 0; margin-right: -1px; margin-bottom: -1px; border: 1px solid #e2e2e2; font-size: 14px; text-align: center; color: #666; transition: all .3s; -webkit-transition: all .3s;}";
+																			html += ".site-doc-anim li{height: auto;}";
+																			html += ".site-doc-icon li .layui-icon{display: inline-block; font-size: 36px;}";
+																			html += ".site-doc-icon li .doc-icon-name,.site-doc-icon li .doc-icon-code{color: #c2c2c2;}";
+																			html += ".site-doc-icon li .doc-icon-fontclass{height: 40px; line-height: 20px; padding: 0 5px; font-size: 13px; color: #333; }";
+																			html += ".site-doc-icon li:hover{background-color: #f2f2f2; color: #000;}";
+																			html += "</style>";
+																			$(
+																					"#icon_model")
+																					.html(
+																							html);
+																		},
+																		error : function() {
+																			layer
+																					.msg(
+																							"图标查询失败",
+																							{
+																								icon : 5
+																							});
+																		}
+																	});
+														}
+													});
+										});
 					});
 </script>
 <script type="text/html" id="toolbarDemo">

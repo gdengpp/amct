@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.amct.dao.amctLogDao">
+
+	<select id="query" resultType="amctLog">
+		select * from amct_log
+		<where>
+			<if test="user_name != null and user_name !='' ">
+				user_name = #{user_name} and
+			</if>
+			<if test="status != null and status !=''">
+				status = #{status} and
+			</if>
+			<if test="menu_code != null and menu_code !=''">
+				menu_code = #{menu_code} and
+			</if>
+			<if test="1 == 1">
+				1=1
+			</if>
+			ORDER BY log_date DESC limit #{begin},#{end}
+		</where>
+	</select>
+
+	<select id="count" resultType="Integer">
+		select count(id) from amct_log
+	</select>
+
+	<insert id="add">
+		insert into
+		amct_log(id,user_name,log_date,opt,status,menu_code)
+		values(#{id},#{user_name},#{log_date},#{opt},#{status},#{menu_code})
+	</insert>
+
+	<select id="queryUserName" resultType="String">
+		SELECT DISTINCT user_name
+		from amct_log
+	</select>
+	
+	<select id="queryMenuCode" resultType="String">
+		SELECT DISTINCT menu_code
+		from amct_log
+	</select>
+</mapper>

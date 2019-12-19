@@ -22,6 +22,7 @@
 				<id property="name" column="dmcname" />
 				<id property="ename" column="dmcename" />
 				<id property="url" column="dmcurl" />
+				<id property="is_display" column="dmis_display" />
 				<id property="icon" column="dmcicon" />
 				<id property="remark" column="dmcremark" />
 			</collection>
@@ -46,6 +47,7 @@
 		d.id dmcid,
 		d. NAME dmcname,
 		d.ename dmcename,
+		d.is_display dmis_display,
 		d.url dmcurl,
 		d.icon
 		dmcicon,
@@ -87,6 +89,7 @@
 		d. NAME dmcname,
 		d.ename dmcename,
 		d.url dmcurl,
+		d.is_display dmis_display,
 		d.icon
 		dmcicon,
 		d.remark dmcremark

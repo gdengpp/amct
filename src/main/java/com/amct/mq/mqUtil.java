@@ -1,6 +1,6 @@
 package com.amct.mq;
 
-/*import javax.jms.Connection;
+import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -10,11 +10,11 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
-import org.apache.activemq.ActiveMQConnectionFactory;*/
+import org.apache.activemq.ActiveMQConnectionFactory;
 
 public class mqUtil {
 
-	/*private static final String ACTIVEMQ_URL = "tcp://192.168.202.145:61616";
+	private static final String ACTIVEMQ_URL = "tcp://192.168.202.145:61616";
 
 	public static void mqProducer(String msg) {
 		try {
@@ -69,12 +69,14 @@ public class mqUtil {
 				TextMessage textMessage = (TextMessage) message;
 				try {
 					System.out.println("消费的消息：" + textMessage.getText());
+					
 				} catch (JMSException e) {
 					e.printStackTrace();
 				}
 			}
 		});
 	}
+	
 
 	//test
 	public static void main(String[] args) {
@@ -86,5 +88,5 @@ public class mqUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}*/
+	}
 }

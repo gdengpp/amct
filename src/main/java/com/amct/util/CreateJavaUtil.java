@@ -23,97 +23,91 @@ public class CreateJavaUtil {
 		String newJavaEntity = fielName + File.separator + menu_ename + ".java";
 		// 创健实体文件
 		File fileJava = new File(newJavaEntity);
-		 fileJava.createNewFile();
-			FileOutputStream out = new FileOutputStream(fileJava, false);
-			StringBuffer data = new StringBuffer();
-			data.append("package com.amct.entity;\nimport java.io.Serializable;\n");
-			data.append("public class " + menu_ename
-					+ " implements Serializable{\n");
-			// String[] field = table_field.split(",");
-			String str = "String id,";
-			data.append("private String id;\n");
-			for (int i = 0; i < parse.size(); i++) {
-				JSONObject jsonObject = JSON.parseObject(parse.get(i)
-						.toString());
-				String s ="String";
-				if (jsonObject.getString("type").equals("String")) {
-					s = "String";
-				}
-				if (jsonObject.getString("type").equals("int")) {
-					s = "Integer";
-				}
-				data.append("private " + s + " "
-						+ jsonObject.getString("menu_ename") + ";\n");
-				str += s + " " + jsonObject.getString("menu_ename") + ",";
+		fileJava.createNewFile();
+		FileOutputStream out = new FileOutputStream(fileJava, false);
+		StringBuffer data = new StringBuffer();
+		data.append("package com.amct.entity;\nimport java.io.Serializable;\n");
+		data.append("public class " + menu_ename
+				+ " implements Serializable{\n");
+		// String[] field = table_field.split(",");
+		String str = "String id,";
+		data.append("private String id;\n");
+		for (int i = 0; i < parse.size(); i++) {
+			JSONObject jsonObject = JSON.parseObject(parse.get(i).toString());
+			String s = "String";
+			if (jsonObject.getString("type").equals("String")) {
+				s = "String";
 			}
+			if (jsonObject.getString("type").equals("int")) {
+				s = "Integer";
+			}
+			data.append("private " + s + " "
+					+ jsonObject.getString("menu_ename") + ";\n");
+			str += s + " " + jsonObject.getString("menu_ename") + ",";
+		}
 
-			str = str.substring(0, str.length() - 1);
-			// 无参构造函数
-			data.append("public " + menu_ename + "() {\n");
-			data.append("super();\n}\n");
-			// 有参构造函数
-			data.append("public " + menu_ename + "(" + str + ") {\n");
-			data.append("super();\n");
-			data.append("this.id=id;\n");
-			for (int i = 0; i < parse.size(); i++) {
-				JSONObject jsonObject = JSON.parseObject(parse.get(i)
-						.toString());
-				data.append("this." + jsonObject.getString("menu_ename") + "="
-						+ jsonObject.getString("menu_ename") + ";\n");
+		str = str.substring(0, str.length() - 1);
+		// 无参构造函数
+		data.append("public " + menu_ename + "() {\n");
+		data.append("super();\n}\n");
+		// 有参构造函数
+		data.append("public " + menu_ename + "(" + str + ") {\n");
+		data.append("super();\n");
+		data.append("this.id=id;\n");
+		for (int i = 0; i < parse.size(); i++) {
+			JSONObject jsonObject = JSON.parseObject(parse.get(i).toString());
+			data.append("this." + jsonObject.getString("menu_ename") + "="
+					+ jsonObject.getString("menu_ename") + ";\n");
+		}
+		data.append("}\n");
+		// 拼接get,set方法
+		data.append("public String getId(){\n");
+		data.append("return id;\n");
+		data.append("}\n");
+		data.append("public void setId(String id){\n");
+		data.append("this.id=id;\n");
+		data.append("}\n");
+		for (int i = 0; i < parse.size(); i++) {
+			JSONObject jsonObject = JSON.parseObject(parse.get(i).toString());
+			String up = jsonObject.getString("menu_ename");
+			char[] cs = jsonObject.getString("menu_ename").toCharArray();
+			cs[0] -= 32;
+			String upperCase = String.valueOf(cs);
+			String s = "String";
+			if (jsonObject.getString("type").equals("String")) {
+				s = "String";
 			}
-			data.append("}\n");
-			// 拼接get,set方法
-			data.append("public String getId(){\n");
-			data.append("return id;\n");
-			data.append("}\n");
-			data.append("public void setId(String id){\n");
-			data.append("this.id=id;\n");
-			data.append("}\n");
-			for (int i = 0; i < parse.size(); i++) {
-				JSONObject jsonObject = JSON.parseObject(parse.get(i)
-						.toString());
-				String up = jsonObject.getString("menu_ename");
-				char[] cs = jsonObject.getString("menu_ename").toCharArray();
-				cs[0] -= 32;
-				String upperCase = String.valueOf(cs);
-				String s ="String";
-				if (jsonObject.getString("type").equals("String")) {
-					s = "String";
-				}
-				if (jsonObject.getString("type").equals("int")) {
-					s = "Integer";
-				}
-				data.append("public " + s + " get" + upperCase + "(){\n");
-				data.append("return " + up + ";\n");
-				data.append("}\n");
-				data.append("public void set" + upperCase + "(" + s + " " + up
-						+ "){\n");
-				data.append("this." + up + "=" + up + ";\n");
-				data.append("}\n");
-
+			if (jsonObject.getString("type").equals("int")) {
+				s = "Integer";
 			}
-			// toString 方法
-			data.append("@Override\n");
-			data.append("public String toString() {\n");
-			String toStr = "return \"" + menu_ename + "[ id=\"+id+\",";
-			for (int i = 0; i < parse.size(); i++) {
-				JSONObject jsonObject = JSON.parseObject(parse.get(i)
-						.toString());
-				toStr += jsonObject.getString("menu_ename") + "=\"+"
-						+ jsonObject.getString("menu_ename") + "+\",";
-			}
-			toStr = toStr.substring(0, toStr.length() - 1);
-			toStr += "]\";\n";
-			data.append(toStr);
+			data.append("public " + s + " get" + upperCase + "(){\n");
+			data.append("return " + up + ";\n");
+			data.append("}\n");
+			data.append("public void set" + upperCase + "(" + s + " " + up
+					+ "){\n");
+			data.append("this." + up + "=" + up + ";\n");
 			data.append("}\n");
 
-			data.append("}");
-			out.write(data.toString().getBytes("utf-8"));
-			System.out.println("正在封装实体文件===================");
-			Thread.sleep(1000 * 1);
-			System.out.println("封装实体完成=====================");
-			out.flush();
-			out.close();
+		}
+		// toString 方法
+		data.append("@Override\n");
+		data.append("public String toString() {\n");
+		String toStr = "return \"" + menu_ename + "[ id=\"+id+\",";
+		for (int i = 0; i < parse.size(); i++) {
+			JSONObject jsonObject = JSON.parseObject(parse.get(i).toString());
+			toStr += jsonObject.getString("menu_ename") + "=\"+"
+					+ jsonObject.getString("menu_ename") + "+\",";
+		}
+		toStr = toStr.substring(0, toStr.length() - 1);
+		toStr += "]\";\n";
+		data.append(toStr);
+		data.append("}\n");
+
+		data.append("}");
+		out.write(data.toString().getBytes("utf-8"));
+		Thread.sleep(1000 * 1);
+		out.flush();
+		out.close();
 		return newJavaEntity;
 	}
 
@@ -141,17 +135,16 @@ public class CreateJavaUtil {
 		data.append("import com.amct.entity." + menu_ename + ";\n");
 
 		data.append("public interface " + menu_ename + "Dao {\n");
-		
+
 		String query_ename = null;
 		String stype = null;
-		for (int i = parse.size()-1; i >= 0; i--) {
+		for (int i = parse.size() - 1; i >= 0; i--) {
 			JSONObject json = JSON.parseObject(parse.get(i).toString());
-			System.out.println(json.getString("is_query"));
 			if (json.getString("is_query") != null
 					&& json.getString("is_query") != ""
 					&& json.getString("is_query").equals("1")) {
 				query_ename = json.getString("menu_ename");
-				
+
 				if (json.getString("type").equals("String")) {
 					stype = "String";
 				}
@@ -161,19 +154,27 @@ public class CreateJavaUtil {
 			}
 		}
 		// 分页查询
-		data.append("List<"
-				+ menu_ename
-				+ "> queryList(@Param(\""
-				+ query_ename
-				+ "\") "+stype+" "
-				+ query_ename
-				+ ",@Param(\"begin\") Integer begin, @Param(\"end\") Integer end);\n");
+		if (query_ename != null) {
+			data.append("List<"
+					+ menu_ename
+					+ "> queryList(@Param(\""
+					+ query_ename
+					+ "\") "
+					+ stype
+					+ " "
+					+ query_ename
+					+ ",@Param(\"begin\") Integer begin, @Param(\"end\") Integer end);\n");
+		} else {
+			data.append("List<"
+					+ menu_ename
+					+ "> queryList(@Param(\"begin\") Integer begin, @Param(\"end\") Integer end);\n");
 
+		}
 		String str = "@Param(\"id\")String id";
 
 		for (int i = 0; i < parse.size(); i++) {
 			JSONObject json = JSON.parseObject(parse.get(i).toString());
-			String s ="String";
+			String s = "String";
 			if (json.getString("type").equals("String")) {
 				s = "String";
 			}
@@ -192,9 +193,7 @@ public class CreateJavaUtil {
 
 		data.append("}\n");
 		out.write(data.toString().getBytes("utf-8"));
-		System.out.println("正在写入DAO文件===================");
 		Thread.sleep(1000 * 1);
-		System.out.println("DAO文件写入完成=====================");
 		out.flush();
 		out.close();
 		return daoPath;
@@ -228,14 +227,13 @@ public class CreateJavaUtil {
 		// 分页查询
 		String query_ename = null;
 		String stype = null;
-		for (int i = parse.size()-1; i >= 0; i--) {
+		for (int i = parse.size() - 1; i >= 0; i--) {
 			JSONObject json = JSON.parseObject(parse.get(i).toString());
-			System.out.println(json.getString("is_query"));
 			if (json.getString("is_query") != null
 					&& json.getString("is_query") != ""
 					&& json.getString("is_query").equals("1")) {
 				query_ename = json.getString("menu_ename");
-				
+
 				if (json.getString("type").equals("String")) {
 					stype = "String";
 				}
@@ -244,15 +242,19 @@ public class CreateJavaUtil {
 				}
 			}
 		}
-		data.append("List<" + menu_ename + "> findList(" + stype + " "
-				+ query_ename
-				+ ",Integer begin,Integer end);\n");
+		if (query_ename != null) {
+			data.append("List<" + menu_ename + "> findList(" + stype + " "
+					+ query_ename + ",Integer begin,Integer end);\n");
+		} else {
+			data.append("List<" + menu_ename
+					+ "> findList(Integer begin,Integer end);\n");
+		}
 
 		String str = "";
 		String estr = "String id";
 		for (int i = 0; i < parse.size(); i++) {
 			JSONObject json = JSON.parseObject(parse.get(i).toString());
-			String s ="String";
+			String s = "String";
 			if (json.getString("type").equals("String")) {
 				s = "String";
 			}
@@ -273,9 +275,7 @@ public class CreateJavaUtil {
 
 		data.append("}\n");
 		out.write(data.toString().getBytes("utf-8"));
-		System.out.println("正在写入Service接口===================");
 		Thread.sleep(1000 * 1);
-		System.out.println("Service接口文件写入完成=====================");
 		out.flush();
 		out.close();
 		return daoPath;
@@ -315,14 +315,13 @@ public class CreateJavaUtil {
 		// 分页查询
 		String query_ename = null;
 		String stype = null;
-		for (int i = parse.size()-1; i >= 0; i--) {
+		for (int i = parse.size() - 1; i >= 0; i--) {
 			JSONObject json = JSON.parseObject(parse.get(i).toString());
-			System.out.println(json.getString("is_query"));
 			if (json.getString("is_query") != null
 					&& json.getString("is_query") != ""
 					&& json.getString("is_query").equals("1")) {
 				query_ename = json.getString("menu_ename");
-				
+
 				if (json.getString("type").equals("String")) {
 					stype = "String";
 				}
@@ -331,22 +330,25 @@ public class CreateJavaUtil {
 				}
 			}
 		}
-		data.append("@Override\n");
-		data.append("public List<" + menu_ename + "> findList(" + stype + " "
-				+ query_ename
-				+ ",Integer page,Integer limit) {\n");
-		data.append("System.out.println(\"=========Server文件========\");\n");
-		data.append("System.out.println(\"=========Dao \"+a+\"========\");\n");
-		if(stype == "String"){
-			data.append("if (" + query_ename
-					+ " != null) {\n");
-			data.append(query_ename + "=\"%\"+"
-					+ query_ename + "+\"%\";\n");
+		if (query_ename != null) {
+			data.append("@Override\n");
+			data.append("public List<" + menu_ename + "> findList(" + stype
+					+ " " + query_ename + ",Integer page,Integer limit) {\n");
+			if (stype == "String") {
+				data.append("if (" + query_ename + " != null) {\n");
+				data.append(query_ename + "=\"%\"+" + query_ename + "+\"%\";\n");
+				data.append("}\n");
+			}
+			data.append("return a.queryList(" + query_ename
+					+ ",page - 1, limit);\n");
+			data.append("}\n");
+		} else {
+			data.append("@Override\n");
+			data.append("public List<" + menu_ename
+					+ "> findList(Integer page,Integer limit) {\n");
+			data.append("return a.queryList((page - 1)*limit, limit);\n");
 			data.append("}\n");
 		}
-		data.append("return a.queryList(" + query_ename
-				+ ",page - 1, limit);\n");
-		data.append("}\n");
 
 		String str = "";
 		String estr = "String id";
@@ -372,7 +374,6 @@ public class CreateJavaUtil {
 		// 新增
 		data.append("@Override\n");
 		data.append("public Integer addTable(" + str + "){\n");
-		data.append("System.out.println(\"Service新增传到Dao===================\");");
 		data.append("return a.insertTable(UUID.randomUUID().toString()," + dstr
 				+ ");\n");
 		data.append("}\n");
@@ -390,9 +391,7 @@ public class CreateJavaUtil {
 
 		data.append("}\n");
 		out.write(data.toString().getBytes("utf-8"));
-		System.out.println("正在写入Serviceimpl接口===================");
 		Thread.sleep(1000 * 1);
-		System.out.println("Serviceimpl接口文件写入完成=====================");
 		out.flush();
 		out.close();
 		return daoPath;
@@ -405,11 +404,9 @@ public class CreateJavaUtil {
 		// String[] field = table_field.split(",");
 		String realPath = session.getServletContext().getRealPath(
 				File.separator);
-		System.out.println(realPath + "realPath");
 		String daoPath = realPath + "WEB-INF" + File.separator + "classes"
 				+ File.separator + "mapper" + File.separator + menu_ename
 				+ ".xml";
-		System.out.println(daoPath + "daoPath");
 		File fileJava = new File(daoPath);
 		fileJava.createNewFile();
 
@@ -423,24 +420,20 @@ public class CreateJavaUtil {
 		// 查询
 		data.append("<select id=\"queryList\" resultType=\"" + menu_ename
 				+ "\">\n");
-		
-		
+
 		String query_ename = null;
-		for (int i = parse.size()-1; i >= 0; i--) {
+		for (int i = parse.size() - 1; i >= 0; i--) {
 			JSONObject json = JSON.parseObject(parse.get(i).toString());
-			System.out.println(json.getString("is_query"));
 			if (json.getString("is_query") != null
 					&& json.getString("is_query") != ""
 					&& json.getString("is_query").equals("1")) {
 				query_ename = json.getString("menu_ename");
 			}
 		}
-		
-		
+
 		data.append("select * from amct_" + menu_ename + " <where><if test=\""
 				+ query_ename + " != null\">\n");
-		data.append(query_ename + " like #{"
-				+ query_ename
+		data.append(query_ename + " like #{" + query_ename
 				+ ",jdbcType=VARCHAR} and </if>\n");
 		data.append("<if test=\"1 == 1\">1=1</if>\n");
 		data.append(" limit #{begin},#{end}\n");
@@ -480,9 +473,7 @@ public class CreateJavaUtil {
 		data.append("</update>\n");
 		data.append("</mapper>\n");
 		out.write(data.toString().getBytes("utf-8"));
-		System.out.println("正在写入mapper文件===================");
 		Thread.sleep(1000 * 1);
-		System.out.println("mapper文件写入完成=====================");
 		out.flush();
 		out.close();
 		return daoPath;
@@ -528,14 +519,13 @@ public class CreateJavaUtil {
 		data.append("@RequestMapping(value = \"/findAll\",method=RequestMethod.GET)\n");
 		String query_ename = null;
 		String stype = null;
-		for (int i = parse.size()-1; i >= 0; i--) {
+		for (int i = parse.size() - 1; i >= 0; i--) {
 			JSONObject json = JSON.parseObject(parse.get(i).toString());
-			System.out.println(json.getString("is_query"));
 			if (json.getString("is_query") != null
 					&& json.getString("is_query") != ""
 					&& json.getString("is_query").equals("1")) {
 				query_ename = json.getString("menu_ename");
-				
+
 				if (json.getString("type").equals("String")) {
 					stype = "String";
 				}
@@ -544,20 +534,25 @@ public class CreateJavaUtil {
 				}
 			}
 		}
-		
-		
-		data.append("public findListDto<"
-				+ menu_ename
-				+ "> findAll(@RequestParam(\""
-				+ query_ename
-				+ "\")"
-				+ stype
-				+ " "
-				+ query_ename
-				+ ",@RequestParam(\"page\")Integer page,@RequestParam(\"limit\")Integer limit) {\n");
-		data.append("System.out.println(\"=========Controller文件========\");\n");
-		data.append("List<" + menu_ename + "> list = am.findList(" +query_ename
-				+ ", page, limit);\n");
+		if (query_ename != null) {
+			data.append("public findListDto<"
+					+ menu_ename
+					+ "> findAll(@RequestParam(\""
+					+ query_ename
+					+ "\")"
+					+ stype
+					+ " "
+					+ query_ename
+					+ ",@RequestParam(\"page\")Integer page,@RequestParam(\"limit\")Integer limit) {\n");
+			data.append("List<" + menu_ename + "> list = am.findList("
+					+ query_ename + ", page, limit);\n");
+		} else {
+			data.append("public findListDto<"
+					+ menu_ename
+					+ "> findAll(@RequestParam(\"page\")Integer page,@RequestParam(\"limit\")Integer limit) {\n");
+			data.append("List<" + menu_ename + "> list = am.findList(page, limit);\n");
+		}
+
 		data.append("findListDto<" + menu_ename + "> fd = new findListDto<"
 				+ menu_ename + ">();\n");
 		data.append("fd.setData(list);\n");
@@ -565,14 +560,12 @@ public class CreateJavaUtil {
 		data.append("fd.setCount(list.size());\n");
 		data.append("fd.setMsg(\"查询成功\");\n");
 
-		data.append("System.out.println(\"=========Controller文件查询成功========\");\n");
 		data.append("return fd;\n");
 		data.append("}\n");
 		// 删除
 		data.append("@ResponseBody\n");
 		data.append("@RequestMapping(value=\"/remove\",method=RequestMethod.GET)\n");
 		data.append("public Integer remove(@RequestParam(\"id\")String id){\n");
-		data.append("System.out.println(\"Controller文件删除===================\"+id);");
 		data.append("return am.removeTable(id);\n");
 		data.append("}\n");
 
@@ -584,18 +577,19 @@ public class CreateJavaUtil {
 			JSONObject json = JSON.parseObject(parse.get(i).toString());
 			String s = "String";
 			if (json.getString("type").equals("String")) {
-				s="String";
+				s = "String";
 			}
 			if (json.getString("type").equals("int")) {
-				s="Integer";
+				s = "Integer";
 			}
-			str += "@RequestParam(\"" +json.getString("menu_ename") + "\")"+s+" " + json.getString("menu_ename")
-					+ ",";
-			estr += ",@RequestParam(\"" + json.getString("menu_ename") + "\")"+s+" " +json.getString("menu_ename");
+			str += "@RequestParam(\"" + json.getString("menu_ename") + "\")"
+					+ s + " " + json.getString("menu_ename") + ",";
+			estr += ",@RequestParam(\"" + json.getString("menu_ename") + "\")"
+					+ s + " " + json.getString("menu_ename");
 			dstr += json.getString("menu_ename") + ",";
 			edstr += "," + json.getString("menu_ename");
 		}
-		
+
 		str = str.substring(0, str.length() - 1);
 		dstr = dstr.substring(0, dstr.length() - 1);
 
@@ -603,22 +597,18 @@ public class CreateJavaUtil {
 		data.append("@ResponseBody\n");
 		data.append("@RequestMapping(value=\"/modify\",method=RequestMethod.POST)\n");
 		data.append("public Integer modify(" + estr + "){\n");
-		data.append("System.out.println(\"Controller修改传到impl===================\");");
 		data.append("return am.modifyTable(" + edstr + ");\n");
 		data.append("}\n");
 		// 增加
 		data.append("@ResponseBody\n");
 		data.append("@RequestMapping(value=\"/add\",method=RequestMethod.POST)\n");
 		data.append("public Integer add(" + str + "){\n");
-		data.append("System.out.println(\"Controller新增传到impl===================\");");
 		data.append("return am.addTable(" + dstr + ");\n");
 		data.append("}\n");
 
 		data.append("}\n");
 		out.write(data.toString().getBytes("utf-8"));
-		System.out.println("正在写入Controller文件===================");
 		Thread.sleep(1000 * 1);
-		System.out.println("Controller文件写入完成=====================");
 		out.flush();
 		out.close();
 		return daoPath;

@@ -1,9 +1,6 @@
 package com.amct.controller;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -19,6 +16,7 @@ import com.amct.service.amctLeftMenuService;
 import com.amct.util.CreateJavaUtil;
 import com.amct.util.CreateJspUtil;
 import com.amct.util.MyFileUtil;
+import com.amct.util.logger;
 
 @Controller
 @RequestMapping("/left_menu")
@@ -37,7 +35,6 @@ public class amctLeftController {
 			String menu_display, String icon, String menu_remark,
 			HttpSession session, String table_field, String field) {
 
-		System.out.println(field);
 		@SuppressWarnings("unchecked")
 		List<Object> parse = (List<Object>) JSON.parse(field);
 
@@ -45,10 +42,9 @@ public class amctLeftController {
 				File.separator);
 
 		try {
-			System.out.println("进入增加优先删除entity文件============================");
 			MyFileUtil.delFile(realPath + "java" + File.separator + "entity");
 		} catch (Exception e) {
-
+			logger.log(session.getAttribute("login_name"), "进入增加优先删除entity文件异常"+e, "error","left_menu");
 		}
 		/*
 		 * 获取菜单名和英文名，通过英文名来创建菜单的文件，放在menu文件夹中
@@ -60,7 +56,7 @@ public class amctLeftController {
 		try {
 			createJsp = CreateJspUtil.createJsp(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件jsp异常"+e, "error","left_menu");
 			// 创建JSP文件异常，删除创建的文件，返回
 			MyFileUtil.delFile(realPath + "menu" + File.separator + menu_ename
 					+ ".jsp");
@@ -71,7 +67,7 @@ public class amctLeftController {
 		try {
 			CreateJavaUtil.createJavaEntityFile(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件java 实体异常"+e, "error","left_menu");
 			return "no";
 		}
 
@@ -79,14 +75,14 @@ public class amctLeftController {
 		try {
 			CreateJavaUtil.createJavaDaoFile(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件java dao异常"+e, "error","left_menu");
 			return "no";
 		}
 		// 创建server文件
 		try {
 			CreateJavaUtil.createJavaFileService(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件java service异常"+e, "error","left_menu");
 			return "no";
 		}
 		// 创建server实现类文件
@@ -95,7 +91,7 @@ public class amctLeftController {
 			CreateJavaUtil
 					.createJavaFileServiceImpl(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件java service impl异常"+e, "error","left_menu");
 			return "no";
 		}
 		// 创建mapper文件
@@ -103,7 +99,7 @@ public class amctLeftController {
 		try {
 			mapper = CreateJavaUtil.createMapper(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件java mapper异常"+e, "error","left_menu");
 			MyFileUtil.delFile(mapper);
 			return "no";
 		}
@@ -113,14 +109,11 @@ public class amctLeftController {
 			controller = CreateJavaUtil.createJavaFileController(parse,
 					menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件java Controller异常"+e, "error","left_menu");
 			MyFileUtil.delFile(mapper);
 			MyFileUtil.delFile(controller);
 			return "no";
 		}
-		// 都创建完成之后编译java文件，把编译后的class文件copy到对应的位置
-		System.out.println("编译文件============================");
-
 		// windows下：
 		String str = "javac -d " + realPath + "WEB-INF" + File.separator
 				+ "classes -encoding utf-8 -cp D:" + File.separator + "java"
@@ -134,34 +127,18 @@ public class amctLeftController {
 			Runtime.getRuntime().exec("/appdata/tomcat/test.py");
 
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "赋权"+e, "error","left_menu");
 		}
-		System.out.println("编译文件===========" + str + "=================");
 		try {
 			Process process = Runtime.getRuntime().exec(str);
-			System.out.println(process + "编译文件");
 			Thread.sleep(1000 * 1);
-
-			InputStream errorStream = process.getErrorStream();
-			InputStreamReader inputStreamReader = new InputStreamReader(
-					errorStream);
-			BufferedReader bufferedReader = new BufferedReader(
-					inputStreamReader);
-			String line = null;
-			while ((line = bufferedReader.readLine()) != null) {
-				System.out.println(line);
-			}
 			int exitVal = process.waitFor();
-			System.out.println("Process exitValue: " + exitVal);
 			String status = "no";
 			if (exitVal == 0) {
-				System.out.println("编译文件成功============================");
-				System.out.println("开始入库============================");
 				// 入库
 				status = ats.addleftMenu(pid, menu_name, menu_ename,
 						menu_display, icon, menu_remark, table_field, tab_url,
 						parse);
-				System.out.println("入库status" + status);
 				if (status == "no") {
 					// 入库不成功，删除文件
 					MyFileUtil.delFile(createJsp);
@@ -171,7 +148,7 @@ public class amctLeftController {
 						// 重启tomcat
 						Runtime.getRuntime().exec("/appdata/restart_web.py");
 					} catch (Exception e) {
-						System.out.println(e);
+						logger.log(session.getAttribute("login_name"), "重启tomcat"+e, "error","left_menu");
 					}
 				}
 			} else {
@@ -180,7 +157,7 @@ public class amctLeftController {
 			}
 			return status;
 		} catch (Exception e) {
-			System.out.println(e + "编译文件异常");
+			logger.log(session.getAttribute("login_name"), "新增文件异常"+e, "error","left_menu");
 			MyFileUtil.delFile(mapper);
 			MyFileUtil.delFile(createJsp);
 			return "no";
@@ -242,7 +219,6 @@ public class amctLeftController {
 				+ ".xml");
 		// =========================删除文件=============================
 
-		System.out.println(field);
 		@SuppressWarnings("unchecked")
 		List<Object> parse = (List<Object>) JSON.parse(field);
 
@@ -255,7 +231,7 @@ public class amctLeftController {
 		try {
 			createJsp = CreateJspUtil.createJsp(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件JSP异常"+e, "error","left_menu");
 			// 创建JSP文件异常，删除创建的文件，返回
 			MyFileUtil.delFile(realPath + "menu" + File.separator + menu_ename
 					+ ".jsp");
@@ -266,7 +242,7 @@ public class amctLeftController {
 		try {
 			CreateJavaUtil.createJavaEntityFile(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件java 实体异常"+e, "error","left_menu");
 			return status;
 		}
 
@@ -274,14 +250,14 @@ public class amctLeftController {
 		try {
 			CreateJavaUtil.createJavaDaoFile(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件java dao异常"+e, "error","left_menu");
 			return status;
 		}
 		// 创建server文件
 		try {
 			CreateJavaUtil.createJavaFileService(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件java service异常"+e, "error","left_menu");
 			return status;
 		}
 		// 创建server实现类文件
@@ -290,7 +266,7 @@ public class amctLeftController {
 			CreateJavaUtil
 					.createJavaFileServiceImpl(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件java service impl异常"+e, "error","left_menu");
 			return status;
 		}
 		// 创建mapper文件
@@ -298,7 +274,7 @@ public class amctLeftController {
 		try {
 			mapper = CreateJavaUtil.createMapper(parse, menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件java mapper异常"+e, "error","left_menu");
 			MyFileUtil.delFile(mapper);
 			return status;
 		}
@@ -308,56 +284,35 @@ public class amctLeftController {
 			controller = CreateJavaUtil.createJavaFileController(parse,
 					menu_ename, session);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件java Controller异常"+e, "error","left_menu");
 			MyFileUtil.delFile(mapper);
 			MyFileUtil.delFile(controller);
 			return status;
 		}
 		// 都创建完成之后编译java文件，把编译后的class文件copy到对应的位置
-		System.out.println("编译文件============================");
 
 		String str = "javac -d " + realPath + "WEB-INF" + File.separator
-				+ "classes -encoding utf-8 -cp " + realPath + "java"
-				+ File.separator + "jar" + File.separator + "*; " + realPath
-				+ "java" + File.separator + "findListDto.java " + realPath
-				+ "java" + File.separator + "entity" + File.separator
-				+ "*.java";
-		// javac -d D:\tomcat\webapps\amct\WEB-INF\classes -encoding utf-8 -cp
-		// D:\tomcat\webapps\amct\WEB-INF\lib\*;
-		// D:\tomcat\webapps\amct\java\findListDto.java
-		// D:\tomcat\webapps\amct\java\entity\*.java
+				+ "classes -encoding utf-8 -cp D:" + File.separator + "java"
+				+ File.separator + "jar" + File.separator + "*; D:"
+				+ File.separator + "java" + File.separator
+				+ "findListDto.java " + realPath + "java" + File.separator
+				+ "entity" + File.separator + "*.java";
 		try {
 			Thread.sleep(1000 * 1);
 			// 赋权
 			Runtime.getRuntime().exec("/appdata/tomcat/test.py");
 
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.log(session.getAttribute("login_name"), "创建文件java 文件后赋权"+e, "error","left_menu");
 		}
-		System.out.println("编译文件===========" + str + "=================");
 		try {
 			Process process = Runtime.getRuntime().exec(str);
-			System.out.println(process + "编译文件");
 			Thread.sleep(1000 * 1);
-
-			InputStream errorStream = process.getErrorStream();
-			InputStreamReader inputStreamReader = new InputStreamReader(
-					errorStream);
-			BufferedReader bufferedReader = new BufferedReader(
-					inputStreamReader);
-			String line = null;
-			while ((line = bufferedReader.readLine()) != null) {
-				System.out.println(line);
-			}
 			int exitVal = process.waitFor();
-			System.out.println("Process exitValue: " + exitVal);
 			if (exitVal == 0) {
-				System.out.println("编译文件成功============================");
-				System.out.println("开始入库============================");
 				// 更新
 				status = ats.leftMenuEdit(id, menu_ename, menu_name,
 						menu_display, menu_remark, icon, parse);
-				System.out.println("更新status" + status);
 				if (status == 0) {
 					// 入库不成功，删除文件
 					MyFileUtil.delFile(createJsp);
@@ -367,21 +322,19 @@ public class amctLeftController {
 						// 重启tomcat
 						Runtime.getRuntime().exec("/appdata/restart_web.py");
 					} catch (Exception e) {
-						System.out.println(e);
+						logger.log(session.getAttribute("login_name"), "重启tomcat"+e, "error","left_menu");
 					}
 				}
 			} else {
 				MyFileUtil.delFile(createJsp);
 				MyFileUtil.delFile(mapper);
 			}
-			System.out.println("正常删除entity文件============================");
 			MyFileUtil.delFile(realPath + "java" + File.separator + "entity");
 
 		} catch (Exception e) {
-			System.out.println(e + "编译文件异常");
+			logger.log(session.getAttribute("login_name"), "编辑异常"+e, "error","left_menu");
 			MyFileUtil.delFile(mapper);
 			MyFileUtil.delFile(createJsp);
-			System.out.println("异常删除entity文件============================");
 			MyFileUtil.delFile(realPath + "java" + File.separator + "entity");
 
 		}
