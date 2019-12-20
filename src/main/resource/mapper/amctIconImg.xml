@@ -35,4 +35,16 @@
 	<delete id="del">
 		DELETE from amct_icon_img where id=#{id}
 	</delete>
+
+	<select id="count" resultType="Integer">
+		select count(id) from amct_icon_img
+		<where>
+			<if test="icon_name != null">
+				icon_name like #{icon_name,jdbcType=VARCHAR} and
+			</if>
+			<if test="1 == 1">
+				1=1
+			</if>
+		</where>
+	</select>
 </mapper>

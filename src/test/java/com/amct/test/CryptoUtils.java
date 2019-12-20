@@ -4,14 +4,22 @@ package com.amct.test;
  * add dengpp 20190920 加解密文件
  */
 
+import java.net.URL;
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.Filter;
+
+import org.junit.Test;
 
 public class CryptoUtils {
+	
+	   @Test 
+	    public void get(){ 
+	        URL url = Filter.class.getProtectionDomain().getCodeSource().getLocation(); 
+	        System.out.println("path:"+url.getPath()+"  name:"+url.getFile()); 
+	    }
+
 
 	/**
 	 * 测试代码

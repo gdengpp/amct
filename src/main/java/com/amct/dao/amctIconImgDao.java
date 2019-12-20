@@ -21,4 +21,6 @@ public interface amctIconImgDao {
 	Integer update(amctIconImg am);
 	//删除
 	Integer del(@Param("id") String id);
+	
+	Integer count(@Param("icon_name") String icon_name);
 }

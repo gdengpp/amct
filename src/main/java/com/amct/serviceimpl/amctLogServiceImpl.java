@@ -25,8 +25,8 @@ public class amctLogServiceImpl implements logService {
 	}
 
 	@Override
-	public Integer getCount() {
-		return a.count();
+	public Integer getCount(String user_name,String status,String menu_code) {
+		return a.count(user_name, status, menu_code);
 	}
 
 	@Override

@@ -24,4 +24,6 @@ public interface amctIconImgService {
 
 	// 删除
 	Integer remove(String id);
+	
+	Integer getCount(String icon_name);
 }

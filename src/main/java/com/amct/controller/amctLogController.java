@@ -30,7 +30,7 @@ public class amctLogController {
 		findListDto<amctLog> fd = new findListDto<amctLog>();
 		fd.setData(list);
 		fd.setCode(0);
-		fd.setCount(ls.getCount());
+		fd.setCount(ls.getCount(user_name, status, menu_code));
 		fd.setMsg("查询成功");
 		return fd;
 	}

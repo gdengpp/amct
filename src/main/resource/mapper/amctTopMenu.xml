@@ -54,10 +54,12 @@
 		d.remark dmcremark
 		FROM
 		amct_top_menu a
-		LEFT JOIN amct_left_menu
+		LEFT
+		JOIN amct_left_menu
 		c ON a.id = c.top_menu_id
-		LEFT JOIN amct_left_menu_child d ON c.id =
-		d.parentid 
+		LEFT JOIN
+		amct_left_menu_child d ON c.id =
+		d.parentid
 		<where>
 			<if test="name != null">
 				a.name like #{name,jdbcType=VARCHAR} and
@@ -82,11 +84,13 @@
 		c. NAME cmname,
 		c.ename cmename,
 		c.url cmurl,
-		c.is_display cmis_display,
+		c.is_display
+		cmis_display,
 		c.icon cmicon,
 		c.remark cmremark,
 		d.id dmcid,
-		d. NAME dmcname,
+		d. NAME
+		dmcname,
 		d.ename dmcename,
 		d.url dmcurl,
 		d.is_display dmis_display,
@@ -95,9 +99,11 @@
 		d.remark dmcremark
 		FROM
 		amct_top_menu a
-		LEFT JOIN amct_left_menu c ON a.id =
+		LEFT JOIN
+		amct_left_menu c ON a.id =
 		c.top_menu_id
-		LEFT JOIN amct_left_menu_child d ON c.id = d.parentid
+		LEFT JOIN amct_left_menu_child
+		d ON c.id = d.parentid
 		ORDER BY LENGTH(a.id) ASC
 	</select>
 	<!-- 查询logo信息 -->
@@ -145,10 +151,34 @@
 	</delete>
 	<!-- 修改头部菜单 -->
 	<update id="updateTopMenu">
-		update amct_top_menu set name=#{menu_name},is_display=#{menu_display},remark=#{menu_remark} where id=#{id}
+		update amct_top_menu set
+		name=#{menu_name},is_display=#{menu_display},remark=#{menu_remark}
+		where id=#{id}
 	</update>
-	
+
 	<update id="updateTabFiled">
 		${str}
 	</update>
+
+
+	<select id="cont" resultType="Integer">
+		SELECT
+		count(a.id)
+		FROM
+		amct_top_menu a
+		LEFT JOIN amct_left_menu
+		c ON
+		a.id =
+		c.top_menu_id
+		LEFT JOIN amct_left_menu_child d ON c.id =
+		d.parentid
+		<where>
+			<if test="name != null">
+				a.name like #{name,jdbcType=VARCHAR} and
+			</if>
+			<if test="1 == 1">
+				1=1
+			</if>
+		</where>
+	</select>
 </mapper>

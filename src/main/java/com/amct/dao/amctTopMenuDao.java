@@ -21,6 +21,8 @@ public interface amctTopMenuDao {
 	// 查新logo信息
 
 	amctSysLogo queryLogo();
+	
+	Integer cont(@Param("name") String name);
 
 	// 查询用户信息
 	amctUser queryUserInfo();

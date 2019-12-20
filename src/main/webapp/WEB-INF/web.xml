@@ -31,6 +31,14 @@
 		<param-value>classpath:spring/spring.xml</param-value>
 	</context-param>
 
+	<!-- log4j配置文件地址 -->
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>classpath:log4j.properties</param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener>
 	<!-- springmvc -->
 	<servlet>
 		<servlet-name>mvc</servlet-name>

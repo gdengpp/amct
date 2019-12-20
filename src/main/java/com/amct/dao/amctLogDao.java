@@ -28,7 +28,8 @@ public interface amctLogDao {
 	// 新增
 	Integer add(amctLog a);
 	
-	Integer count();
+	Integer count(@Param("user_name") String user_name,
+			@Param("status") String status,@Param("menu_code") String menu_code);
 	
 	List<String> queryUserName();
 	

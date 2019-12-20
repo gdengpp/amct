@@ -20,6 +20,8 @@ public interface amctTopMenuService {
 	// 查新logo信息
 
 	amctSysLogo findLogo();
+	
+	Integer getCont(String name);
 
 	// 查询用户信息
 	amctUser finduserInfo();

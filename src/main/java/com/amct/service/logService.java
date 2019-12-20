@@ -31,7 +31,7 @@ public interface logService {
 	List<amctLog> find(String user_name, String status, String menu_code,
 			Integer page, Integer limit);
 
-	Integer getCount();
+	Integer getCount(String user_name,String status,String menu_code);
 
 	// 增加
 	void insert(String user_name, String opt, String status, String menu_code);

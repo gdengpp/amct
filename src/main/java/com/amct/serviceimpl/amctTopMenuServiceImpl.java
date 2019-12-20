@@ -174,7 +174,6 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 						String str = "alter table amct_" + menu_ename
 								+ " modify column " + a.getMenu_ename() + " "
 								+ stype + "(" + len + ") DEFAULT NULL";
-						System.out.println(str);
 						atm.updateTabFiled(str);
 					} catch (Exception e) {
 						System.out.println(e);
@@ -184,7 +183,6 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 							+ a.getMenu_ename() + " "
 							+ jsonO.getString("menu_ename") + "  " + stype
 							+ "(" + len + ") DEFAULT NULL";
-					System.out.println(str);
 					atm.updateTabFiled(str);
 				}
 
@@ -196,7 +194,6 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 				String addstr = "alter table amct_" + menu_ename + " add "
 						+ jsonO.getString("menu_ename") + " " + stype + "("
 						+ len + ") DEFAULT NULL";
-				System.out.println(addstr);
 				atm.updateTabFiled(addstr);
 			}
 		}
@@ -208,14 +205,11 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 		for (amctMonitor a : list) {
 
 			if (!ids.contains(a.getId())) {
-				System.out.println(a.getId());
-				System.out.println(ids.contains(a.getId()));
 				/**
 				 * 删除字段
 				 */
 				String addstr = "alter table amct_" + menu_ename + " DROP "
 						+ a.getMenu_ename();
-				System.out.println(addstr);
 				atm.updateTabFiled(addstr);
 
 			}
@@ -241,6 +235,14 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 			amd.insert(am);
 		}
 		return atm.updateTopMenu(id, menu_name, menu_display, menu_remark);
+	}
+
+	@Override
+	public Integer getCont(String name) {
+		if (name != null) {
+			name = "%" + name + "%";
+		}
+		return atm.cont(name);
 	}
 
 }

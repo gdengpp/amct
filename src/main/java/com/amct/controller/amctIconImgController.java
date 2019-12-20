@@ -36,10 +36,9 @@ public class amctIconImgController {
 			Integer limit) {
 		List<amctIconImg> list = a.find(icon_name, page, limit);
 		findListDto<amctIconImg> fd = new findListDto<amctIconImg>();
-		List<amctIconImg> list2 = a.findAll();
 		fd.setData(list);
 		fd.setCode(0);
-		fd.setCount(list2.size());
+		fd.setCount(a.getCount(icon_name));
 		fd.setMsg("查询成功");
 		return fd;
 	}

@@ -59,4 +59,12 @@ public class amctIconImgServiceImpl implements amctIconImgService {
 		return ad.del(id);
 	}
 
+	@Override
+	public Integer getCount(String icon_name) {
+		if (icon_name != null) {
+			icon_name = "%" + icon_name + "%";
+		}
+		return ad.count(icon_name);
+	}
+
 }
