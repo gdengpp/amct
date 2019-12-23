@@ -46,4 +46,11 @@ public class amctLogController {
 	public List<String> findMenucode() {
 		return ls.findMenuCode();
 	}
+	
+	
+	@RequestMapping("/resertAll")
+	@ResponseBody
+	public void resertAll() {
+		ls.removeAll();
+	}
 }

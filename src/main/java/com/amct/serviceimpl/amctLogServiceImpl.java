@@ -51,4 +51,9 @@ public class amctLogServiceImpl implements logService {
 		return a.queryMenuCode();
 	}
 
+	@Override
+	public void removeAll() {
+		a.delAll();
+	}
+
 }

@@ -37,6 +37,8 @@
 										class="layui-icon">&#xe615;</i>查询
 									</a><a class="layui-btn layui-btn-primary resert_btn"> <i
 										class="layui-icon">&#xe615;</i>重置
+									</a> <a class="layui-btn layui-btn-primary resertAll_btn"> <i
+										class="layui-icon">&#xe9aa;</i>清空
 									</a>
 								</div>
 							</div>
@@ -163,6 +165,33 @@
 								page : {
 									curr : 1
 								//重新从第 1 页开始
+								}
+							});
+						});
+
+						$(".resertAll_btn").click(function() {
+							$.ajax({
+								url : basurl + 'amct_log/resertAll',
+								method : 'get',
+								success : function(tree) {
+									$("#user_name").val("");
+									$("#status").val("");
+									$("#menu_code").val("");
+									form.render();
+									table.reload('logdatagrid', {
+										where : {
+											user_name : "",
+											status : "",
+											menu_code : ""
+										},
+										page : {
+											curr : 1
+										//重新从第 1 页开始
+										}
+									});
+								},
+								error : function() {
+
 								}
 							});
 						});

@@ -21,7 +21,7 @@
 	color: white;
 }
 
-.login_btn {
+.regest_btn {
 	width: 84%;
 	margin-left: 20%;
 }
@@ -53,15 +53,13 @@ h2 {
 				<div class="layui-form-item">
 					<label for="icon_class" class="layui-form-label">用户名： </label>
 					<div class="layui-input-block">
-						<input type="text" id="username" name="username"
-							class="layui-input">
+						<input type="text" id="icon_class" name="icon_class" class="layui-input">
 					</div>
 				</div>
 				<div class="layui-form-item">
 					<label for="icon_class" class="layui-form-label">密码： </label>
 					<div class="layui-input-block">
-						<input type="text" id="user_key" name="user_key"
-							class="layui-input">
+						<input type="text" id="icon_class" name="icon_class" class="layui-input">
 					</div>
 				</div>
 			</div>
@@ -69,28 +67,15 @@ h2 {
 		<div class="layui-row">
 			<div class="layui-col-md10">
 				<button
-					class="layui-btn layui-btn-normal layui-btn-radius login_btn">登录</button>
+					class="layui-btn layui-btn-normal layui-btn-radius regest_btn">注册</button>
 			</div>
 		</div>
 
-		<br /> <span style="margin-left: 46%;"><a href="regest.jsp">
-				没有用户？创建用户>>></a></span>
+		<br /> <span style="margin-left: 46%;"><a href="login.jsp">
+				已有账号，直接登录>>></a></span>
 	</div>
 </body>
 <script type="text/javascript">
-	$.ajax({
-		url : "${pageContext.request.contextPath}/login/login",
-		method : "get",
-		data : {
-			username : $("#username").val(),
-			user_key : $("#user_key").val()
-		},
-		success : function(r) {
-
-		},
-		error : function() {
-
-		}
-	});
+	
 </script>
 </html>

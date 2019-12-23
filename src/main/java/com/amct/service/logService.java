@@ -41,5 +41,8 @@ public interface logService {
 
 	// 查询操作人作为下拉
 	List<String> findMenuCode();
+	
+	//清空
+	void removeAll();
 
 }

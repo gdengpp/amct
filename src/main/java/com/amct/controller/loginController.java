@@ -19,8 +19,8 @@ public class loginController {
 	}
 	@ResponseBody
 	@RequestMapping(value="/login",method=RequestMethod.GET)
-	public String login(String name,String password,HttpSession session){
-		session.setAttribute("logi_nname", name);
+	public String login(String username,String user_key,HttpSession session){
+		session.setAttribute("logi_nname", username);
 		return "/main";
 	}
 	

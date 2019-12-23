@@ -43,7 +43,6 @@
 	</div>
 
 	<div id="iconAdd" style="display:none;padding:30px;">
-		<form class="layui-form" action="">
 			<div class="layui-row">
 				<div class="layui-col-md12">
 					<div class="layui-form-item">
@@ -94,9 +93,6 @@
 					</div>
 				</div>
 			</div>
-
-
-		</form>
 	</div>
 
 </body>
@@ -211,7 +207,8 @@
 		});
 		//修改
 		$(".icon_edit").click(function() {
-			var data = tables = table.cache.icondatagrid;
+			var topData = table.checkStatus("icondatagrid");
+			var data = topData.data;
 			if (data.length == 0) {
 				layer.msg("没有选择数据", {
 					icon : 5

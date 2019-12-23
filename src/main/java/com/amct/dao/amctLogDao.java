@@ -34,4 +34,7 @@ public interface amctLogDao {
 	List<String> queryUserName();
 	
 	List<String> queryMenuCode();
+	
+	//清空
+	void delAll();
 }

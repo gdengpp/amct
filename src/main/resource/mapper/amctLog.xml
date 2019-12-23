@@ -54,4 +54,8 @@
 		SELECT DISTINCT menu_code
 		from amct_log
 	</select>
+	
+	<delete id="delAll">
+		delete from amct_log
+	</delete>
 </mapper>
