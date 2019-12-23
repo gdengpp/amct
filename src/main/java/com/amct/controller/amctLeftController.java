@@ -259,6 +259,23 @@ public class amctLeftController {
 		MyFileUtil.delFile(realPath + "WEB-INF" + File.separator + "classes"
 				+ File.separator + "mapper" + File.separator + menu_ename
 				+ ".xml");
+		
+		try {
+			Process process = Runtime.getRuntime().exec("rm -rf /appdata/amct/sourceFile/java/"+menu_ename+"*.java");
+			int exitVal = process.waitFor();
+			logger.log(session.getAttribute("login_name"), "删除javaexitVal："+exitVal, "debug", "left_menu");
+			
+			Process processjsp = Runtime.getRuntime().exec("rm -rf /appdata/amct/sourceFile/jsp/"+menu_ename+".jsp");
+			int exitValjsp = processjsp.waitFor();
+			logger.log(session.getAttribute("login_name"), "删除javaexitValjsp："+exitValjsp, "debug", "left_menu");
+			
+			Process processmapper = Runtime.getRuntime().exec("rm -rf /appdata/amct/sourceFile/mapper/"+menu_ename+".mapper");
+			int exitValmapper = processmapper.waitFor();
+			logger.log(session.getAttribute("login_name"), "删除exitValmapper："+exitValmapper, "debug", "left_menu");
+		} catch (Exception e) {
+			logger.log(session.getAttribute("login_name"), "删除失败", "error", "left_menu");
+			return status;
+		}
 		// =========================删除文件=============================
 
 		@SuppressWarnings("unchecked")
@@ -459,6 +476,22 @@ public class amctLeftController {
 			MyFileUtil.delFile(realPath + "WEB-INF" + File.separator
 					+ "classes" + File.separator + "mapper" + File.separator
 					+ tab_name + ".xml");
+			
+			try {
+				Process process = Runtime.getRuntime().exec("rm -rf /appdata/amct/sourceFile/java/"+tab_name+"*.java");
+				int exitVal = process.waitFor();
+				logger.log(session.getAttribute("login_name"), "删除javaexitVal："+exitVal, "debug", "left_menu");
+				
+				Process processjsp = Runtime.getRuntime().exec("rm -rf /appdata/amct/sourceFile/jsp/"+tab_name+".jsp");
+				int exitValjsp = processjsp.waitFor();
+				logger.log(session.getAttribute("login_name"), "删除javaexitValjsp："+exitValjsp, "debug", "left_menu");
+				
+				Process processmapper = Runtime.getRuntime().exec("rm -rf /appdata/amct/sourceFile/mapper/"+tab_name+".mapper");
+				int exitValmapper = processmapper.waitFor();
+				logger.log(session.getAttribute("login_name"), "删除exitValmapper："+exitValmapper, "debug", "left_menu");
+			} catch (Exception e) {
+				logger.log(session.getAttribute("login_name"), "删除失败", "error", "left_menu");
+			}
 		}
 		return in;
 
