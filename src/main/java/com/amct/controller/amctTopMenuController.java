@@ -212,9 +212,12 @@ public class amctTopMenuController {
 						menu_remark, table_field, tab_url, parse);
 				if (status == "no") {
 					// 入库不成功，删除文件
+					MyFileUtil.delCopyFile(menu_ename, session);
 					MyFileUtil.delFile(createJsp);
 					MyFileUtil.delFile(mapper);
 				} else {
+					logger.log(session.getAttribute("login_name"),
+							"入库status：" + status, "debug", "top_menu");
 					try {
 						// 重启tomcat
 						Runtime.getRuntime().exec(
@@ -225,11 +228,13 @@ public class amctTopMenuController {
 					}
 				}
 			} else {
+				MyFileUtil.delCopyFile(menu_ename, session);
 				MyFileUtil.delFile(createJsp);
 				MyFileUtil.delFile(mapper);
 			}
 			return status;
 		} catch (Exception e) {
+			MyFileUtil.delCopyFile(menu_ename, session);
 			logger.log(session.getAttribute("login_name"), "文件编辑异常" + e,
 					"error", "top_menu");
 			MyFileUtil.delFile(mapper);
@@ -284,23 +289,7 @@ public class amctTopMenuController {
 			MyFileUtil.delFile(realPath + "WEB-INF" + File.separator
 					+ "classes" + File.separator + "mapper" + File.separator
 					+ tab_name + ".xml");
-			
-			try {
-				Process process = Runtime.getRuntime().exec("rm -rf /appdata/amct/sourceFile/java/"+tab_name+"*.java");
-				int exitVal = process.waitFor();
-				logger.log(session.getAttribute("login_name"), "删除javaexitVal："+exitVal, "debug", "top_menu");
-				
-				Process processjsp = Runtime.getRuntime().exec("rm -rf /appdata/amct/sourceFile/jsp/"+tab_name+".jsp");
-				int exitValjsp = processjsp.waitFor();
-				logger.log(session.getAttribute("login_name"), "删除javaexitValjsp："+exitValjsp, "debug", "top_menu");
-				
-				Process processmapper = Runtime.getRuntime().exec("rm -rf /appdata/amct/sourceFile/mapper/"+tab_name+".mapper");
-				int exitValmapper = processmapper.waitFor();
-				logger.log(session.getAttribute("login_name"), "删除exitValmapper："+exitValmapper, "debug", "top_menu");
-			} catch (Exception e) {
-				logger.log(session.getAttribute("login_name"), "删除失败", "error", "top_menu");
-			}
-			
+			MyFileUtil.delCopyFile(tab_name, session);
 		}
 		return in;
 
@@ -365,22 +354,7 @@ public class amctTopMenuController {
 		MyFileUtil.delFile(realPath + "WEB-INF" + File.separator + "classes"
 				+ File.separator + "mapper" + File.separator + menu_ename
 				+ ".xml");
-		try {
-			Process process = Runtime.getRuntime().exec("rm -rf /appdata/amct/sourceFile/java/"+menu_ename+"*.java");
-			int exitVal = process.waitFor();
-			logger.log(session.getAttribute("login_name"), "删除javaexitVal："+exitVal, "debug", "top_menu");
-			
-			Process processjsp = Runtime.getRuntime().exec("rm -rf /appdata/amct/sourceFile/jsp/"+menu_ename+".jsp");
-			int exitValjsp = processjsp.waitFor();
-			logger.log(session.getAttribute("login_name"), "删除javaexitValjsp："+exitValjsp, "debug", "top_menu");
-			
-			Process processmapper = Runtime.getRuntime().exec("rm -rf /appdata/amct/sourceFile/mapper/"+menu_ename+".mapper");
-			int exitValmapper = processmapper.waitFor();
-			logger.log(session.getAttribute("login_name"), "删除exitValmapper："+exitValmapper, "debug", "top_menu");
-		} catch (Exception e) {
-			logger.log(session.getAttribute("login_name"), "删除失败", "error", "top_menu");
-			return status;
-		}
+		MyFileUtil.delCopyFile(menu_ename, session);
 		// =========================删除文件=============================
 
 		@SuppressWarnings("unchecked")
@@ -497,6 +471,7 @@ public class amctTopMenuController {
 				} catch (Exception e) {
 					logger.log(session.getAttribute("login_name"),
 							"linux下执行compile异常e:" + e, "error", "top_menu");
+					MyFileUtil.delCopyFile(menu_ename, session);
 				}
 			}
 			Thread.sleep(1000 * 1);
@@ -507,6 +482,7 @@ public class amctTopMenuController {
 						menu_display, menu_remark, parse);
 				if (status == 0) {
 					// 入库不成功，删除文件
+					MyFileUtil.delCopyFile(menu_ename, session);
 					MyFileUtil.delFile(createJsp);
 					MyFileUtil.delFile(mapper);
 				} else {
@@ -520,10 +496,12 @@ public class amctTopMenuController {
 					}
 				}
 			} else {
+				MyFileUtil.delCopyFile(menu_ename, session);
 				MyFileUtil.delFile(createJsp);
 				MyFileUtil.delFile(mapper);
 			}
 		} catch (Exception e) {
+			MyFileUtil.delCopyFile(menu_ename, session);
 			MyFileUtil.delFile(mapper);
 			MyFileUtil.delFile(createJsp);
 			logger.log(session.getAttribute("login_name"), "创建文件异常" + e,
