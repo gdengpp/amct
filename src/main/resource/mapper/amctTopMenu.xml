@@ -108,7 +108,7 @@
 	</select>
 	<!-- 查询logo信息 -->
 	<select id="queryLogo" resultType="amctSysLogo">
-		select * from amct_sys_logo
+		select * from amct_sys_logo where is_display = 1
 	</select>
 	<!-- 查询用户信息 -->
 	<select id="queryUserInfo" resultType="amctUser">

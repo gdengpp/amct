@@ -3,6 +3,8 @@ package com.amct.util;
 import java.io.File;
 
 import javax.servlet.http.HttpSession;
+
+import com.amct.entity.amctUser;
 public class MyFileUtil {
 
 	/**
@@ -37,19 +39,19 @@ public class MyFileUtil {
 						        " /appdata/amct/sourceFile/java/"+tab_name+"ServiceImpl.java"+
 						        " /appdata/amct/sourceFile/java/"+tab_name+"Dao.java"+
 						        " /appdata/amct/sourceFile/java/"+tab_name+".java";
-			logger.log(session.getAttribute("login_name"), "删除java str："+str, "debug", "top_menu");
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "删除java str："+str, "debug", "top_menu");
 			Process process = Runtime.getRuntime().exec(str);
 			int exitVal = process.waitFor();
-			logger.log(session.getAttribute("login_name"), "删除javaexitVal："+exitVal, "debug", "top_menu");
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "删除javaexitVal："+exitVal, "debug", "top_menu");
 			
 			Process processjsp = Runtime.getRuntime().exec("rm -rf /appdata/amct/sourceFile/jsp/"+tab_name+".jsp");
 			int exitValjsp = processjsp.waitFor();
-			logger.log(session.getAttribute("login_name"), "删除javaexitValjsp："+exitValjsp, "debug", "top_menu");
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "删除javaexitValjsp："+exitValjsp, "debug", "top_menu");
 			Process processmapper = Runtime.getRuntime().exec("rm -rf /appdata/amct/sourceFile/mapper/"+tab_name+".xml");
 			int exitValmapper = processmapper.waitFor();
-			logger.log(session.getAttribute("login_name"), "删除exitValmapper："+exitValmapper, "debug", "top_menu");
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "删除exitValmapper："+exitValmapper, "debug", "top_menu");
 		} catch (Exception e) {
-			logger.log(session.getAttribute("login_name"), "删除失败", "error", "top_menu");
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "删除失败", "error", "top_menu");
 		}
 	}
 }

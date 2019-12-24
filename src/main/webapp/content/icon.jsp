@@ -287,7 +287,7 @@
 					layer.closeAll();
 					return false;
 				},
-				btn : [ "新增", "关闭" ],
+				btn : [ "提交", "关闭" ],
 				yes : function(index, layero) {
 					var add = layer.load();
 					$.ajax({

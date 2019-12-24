@@ -60,7 +60,7 @@ h2 {
 				<div class="layui-form-item">
 					<label for="icon_class" class="layui-form-label">密码： </label>
 					<div class="layui-input-block">
-						<input type="text" id="user_key" name="user_key"
+						<input type="password" id="user_key" name="user_key"
 							class="layui-input">
 					</div>
 				</div>
@@ -78,19 +78,52 @@ h2 {
 	</div>
 </body>
 <script type="text/javascript">
-	$.ajax({
-		url : "${pageContext.request.contextPath}/login/login",
-		method : "get",
-		data : {
-			username : $("#username").val(),
-			user_key : $("#user_key").val()
-		},
-		success : function(r) {
+	layui.use([ 'layer' ], function() {
+		var layer = layui.layer;
+		$(".login_btn").click(function() {
+			if (!$("#username").val()) {
+				layer.msg("账号不能为空", {
+					icon : 5
+				});
+				return false;
+			}
+			if (!$("#user_key").val()) {
+				layer.msg("密码不能为空", {
+					icon : 5
+				});
+				return false;
+			}
+			var login = layer.load();
+			$.ajax({
+				url : "${pageContext.request.contextPath}/login/login",
+				method : "get",
+				data : {
+					username : $("#username").val(),
+					user_key : $("#user_key").val(),
+				},
+				timeout : 10 * 1000,
+				success : function(r) {
+					layer.close(login);
+					if (r == "success") {
+						layer.msg("登录成功，即将跳转", {
+							icon : 6
+						});
+						location.href = "main.jsp";
+					} else {
+						layer.msg("账号或密码错误！", {
+							icon : 5
+						});
+					}
 
-		},
-		error : function() {
-
-		}
+				},
+				error : function() {
+					layer.close(login);
+					layer.msg("登录失败，请刷新重试", {
+						icon : 5
+					});
+				}
+			});
+		});
 	});
 </script>
 </html>

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
+import com.amct.entity.amctUser;
 import com.amct.service.amctLeftMenuService;
 import com.amct.util.CreateJavaUtil;
 import com.amct.util.CreateJspUtil;
@@ -45,7 +46,7 @@ public class amctLeftController {
 		try {
 			MyFileUtil.delFile(realPath + "java" + File.separator + "entity");
 		} catch (Exception e) {
-			logger.log(session.getAttribute("login_name"), "进入增加优先删除entity文件异常"
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "进入增加优先删除entity文件异常"
 					+ e, "error", "left_menu");
 		}
 		/*
@@ -58,7 +59,7 @@ public class amctLeftController {
 		try {
 			createJsp = CreateJspUtil.createJsp(parse, menu_ename, session);
 		} catch (Exception e) {
-			logger.log(session.getAttribute("login_name"), "创建文件jsp异常" + e,
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "创建文件jsp异常" + e,
 					"error", "left_menu");
 			// 创建JSP文件异常，删除创建的文件，返回
 			MyFileUtil.delFile(realPath + "menu" + File.separator + menu_ename
@@ -70,7 +71,7 @@ public class amctLeftController {
 		try {
 			CreateJavaUtil.createJavaEntityFile(parse, menu_ename, session);
 		} catch (Exception e) {
-			logger.log(session.getAttribute("login_name"), "创建文件java 实体异常" + e,
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "创建文件java 实体异常" + e,
 					"error", "left_menu");
 			return "no";
 		}
@@ -79,7 +80,7 @@ public class amctLeftController {
 		try {
 			CreateJavaUtil.createJavaDaoFile(parse, menu_ename, session);
 		} catch (Exception e) {
-			logger.log(session.getAttribute("login_name"),
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(),
 					"创建文件java dao异常" + e, "error", "left_menu");
 			return "no";
 		}
@@ -87,7 +88,7 @@ public class amctLeftController {
 		try {
 			CreateJavaUtil.createJavaFileService(parse, menu_ename, session);
 		} catch (Exception e) {
-			logger.log(session.getAttribute("login_name"), "创建文件java service异常"
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "创建文件java service异常"
 					+ e, "error", "left_menu");
 			return "no";
 		}
@@ -97,7 +98,7 @@ public class amctLeftController {
 			CreateJavaUtil
 					.createJavaFileServiceImpl(parse, menu_ename, session);
 		} catch (Exception e) {
-			logger.log(session.getAttribute("login_name"),
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(),
 					"创建文件java service impl异常" + e, "error", "left_menu");
 			return "no";
 		}
@@ -106,7 +107,7 @@ public class amctLeftController {
 		try {
 			mapper = CreateJavaUtil.createMapper(parse, menu_ename, session);
 		} catch (Exception e) {
-			logger.log(session.getAttribute("login_name"), "创建文件java mapper异常"
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "创建文件java mapper异常"
 					+ e, "error", "left_menu");
 			MyFileUtil.delFile(mapper);
 			return "no";
@@ -117,7 +118,7 @@ public class amctLeftController {
 			controller = CreateJavaUtil.createJavaFileController(parse,
 					menu_ename, session);
 		} catch (Exception e) {
-			logger.log(session.getAttribute("login_name"),
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(),
 					"创建文件java Controller异常" + e, "error", "left_menu");
 			MyFileUtil.delFile(mapper);
 			MyFileUtil.delFile(controller);
@@ -130,7 +131,7 @@ public class amctLeftController {
 			Runtime.getRuntime().exec("/appdata/amct/authorization.py");
 			Thread.sleep(500 * 1);
 		} catch (Exception e) {
-			logger.log(session.getAttribute("login_name"), "服务器上赋权", "debug",
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "服务器上赋权", "debug",
 					"left_menu");
 		}
 
@@ -143,11 +144,11 @@ public class amctLeftController {
 				+ "entity" + File.separator + "*.java";
 		try {
 			Process process = null;
-			logger.log(session.getAttribute("login_name"), "OSinfo.isWindows()"
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "OSinfo.isWindows()"
 					+ OSinfo.isWindows(), "debug", "top_menu");
 			if (OSinfo.isWindows()) {
 				try {
-					logger.log(session.getAttribute("login_name"),
+					logger.log(((amctUser) session.getAttribute("user")).getUsername(),
 							"windows下执行str:" + str, "debug", "top_menu");
 					process = Runtime.getRuntime().exec(str);
 				} catch (Exception e) {
@@ -158,7 +159,7 @@ public class amctLeftController {
 					process = Runtime.getRuntime().exec(
 							"/appdata/amct/compile.py");
 				} catch (Exception e) {
-					logger.log(session.getAttribute("login_name"),
+					logger.log(((amctUser) session.getAttribute("user")).getUsername(),
 							"linux下执行compile异常e:" + e, "error", "left_menu");
 					MyFileUtil.delCopyFile(menu_ename, session);
 				}
@@ -182,7 +183,7 @@ public class amctLeftController {
 						Runtime.getRuntime().exec(
 								"/appdata/amct/restart_web.py");
 					} catch (Exception e) {
-						logger.log(session.getAttribute("login_name"),
+						logger.log(((amctUser) session.getAttribute("user")).getUsername(),
 								"重启tomcat" + e, "error", "left_menu");
 					}
 				}
@@ -194,7 +195,7 @@ public class amctLeftController {
 			return status;
 		} catch (Exception e) {
 			MyFileUtil.delCopyFile(menu_ename, session);
-			logger.log(session.getAttribute("login_name"), "新增文件异常" + e,
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "新增文件异常" + e,
 					"error", "left_menu");
 			MyFileUtil.delFile(mapper);
 			MyFileUtil.delFile(createJsp);
@@ -221,7 +222,7 @@ public class amctLeftController {
 		try {
 			MyFileUtil.delFile(realPath + "java" + File.separator + "entity");
 		} catch (Exception e) {
-			logger.log(session.getAttribute("login_name"), "进入编辑优先删除异常" + e,
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "进入编辑优先删除异常" + e,
 					"error", "left_menu");
 		}
 
@@ -278,7 +279,7 @@ public class amctLeftController {
 		try {
 			createJsp = CreateJspUtil.createJsp(parse, menu_ename, session);
 		} catch (Exception e) {
-			logger.log(session.getAttribute("login_name"), "创建文件JSP异常" + e,
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "创建文件JSP异常" + e,
 					"error", "left_menu");
 			// 创建JSP文件异常，删除创建的文件，返回
 			MyFileUtil.delFile(realPath + "menu" + File.separator + menu_ename
@@ -290,7 +291,7 @@ public class amctLeftController {
 		try {
 			CreateJavaUtil.createJavaEntityFile(parse, menu_ename, session);
 		} catch (Exception e) {
-			logger.log(session.getAttribute("login_name"), "创建文件java 实体异常" + e,
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "创建文件java 实体异常" + e,
 					"error", "left_menu");
 			return status;
 		}
@@ -299,7 +300,7 @@ public class amctLeftController {
 		try {
 			CreateJavaUtil.createJavaDaoFile(parse, menu_ename, session);
 		} catch (Exception e) {
-			logger.log(session.getAttribute("login_name"),
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(),
 					"创建文件java dao异常" + e, "error", "left_menu");
 			return status;
 		}
@@ -307,7 +308,7 @@ public class amctLeftController {
 		try {
 			CreateJavaUtil.createJavaFileService(parse, menu_ename, session);
 		} catch (Exception e) {
-			logger.log(session.getAttribute("login_name"), "创建文件java service异常"
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "创建文件java service异常"
 					+ e, "error", "left_menu");
 			return status;
 		}
@@ -317,7 +318,7 @@ public class amctLeftController {
 			CreateJavaUtil
 					.createJavaFileServiceImpl(parse, menu_ename, session);
 		} catch (Exception e) {
-			logger.log(session.getAttribute("login_name"),
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(),
 					"创建文件java service impl异常" + e, "error", "left_menu");
 			return status;
 		}
@@ -326,7 +327,7 @@ public class amctLeftController {
 		try {
 			mapper = CreateJavaUtil.createMapper(parse, menu_ename, session);
 		} catch (Exception e) {
-			logger.log(session.getAttribute("login_name"), "创建文件java mapper异常"
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "创建文件java mapper异常"
 					+ e, "error", "left_menu");
 			MyFileUtil.delFile(mapper);
 			return status;
@@ -337,7 +338,7 @@ public class amctLeftController {
 			controller = CreateJavaUtil.createJavaFileController(parse,
 					menu_ename, session);
 		} catch (Exception e) {
-			logger.log(session.getAttribute("login_name"),
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(),
 					"创建文件java Controller异常" + e, "error", "left_menu");
 			MyFileUtil.delFile(mapper);
 			MyFileUtil.delFile(controller);
@@ -350,7 +351,7 @@ public class amctLeftController {
 			Runtime.getRuntime().exec("/appdata/amct/authorization.py");
 			Thread.sleep(500 * 1);
 		} catch (Exception e) {
-			logger.log(session.getAttribute("login_name"), "服务器上赋权", "debug",
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "服务器上赋权", "debug",
 					"left_menu");
 		}
 
@@ -364,11 +365,11 @@ public class amctLeftController {
 				+ "entity" + File.separator + "*.java";
 		try {
 			Process process = null;
-			logger.log(session.getAttribute("login_name"), "OSinfo.isWindows()"
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "OSinfo.isWindows()"
 					+ OSinfo.isWindows(), "debug", "top_menu");
 			if (OSinfo.isWindows()) {
 				try {
-					logger.log(session.getAttribute("login_name"),
+					logger.log(((amctUser) session.getAttribute("user")).getUsername(),
 							"windows下执行str:" + str, "debug", "top_menu");
 					process = Runtime.getRuntime().exec(str);
 				} catch (Exception e) {
@@ -379,7 +380,7 @@ public class amctLeftController {
 					process = Runtime.getRuntime().exec(
 							"/appdata/amct/compile.py");
 				} catch (Exception e) {
-					logger.log(session.getAttribute("login_name"),
+					logger.log(((amctUser) session.getAttribute("user")).getUsername(),
 							"linux下执行compile异常e:" + e, "error", "left_menu");
 					MyFileUtil.delCopyFile(menu_ename, session);
 				}
@@ -401,7 +402,7 @@ public class amctLeftController {
 						Runtime.getRuntime().exec(
 								"/appdata/amct/restart_web.py");
 					} catch (Exception e) {
-						logger.log(session.getAttribute("login_name"),
+						logger.log(((amctUser) session.getAttribute("user")).getUsername(),
 								"重启tomcat" + e, "error", "left_menu");
 					}
 				}
@@ -412,7 +413,7 @@ public class amctLeftController {
 			}
 		} catch (Exception e) {
 			MyFileUtil.delCopyFile(menu_ename, session);
-			logger.log(session.getAttribute("login_name"), "编辑异常" + e, "error",
+			logger.log(((amctUser) session.getAttribute("user")).getUsername(), "编辑异常" + e, "error",
 					"left_menu");
 			MyFileUtil.delFile(mapper);
 			MyFileUtil.delFile(createJsp);

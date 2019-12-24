@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.amct.entity.amctUser;
 
 public class CreateJspUtil {
 
@@ -113,7 +114,7 @@ public class CreateJspUtil {
 				data.append("</div></div></div>\n");
 				data.append("</div>\n");
 			} catch (Exception e) {
-				logger.log(session.getAttribute("login_name"), "创建文件JSP 循环字段异常"
+				logger.log(((amctUser) session.getAttribute("user")).getUsername(), "创建文件JSP 循环字段异常"
 						+ e, "error", "jsp");
 			}
 

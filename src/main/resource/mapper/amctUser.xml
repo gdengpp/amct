@@ -1,5 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.amct.dao.amctUserDao">
+
+	<select id="queryByUsername" resultType="amctUser">
+		select * from
+		amct_user_info where username = #{username}
+	</select>
+
+	<insert id="insertUser">
+		insert into
+		amct_user_info(id,name,username,password,sex,age,url,phone,email,remark)
+		values(#{id},#{name},#{username},#{password},#{sex},#{age},#{url},#{phone},#{email},#{remark})
+	</insert>
+
+	<select id="queryAll" resultType="amctUser">
+		select * from amct_user_info
+		<where>
+			<if test="username != null">
+				username like #{username,jdbcType=VARCHAR} and
+			</if>
+			<if test="1 == 1">
+				1=1
+			</if>
+			<!-- 判断是否有name查询 -->
+			limit #{begin},#{end}
+		</where>
+	</select>
+
+	<delete id="delById">
+		delete from amct_user_info where id=#{id}
+	</delete>
+
+	<update id="updateUser">
+		update amct_user_info set
+		name=#{name},username=#{username},password=#{password},sex=#{sex},age=#{age},url=#{url},phone=#{phone},email=#{email},remark=#{remark}
+		where id =#{id}
+	</update>
 	
+	<select id="count" resultType="Integer">
+		select count(id) from amct_user_info
+		<where>
+			<if test="username != null">
+				username like #{username,jdbcType=VARCHAR} and
+			</if>
+			<if test="1 == 1">
+				1=1
+			</if>
+		</where>
+	</select>
 </mapper>

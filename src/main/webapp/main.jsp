@@ -7,6 +7,11 @@
 	content="width=device-width, initial-scale=1, maximum-scale=1">
 <jsp:include page="index.jsp"></jsp:include>
 <title></title>
+<style type="text/css">
+.foot {
+	text-align: -webkit-center;
+}
+</style>
 </head>
 
 <body class="layui-layout-body">
@@ -19,6 +24,18 @@
 			</ul>
 			<ul class="layui-nav layui-layout-right top_right"
 				lay-filter="top_right">
+				<li class="layui-nav-item"><a href="javascript:;"> <img
+						src="${user.url }" class="layui-nav-img"> ${user.username }
+				</a>
+					<dl class="layui-nav-child">
+						<dd>
+							<a href="javascript:;">基本资料</a>
+						</dd>
+						<dd>
+							<a href="javascript:;">设置</a>
+						</dd>
+					</dl></li>
+				<li class="layui-nav-item loginout"><a href="javascript:;">退了</a></li>
 
 			</ul>
 		</div>
@@ -56,14 +73,21 @@
 								<div class="layui-inline">
 									<div class="layui-input-inline">
 										<label class="layui-form-label">用户名：</label>
-										<div class="layui-form-mid layui-word-aux" id="user_name"></div>
+										<div class="layui-form-mid layui-word-aux" id="user_name">${user.name }</div>
 									</div>
 								</div>
 								<br />
 								<div class="layui-inline">
 									<div class="layui-input-inline">
 										<label class="layui-form-label">登录名：</label>
-										<div class="layui-form-mid layui-word-aux" id="user_username"></div>
+										<div class="layui-form-mid layui-word-aux" id="user_username">${user.username }</div>
+									</div>
+								</div>
+								<br />
+								<div class="layui-inline">
+									<div class="layui-input-inline">
+										<label class="layui-form-label">性别：</label>
+										<div class="layui-form-mid layui-word-aux" id="sex">${user.sex }</div>
 									</div>
 								</div>
 							</form>
@@ -73,14 +97,21 @@
 								<div class="layui-inline">
 									<div class="layui-input-inline">
 										<label class="layui-form-label">电话/手机：</label>
-										<div class="layui-form-mid layui-word-aux" id="user_phone"></div>
+										<div class="layui-form-mid layui-word-aux" id="user_phone">${user.phone }</div>
 									</div>
 								</div>
 								<br />
 								<div class="layui-inline">
 									<div class="layui-input-inline">
 										<label class="layui-form-label">邮箱：</label>
-										<div class="layui-form-mid layui-word-aux" id="user_email"></div>
+										<div class="layui-form-mid layui-word-aux" id="user_email">${user.email }</div>
+									</div>
+								</div>
+								<br />
+								<div class="layui-inline">
+									<div class="layui-input-inline">
+										<label class="layui-form-label">年龄：</label>
+										<div class="layui-form-mid layui-word-aux" id="age">${user.age }</div>
 									</div>
 								</div>
 							</form>
@@ -92,50 +123,7 @@
 								<div class="layui-inline">
 									<div class="layui-input-inline">
 										<label class="layui-form-label">说明：</label>
-										<div class="layui-form-mid layui-word-aux" id="user_remark"></div>
-									</div>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="layui-card">
-			<div class="layui-card-header">部门信息</div>
-			<div class="layui-card-body">
-				<div class="layui-row" style="margin-left: 3%;">
-					<div class="layui-row">
-						<div class="layui-col-md6">
-							<form class="layui-form" action="">
-								<div class="layui-inline">
-									<div class="layui-input-inline">
-										<label class="layui-form-label">所在部门：</label>
-										<div class="layui-form-mid layui-word-aux" id="dept_name"></div>
-									</div>
-								</div>
-								<br />
-								<div class="layui-inline">
-									<div class="layui-input-inline">
-										<label class="layui-form-label">部门代码：</label>
-										<div class="layui-form-mid layui-word-aux" id="dept_dm"></div>
-									</div>
-								</div>
-							</form>
-						</div>
-						<div class="layui-col-md6">
-							<form class="layui-form" action="">
-								<div class="layui-inline">
-									<div class="layui-input-inline">
-										<label class="layui-form-label">部门性质：</label>
-										<div class="layui-form-mid layui-word-aux" id="dept_xz"></div>
-									</div>
-								</div>
-								<br />
-								<div class="layui-inline">
-									<div class="layui-input-inline">
-										<label class="layui-form-label">部门领导：</label>
-										<div class="layui-form-mid layui-word-aux" id="dept_ld"></div>
+										<div class="layui-form-mid layui-word-aux" id="user_remark">${user.remark }</div>
 									</div>
 								</div>
 							</form>
@@ -146,6 +134,7 @@
 		</div>
 	</div>
 </body>
+
 <script>
 	//JavaScript代码区域
 	layui
@@ -310,88 +299,50 @@
 											var logoHtml = "<image src='${pageContext.request.contextPath}/"+r.url+"' class='layui-nav-img'/><span>"
 													+ r.name + "</span>";
 											$(".sys_name").html(logoHtml);
-											$(".foot").text("@" + r.name);
+											$(".foot").text(
+													"@  " + r.name + " 版权所有");
 										}
 
 									});
 							/*
 								获取头部右侧信息
 							 */
-
-							$
-									.ajax({
-										url : '${pageContext.request.contextPath}/top_menu/userInfo',
-										method : 'get',
-										success : function(r) {
-											var topRightHtml = "<li class='layui-nav-item'><a href='javascript:;'>";
-											topRightHtml += "<img src='${pageContext.request.contextPath}/"+r.url+"' class='layui-nav-img'>"
-													+ r.name + " </a>";
-											topRightHtml += "<dl class='layui-nav-child'>";
-											topRightHtml += "<dd><a href='javascript:;'>基本资料</a></dd><dd><a href='javascript:;'>安全设置</a></dd>";
-											topRightHtml += "</dl></li><li class='layui-nav-item'>";
-											topRightHtml += "<a href='${pageContext.request.contextPath}/login/loginout'>退了</a></li>";
-											$(".top_right").html(topRightHtml);
-											element.render();
-
-											element
-													.on(
-															'nav(top_right)',
-															function(elem) {
-																var text = elem
-																		.text();
-																if (text == "基本资料") {
-																	$(
-																			"#user_name")
-																			.text(
-																					r.name);
-																	$(
-																			"#user_username")
-																			.text(
-																					r.username);
-																	$(
-																			"#user_phone")
-																			.text(
-																					r.phone);
-																	$(
-																			"#user_email")
-																			.text(
-																					r.email);
-																	$(
-																			"#user_remark")
-																			.text(
-																					r.remark);
-																	layui.layer
-																			.open({
-																				type : 1, //弹窗类型
-																				title : "用户基本信息", //显示标题
-																				closeBtn : 0, //是否显示关闭按钮
-																				anim : 0,
-																				shade : 0.3,
-																				shadeClose : false, //显示模态窗口
-																				area : [
-																						'600px',
-																						'600px' ], //宽高
-																				content : $('#userInfo'),
-																				cancel : function(
-																						index,
-																						layero) {
-																					return false;
-																				},
-																				btn : [ '关闭' ] //只是为了演示
-																				,
-																				btn1 : function() {
-																					layer
-																							.closeAll();
-																				}
-																			});
-																}
-																if (text == "安全设置") {
-																	layer
-																			.msg("您点击了安全设置");
-																}
-															});
+							element.on('nav(top_right)', function(elem) {
+								var text = elem.text();
+								if (text == "基本资料") {
+									layui.layer.open({
+										type : 1, //弹窗类型
+										title : "用户基本信息", //显示标题
+										anim : 0,
+										shade : 0.3,
+										shadeClose : false, //显示模态窗口
+										area : [ '600px', '400px' ], //宽高
+										content : $('#userInfo'),
+										cancel : function(index, layero) {
+											layer.close(index)
+											return false;
+										},
+										btn : [ '关闭' ] //只是为了演示
+										,
+										btn1 : function() {
+											layer.closeAll();
 										}
 									});
+								}
+								console.log(elem)
+								if (text == "设置") {
+									layer.msg("您点击了设置，这里修改logog信息，上传logo图片");
+								}
+							});
+							//点击退了
+							$(".loginout").click(function() {
+								layer.confirm('确定注销本次登陆？', {
+									icon : 3,
+									title : '提示'
+								}, function(index) {
+									location.href = "${pageContext.request.contextPath}/login/loginout";
+								});
+							});
 						});
 					});
 </script>
