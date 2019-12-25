@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -26,9 +27,10 @@
 										class="layui-icon">&#xe654;</i>新增
 									</a> <a class="layui-btn layui-btn-primary icon_edit"> <i
 										class="layui-icon">&#xe642;</i>修改
-									</a> </a> <a class="layui-btn layui-btn-primary icon_del"> <i
+									</a> <c:if test="${user.role.role_code=='admin' }"> <a class="layui-btn layui-btn-primary icon_del"> <i
 										class="layui-icon">&#xe640;</i>删除
 									</a>
+									</c:if>
 								</div>
 							</div>
 						</div>

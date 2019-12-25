@@ -48,6 +48,7 @@ h2 {
 			<b>自动配置系统</b>
 		</h2>
 		<br />
+		<br />
 		<div class="layui-row">
 			<div class="layui-col-md10">
 				<div class="layui-form-item">
@@ -57,6 +58,7 @@ h2 {
 							class="layui-input">
 					</div>
 				</div>
+				<br />
 				<div class="layui-form-item">
 					<label for="icon_class" class="layui-form-label">密码： </label>
 					<div class="layui-input-block">
@@ -66,6 +68,7 @@ h2 {
 				</div>
 			</div>
 		</div>
+		<br />
 		<div class="layui-row">
 			<div class="layui-col-md10">
 				<button
@@ -73,8 +76,9 @@ h2 {
 			</div>
 		</div>
 
+		<!--20191225 注释掉注册，不需要注册
 		<br /> <span style="margin-left: 46%;"><a href="regest.jsp">
-				没有用户？创建用户>>></a></span>
+				没有用户？创建用户>>></a></span> -->
 	</div>
 </body>
 <script type="text/javascript">
@@ -109,8 +113,12 @@ h2 {
 							icon : 6
 						});
 						location.href = "main.jsp";
-					} else {
+					} else if (r == "fail") {
 						layer.msg("账号或密码错误！", {
+							icon : 5
+						});
+					} else {
+						layer.msg("账号被禁用", {
 							icon : 5
 						});
 					}

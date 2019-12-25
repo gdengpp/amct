@@ -2,15 +2,58 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.amct.dao.amctUserDao">
 
-	<select id="queryByUsername" resultType="amctUser">
-		select * from
-		amct_user_info where username = #{username}
+	<resultMap type="amctUser" id="user">
+		<id property="id" column="id" />
+		<id property="name" column="name" />
+		<id property="username" column="username" />
+		<id property="password" column="password" />
+		<id property="sex" column="sex" />
+		<id property="age" column="age" />
+		<id property="url" column="url" />
+		<id property="phone" column="phone" />
+		<id property="email" column="email" />
+		<id property="status" column="status" />
+		<id property="remark" column="remark" />
+		<id property="role_id" column="role_id" />
+		<collection property="role" ofType="amctRole">
+			<id property="id" column="rid" />
+			<id property="role_name" column="role_name" />
+			<id property="role_code" column="role_code" />
+			<id property="role_status" column="role_status" />
+			<id property="remark" column="rremark" />
+		</collection>
+	</resultMap>
+
+
+
+	<select id="queryByUsername" resultMap="user">
+		SELECT
+		a.id id,
+		a. NAME NAME,
+		a.username username,
+		a. PASSWORD PASSWORD,
+		a.sex sex,
+		a.age age,
+		a.url url,
+		a.phone phone,
+		a.email email,
+		a. STATUS STATUS,
+		a.remark remark,
+		c.id rid,
+		c.remark rremaek,
+		c.role_code role_code,
+		c.role_name role_name,
+		c.role_status role_status
+		FROM
+		amct_user_info a
+		LEFT JOIN amct_menu_user_role b ON a.id = b.user_id
+		LEFT JOIN amct_role c ON b.role_id = c.id where a.username = #{username,jdbcType=VARCHAR}
 	</select>
 
 	<insert id="insertUser">
 		insert into
-		amct_user_info(id,name,username,password,sex,age,url,phone,email,remark)
-		values(#{id},#{name},#{username},#{password},#{sex},#{age},#{url},#{phone},#{email},#{remark})
+		amct_user_info(id,name,username,password,sex,age,url,phone,email,remark,status)
+		values(#{id},#{name},#{username},#{password},#{sex},#{age},#{url},#{phone},#{email},#{remark},#{status})
 	</insert>
 
 	<select id="queryAll" resultType="amctUser">
@@ -33,10 +76,10 @@
 
 	<update id="updateUser">
 		update amct_user_info set
-		name=#{name},username=#{username},password=#{password},sex=#{sex},age=#{age},url=#{url},phone=#{phone},email=#{email},remark=#{remark}
+		name=#{name},username=#{username},status=#{status},password=#{password},sex=#{sex},age=#{age},url=#{url},phone=#{phone},email=#{email},remark=#{remark}
 		where id =#{id}
 	</update>
-	
+
 	<select id="count" resultType="Integer">
 		select count(id) from amct_user_info
 		<where>

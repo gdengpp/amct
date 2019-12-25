@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-
 import com.amct.entity.amctSysLogo;
 import com.amct.entity.amctTopMenu;
 import com.amct.entity.amctUser;
@@ -12,17 +11,18 @@ import com.amct.entity.amctUser;
 public interface amctTopMenuDao {
 
 	// 查询所有的顶部菜单
-	List<amctTopMenu> queryAll();
+	List<amctTopMenu> queryAll(@Param("user_id") String user_id);
 
 	// 分页查询所有的顶部菜单
 	List<amctTopMenu> queryList(@Param("name") String name,
-			@Param("begin") Integer begin, @Param("end") Integer end);
+			@Param("user_id") String user_id, @Param("begin") Integer begin,
+			@Param("end") Integer end);
 
 	// 查新logo信息
 
 	amctSysLogo queryLogo();
-	
-	Integer cont(@Param("name") String name);
+
+	Integer cont(@Param("name") String name, @Param("user_id") String user_id);
 
 	// 查询用户信息
 	amctUser queryUserInfo();
@@ -56,12 +56,13 @@ public interface amctTopMenuDao {
 
 	// 删除left_menu_child
 	void delLeftMenuChildById(@Param("id") String id);
-	
-	
-	//修改表结构
-	Integer updateTabFiled(@Param("str")String str);
-	
-	//修改头部不菜单
-	Integer updateTopMenu(@Param("id")String id, @Param("menu_name")String menu_name, @Param("menu_display")String menu_display,
-			@Param("menu_remark")String menu_remark);
+
+	// 修改表结构
+	Integer updateTabFiled(@Param("str") String str);
+
+	// 修改头部不菜单
+	Integer updateTopMenu(@Param("id") String id,
+			@Param("menu_name") String menu_name,
+			@Param("menu_display") String menu_display,
+			@Param("menu_remark") String menu_remark);
 }

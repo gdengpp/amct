@@ -28,8 +28,8 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 	private amctMonitorDao amd;
 
 	@Override
-	public List<amctTopMenu> findAll() {
-		return atm.queryAll();
+	public List<amctTopMenu> findAll(String user_id) {
+		return atm.queryAll(user_id);
 	}
 
 	@Override
@@ -50,12 +50,13 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 	}
 
 	@Override
-	public List<amctTopMenu> findList(String name, Integer page, Integer limit) {
+	public List<amctTopMenu> findList(String name, String user_id,
+			Integer page, Integer limit) {
 		if (name != null) {
 			name = "%" + name + "%";
 		}
 		Integer begin = (page - 1) * limit;
-		return atm.queryList(name, begin, limit);
+		return atm.queryList(name, user_id, begin, limit);
 	}
 
 	@Override
@@ -238,11 +239,11 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 	}
 
 	@Override
-	public Integer getCont(String name) {
+	public Integer getCont(String name, String user_id) {
 		if (name != null) {
 			name = "%" + name + "%";
 		}
-		return atm.cont(name);
+		return atm.cont(name, user_id);
 	}
 
 }

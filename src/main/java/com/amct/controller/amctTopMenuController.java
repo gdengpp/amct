@@ -33,8 +33,9 @@ public class amctTopMenuController {
 
 	@ResponseBody
 	@RequestMapping("/findAll")
-	public List<amctTopMenu> find() {
-		return ats.findAll();
+	public List<amctTopMenu> find(HttpSession session) {
+		amctUser user = (amctUser)session.getAttribute("user");
+		return ats.findAll(user.getId());
 	}
 
 	@ResponseBody
@@ -63,11 +64,12 @@ public class amctTopMenuController {
 	@RequestMapping("/findTopMenuList")
 	public findListDto<amctTopMenu> findMenuList(String name, Integer page,
 			Integer limit, HttpSession session) {
-		List<amctTopMenu> list = ats.findList(name, page, limit);
+		amctUser user = (amctUser)session.getAttribute("user");
+		List<amctTopMenu> list = ats.findList(name,user.getId(), page, limit);
 		findListDto<amctTopMenu> fd = new findListDto<amctTopMenu>();
 		fd.setData(list);
 		fd.setCode(0);
-		fd.setCount(ats.getCont(name));
+		fd.setCount(ats.getCont(name,user.getId()));
 		fd.setMsg("查询成功");
 		return fd;
 	}

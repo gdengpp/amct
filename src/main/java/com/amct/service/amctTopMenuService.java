@@ -12,16 +12,16 @@ import com.amct.entity.amctUser;
 public interface amctTopMenuService {
 
 	// 查询所有的顶部菜单
-	List<amctTopMenu> findAll();
+	List<amctTopMenu> findAll(String user_id);
 
 	// 分页查询所有的顶部菜单
-	List<amctTopMenu> findList(String name, Integer page, Integer rows);
+	List<amctTopMenu> findList(String name,String user_id, Integer page, Integer rows);
 
 	// 查新logo信息
 
 	amctSysLogo findLogo();
 	
-	Integer getCont(String name);
+	Integer getCont(String name,String user_id);
 
 	// 查询用户信息
 	amctUser finduserInfo();

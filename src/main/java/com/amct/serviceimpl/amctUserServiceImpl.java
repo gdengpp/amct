@@ -46,6 +46,7 @@ public class amctUserServiceImpl implements amctUserService {
 			u.setPassword(MD5Util.getKey(shiromd5.toString(), salt));
 			u.setSex(sex);
 			u.setAge(age);
+			u.setStatus(0);
 			if (StringUtils.isEmpty(url)) {
 				url = "static/image/man.jpg";
 			}

@@ -30,6 +30,10 @@ public class amctUser implements Serializable {
 
 	private Integer sex;// 0：男；1：女
 
+	private Integer status;
+
+	private amctRole role;
+
 	public amctUser() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -37,7 +41,7 @@ public class amctUser implements Serializable {
 
 	public amctUser(String id, String name, String username, String password,
 			String phone, String email, String remark, String url, Integer age,
-			Integer sex) {
+			Integer sex, Integer status, amctRole role) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -49,6 +53,8 @@ public class amctUser implements Serializable {
 		this.url = url;
 		this.age = age;
 		this.sex = sex;
+		this.status = status;
+		this.role = role;
 	}
 
 	@Override
@@ -56,7 +62,8 @@ public class amctUser implements Serializable {
 		return "amctUser [id=" + id + ", name=" + name + ", username="
 				+ username + ", password=" + password + ", phone=" + phone
 				+ ", email=" + email + ", remark=" + remark + ", url=" + url
-				+ ", age=" + age + ", sex=" + sex + "]";
+				+ ", age=" + age + ", sex=" + sex + ", status=" + status
+				+ ", role=" + role + "]";
 	}
 
 	public String getId() {
@@ -81,6 +88,14 @@ public class amctUser implements Serializable {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getPhone() {
@@ -131,16 +146,24 @@ public class amctUser implements Serializable {
 		this.sex = sex;
 	}
 
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public amctRole getRole() {
+		return role;
+	}
+
+	public void setRole(amctRole role) {
+		this.role = role;
+	}
+
 	public static long getSerialversionuid() {
 		return serialVersionUID;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 }

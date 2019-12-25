@@ -41,6 +41,13 @@ public class amctTopMenu implements Serializable {
 		this.leftmenu = leftmenu;
 	}
 
+	@Override
+	public String toString() {
+		return "amctTopMenu [id=" + id + ", name=" + name + ", ename=" + ename
+				+ ", url=" + url + ", is_display=" + is_display + ", remark="
+				+ remark + ", leftmenu=" + leftmenu + "]";
+	}
+
 	public String getId() {
 		return id;
 	}

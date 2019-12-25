@@ -37,8 +37,11 @@ public class loginController {
 	public String login(String username, String user_key, HttpSession session) {
 		amctUser user = us.findByUsername(username, user_key);
 		if (user != null) {
-			session.setAttribute("user", user);
-			return "success";
+			if (user.getStatus() != null && user.getStatus() == 0) {
+				session.setAttribute("user", user);
+				return "success";
+			}
+			return "status";
 		}
 		return "fail";
 	}

@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -26,9 +27,12 @@
 										class="layui-icon">&#xe654;</i>新增
 									</a> <a class="layui-btn layui-btn-primary user_edit"> <i
 										class="layui-icon">&#xe642;</i>修改
-									</a> </a> <a class="layui-btn layui-btn-primary user_del"> <i
-										class="layui-icon">&#xe640;</i>删除
 									</a>
+									<c:if test="${user.role.role_code=='admin' }">
+										<a class="layui-btn layui-btn-primary user_del"> <i
+											class="layui-icon">&#xe640;</i>删除
+										</a>
+									</c:if>
 								</div>
 							</div>
 						</div>
@@ -177,17 +181,32 @@
 													}
 												}
 
-											}, {
+											},
+											{
 												field : 'phone',
 												title : '联系电话',
 												align : 'left'
-											}, {
+											},
+											{
 												field : 'email',
 												title : '邮箱',
-												align : 'left'
+												align : 'left',
+												width : 200
+											},
+											{
+												field : 'status',
+												title : '状态',
+												align : 'left',
+												templet : function(d) {
+													if (d.status == 0) {
+														return "启用";
+													} else {
+														return "<span style='color:red'>禁用</span>";
+													}
+												}
 											}, {
 												field : 'remark',
-												title : '图标说明',
+												title : '备注',
 												align : 'left'
 											},
 
