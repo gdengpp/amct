@@ -28,6 +28,54 @@
 			</collection>
 		</collection>
 	</resultMap>
+
+	<select id="queryListAdmin" resultMap="atmchild">
+		SELECT
+		a.id mid,
+		a. NAME mname,
+		a.ename mename,
+		a.url murl,
+		a.is_display
+		mis_display,
+		a.remark mremark,
+		c.id cmid,
+		c. NAME cmname,
+		c.ename cmename,
+		c.url cmurl,
+		c.is_display
+		cmis_display,
+		c.icon cmicon,
+		c.remark cmremark,
+		d.id dmcid,
+		d. NAME
+		dmcname,
+		d.ename dmcename,
+		d.url dmcurl,
+		d.is_display
+		dmis_display,
+		d.icon
+		dmcicon,
+		d.remark dmcremark
+		FROM
+		amct_top_menu a
+		LEFT
+		JOIN
+		amct_left_menu c ON a.id =
+		c.top_menu_id
+		LEFT JOIN
+		amct_left_menu_child d ON c.id = d.parentid
+		<where>
+			<if test="name != null">
+				a.name like #{name,jdbcType=VARCHAR} and
+			</if>
+			<if test="1 == 1">
+				1=1
+			</if>
+			<!-- 判断是否有name查询 -->
+			ORDER BY LENGTH(a.id) limit #{begin},#{end}
+		</where>
+	</select>
+
 	<select id="queryList" resultMap="atmchild">
 		SELECT
 		a.id mid,
@@ -50,16 +98,24 @@
 		dmcname,
 		d.ename dmcename,
 		d.url dmcurl,
-		d.is_display dmis_display,
+		d.is_display
+		dmis_display,
 		d.icon
 		dmcicon,
 		d.remark dmcremark
 		FROM
-		(SELECT a.* from amct_top_menu a LEFT JOIN amct_menu_user_role b on a.id=b.menu_id where b.user_id=#{user_id,jdbcType=VARCHAR}) a
+		(SELECT a.* from
+		amct_top_menu a LEFT JOIN amct_menu_user_role b on a.id=b.menu_id
+		where b.user_id=#{user_id,jdbcType=VARCHAR}) a
 		LEFT JOIN
-		(SELECT a.* from amct_left_menu a LEFT JOIN amct_menu_user_role b on a.id=b.menu_id where b.user_id=#{user_id,jdbcType=VARCHAR}) c ON a.id =
+		(SELECT a.*
+		from amct_left_menu a LEFT JOIN amct_menu_user_role b on
+		a.id=b.menu_id where b.user_id=#{user_id,jdbcType=VARCHAR}) c ON a.id
+		=
 		c.top_menu_id
-		LEFT JOIN  (SELECT a.* from amct_left_menu_child a LEFT JOIN amct_menu_user_role b on a.id=b.menu_id where b.user_id=#{user_id,jdbcType=VARCHAR})
+		LEFT JOIN (SELECT a.* from amct_left_menu_child a LEFT
+		JOIN amct_menu_user_role b on a.id=b.menu_id where
+		b.user_id=#{user_id,jdbcType=VARCHAR})
 		d ON c.id = d.parentid
 		<where>
 			<if test="name != null">
@@ -71,6 +127,46 @@
 			<!-- 判断是否有name查询 -->
 			ORDER BY LENGTH(a.id) limit #{begin},#{end}
 		</where>
+	</select>
+
+	<select id="queryAllAdmin" resultMap="atmchild">
+		SELECT
+		a.id mid,
+		a. NAME
+		mname,
+		a.ename mename,
+		a.url murl,
+		a.is_display
+		mis_display,
+		a.remark
+		mremark,
+		c.id cmid,
+		c. NAME cmname,
+		c.ename cmename,
+		c.url cmurl,
+		c.is_display
+		cmis_display,
+		c.icon cmicon,
+		c.remark cmremark,
+		d.id dmcid,
+		d. NAME
+		dmcname,
+		d.ename dmcename,
+		d.url dmcurl,
+		d.is_display
+		dmis_display,
+		d.icon
+		dmcicon,
+		d.remark dmcremark
+		FROM
+		amct_top_menu a
+		LEFT
+		JOIN
+		amct_left_menu c ON a.id =
+		c.top_menu_id
+		LEFT JOIN
+		amct_left_menu_child d ON c.id = d.parentid
+		ORDER BY LENGTH(a.id) ASC
 	</select>
 	<select id="queryAll" resultMap="atmchild">
 		SELECT
@@ -99,13 +195,20 @@
 		dmcicon,
 		d.remark dmcremark
 		FROM
-		(SELECT a.* from amct_top_menu a LEFT JOIN amct_menu_user_role b on a.id=b.menu_id where b.user_id=#{user_id,jdbcType=VARCHAR}) a
+		(SELECT a.* from amct_top_menu a
+		LEFT JOIN amct_menu_user_role b on a.id=b.menu_id where
+		b.user_id=#{user_id,jdbcType=VARCHAR}) a
 		LEFT JOIN
-		(SELECT a.* from amct_left_menu a LEFT JOIN amct_menu_user_role b on a.id=b.menu_id where b.user_id=#{user_id,jdbcType=VARCHAR}) c ON a.id =
+		(SELECT a.* from
+		amct_left_menu a LEFT JOIN amct_menu_user_role b on a.id=b.menu_id
+		where b.user_id=#{user_id,jdbcType=VARCHAR}) c ON a.id =
 		c.top_menu_id
-		LEFT JOIN  (SELECT a.* from amct_left_menu_child a LEFT JOIN amct_menu_user_role b on a.id=b.menu_id where b.user_id=#{user_id,jdbcType=VARCHAR})
+		LEFT JOIN (SELECT a.* from amct_left_menu_child a LEFT JOIN
+		amct_menu_user_role b on a.id=b.menu_id where
+		b.user_id=#{user_id,jdbcType=VARCHAR})
 		d ON c.id = d.parentid
-		ORDER BY LENGTH(a.id) ASC
+		ORDER BY
+		LENGTH(a.id) ASC
 	</select>
 	<!-- 查询logo信息 -->
 	<select id="queryLogo" resultType="amctSysLogo">
@@ -167,12 +270,35 @@
 		SELECT
 		count(a.id)
 		FROM
-		(SELECT a.* from amct_top_menu a LEFT JOIN amct_menu_user_role b on a.id=b.menu_id where b.user_id=#{user_id,jdbcType=VARCHAR}) a
+		(SELECT a.* from amct_top_menu a LEFT JOIN
+		amct_menu_user_role b on a.id=b.menu_id where
+		b.user_id=#{user_id,jdbcType=VARCHAR}) a
 		LEFT JOIN
-		(SELECT a.* from amct_left_menu a LEFT JOIN amct_menu_user_role b on a.id=b.menu_id where b.user_id=#{user_id,jdbcType=VARCHAR}) c ON a.id =
+		(SELECT a.* from
+		amct_left_menu a LEFT JOIN amct_menu_user_role b on a.id=b.menu_id
+		where b.user_id=#{user_id,jdbcType=VARCHAR}) c ON a.id =
 		c.top_menu_id
-		LEFT JOIN  (SELECT a.* from amct_left_menu_child a LEFT JOIN amct_menu_user_role b on a.id=b.menu_id where b.user_id=#{user_id,jdbcType=VARCHAR})
+		LEFT JOIN (SELECT a.* from amct_left_menu_child a LEFT JOIN
+		amct_menu_user_role b on a.id=b.menu_id where
+		b.user_id=#{user_id,jdbcType=VARCHAR})
 		d ON c.id = d.parentid
+		<where>
+			<if test="name != null">
+				a.name like #{name,jdbcType=VARCHAR} and
+			</if>
+			<if test="1 == 1">
+				1=1
+			</if>
+		</where>
+	</select>
+
+	<select id="contAdmin" resultType="Integer">
+		SELECT
+		count(a.id)
+		FROM
+		amct_top_menu a
+		LEFT JOIN amct_left_menu c ON a.id = c.top_menu_id
+		LEFT JOIN amct_left_menu_child d ON c.id = d.parentid
 		<where>
 			<if test="name != null">
 				a.name like #{name,jdbcType=VARCHAR} and

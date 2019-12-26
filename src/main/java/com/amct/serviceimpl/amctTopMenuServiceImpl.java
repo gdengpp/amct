@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.amct.dao.amctMenuUserRoleDao;
 import com.amct.dao.amctMonitorDao;
 import com.amct.dao.amctTopMenuDao;
+import com.amct.entity.amctMenuRole;
 import com.amct.entity.amctMonitor;
 import com.amct.entity.amctSysLogo;
 import com.amct.entity.amctTopMenu;
@@ -26,6 +30,9 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 
 	@Autowired
 	private amctMonitorDao amd;
+
+	@Autowired
+	private amctMenuUserRoleDao amurd;
 
 	@Override
 	public List<amctTopMenu> findAll(String user_id) {
@@ -62,7 +69,7 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 	@Override
 	public String addTouMenu(String menu_name, String menu_ename,
 			String menu_display, String menu_remark, String table_field,
-			String tab_url, List<Object> parse) {
+			String tab_url, List<Object> parse, HttpSession session) {
 		/**
 		 * table_field:创建表的字段，拼装好的 field：入库字段
 		 */
@@ -85,6 +92,16 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 				at.setRemark(menu_remark);
 				at.setUrl(tab_url);
 				atm.insertMenu(at);
+
+				/**
+				 * 赋权
+				 */
+				amctMenuRole a = new amctMenuRole();
+				a.setId(uuid);
+				a.setMenu_id(uuid);
+				amctUser user = (amctUser) session.getAttribute("user");
+				a.setRole_id(user.getRole().getId());
+				amurd.insertMenuRole(a);
 				// 加入子表
 				// waiting
 				amctMonitor am = null;
@@ -128,6 +145,8 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 			atm.delTopMenuById(id);
 			atm.delLeftMenuByTopId(id);
 			atm.delLeftMenuChildByTopId(id);
+			// 删除权限中间表
+			amurd.removeMenuRole(id, null);
 			// 删除子表
 			amd.del(id);
 			inte = 1;
@@ -244,6 +263,29 @@ public class amctTopMenuServiceImpl implements amctTopMenuService {
 			name = "%" + name + "%";
 		}
 		return atm.cont(name, user_id);
+	}
+
+	@Override
+	public List<amctTopMenu> findAllAdmin() {
+		return atm.queryAllAdmin();
+	}
+
+	@Override
+	public List<amctTopMenu> findListAdmin(String name, Integer page,
+			Integer limit) {
+		if (name != null) {
+			name = "%" + name + "%";
+		}
+		Integer begin = (page - 1) * limit;
+		return atm.queryListAdmin(name, begin, limit);
+	}
+
+	@Override
+	public Integer getContAdmin(String name) {
+		if (name != null) {
+			name = "%" + name + "%";
+		}
+		return atm.contAdmin(name);
 	}
 
 }

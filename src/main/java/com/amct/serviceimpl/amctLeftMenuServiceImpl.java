@@ -4,33 +4,43 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.amct.dao.amctLeftMenuDao;
+import com.amct.dao.amctMenuUserRoleDao;
 import com.amct.dao.amctMonitorDao;
 import com.amct.dao.amctTopMenuDao;
 import com.amct.entity.amctLeftMenu;
+import com.amct.entity.amctMenuRole;
 import com.amct.entity.amctMonitor;
+import com.amct.entity.amctUser;
 import com.amct.service.amctLeftMenuService;
+
 @Service
 public class amctLeftMenuServiceImpl implements amctLeftMenuService {
-	
+
 	@Autowired
 	private amctTopMenuDao atm;
-	
+
 	@Autowired
 	private amctLeftMenuDao afm;
-	
+
 	@Autowired
 	private amctMonitorDao amd;
 
+	@Autowired
+	private amctMenuUserRoleDao amurd;
+
 	@Override
-	public String addleftMenu(String pid,String menu_name, String menu_ename,
-			String menu_display, String icon,String menu_remark, String table_field,
-			String tab_url, List<Object> parse) {
+	public String addleftMenu(String pid, String menu_name, String menu_ename,
+			String menu_display, String icon, String menu_remark,
+			String table_field, String tab_url, List<Object> parse,
+			HttpSession session) {
 
 		/**
 		 * table_field:创建表的字段，拼装好的 field：入库字段
@@ -56,6 +66,16 @@ public class amctLeftMenuServiceImpl implements amctLeftMenuService {
 				at.setIcon(icon);
 				at.setTop_menu_id(pid);
 				afm.insertMenu(at);
+
+				/**
+				 * 赋权
+				 */
+				amctMenuRole a = new amctMenuRole();
+				a.setId(uuid);
+				a.setMenu_id(uuid);
+				amctUser user = (amctUser) session.getAttribute("user");
+				a.setRole_id(user.getRole().getId());
+				amurd.insertMenuRole(a);
 				// 加入子表
 				// waiting
 				amctMonitor am = null;
@@ -98,6 +118,8 @@ public class amctLeftMenuServiceImpl implements amctLeftMenuService {
 		try {
 			afm.delById(id);
 			afm.delleftmenuchildByparentid(id);
+			// 删除权限中间表
+			amurd.removeMenuRole(id, null);
 			// 删除子表
 			amd.del(id);
 			inte = 1;
@@ -111,7 +133,8 @@ public class amctLeftMenuServiceImpl implements amctLeftMenuService {
 
 	@Override
 	public Integer leftMenuEdit(String id, String menu_ename, String menu_name,
-			String menu_display, String icon,String menu_remark, List<Object> parse) {
+			String menu_display, String icon, String menu_remark,
+			List<Object> parse) {
 
 		/**
 		 * 修改表字段 先查询出表字段，判断修改
@@ -204,7 +227,8 @@ public class amctLeftMenuServiceImpl implements amctLeftMenuService {
 			am.setIs_query(jsonObject.getString("is_query"));
 			amd.insert(am);
 		}
-		return afm.updateleftMenu(id, menu_name, menu_display, icon,menu_remark);
+		return afm.updateleftMenu(id, menu_name, menu_display, icon,
+				menu_remark);
 	}
 
 }

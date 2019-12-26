@@ -13,16 +13,24 @@ public interface amctTopMenuDao {
 	// 查询所有的顶部菜单
 	List<amctTopMenu> queryAll(@Param("user_id") String user_id);
 
+	List<amctTopMenu> queryAllAdmin();
+
 	// 分页查询所有的顶部菜单
 	List<amctTopMenu> queryList(@Param("name") String name,
 			@Param("user_id") String user_id, @Param("begin") Integer begin,
 			@Param("end") Integer end);
+
+	// 分页查询所有的顶部菜单
+	List<amctTopMenu> queryListAdmin(@Param("name") String name,
+			@Param("begin") Integer begin, @Param("end") Integer end);
 
 	// 查新logo信息
 
 	amctSysLogo queryLogo();
 
 	Integer cont(@Param("name") String name, @Param("user_id") String user_id);
+
+	Integer contAdmin(@Param("name") String name);
 
 	// 查询用户信息
 	amctUser queryUserInfo();

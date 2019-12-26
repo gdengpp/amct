@@ -171,7 +171,7 @@ public class amctLeftController {
 				// 入库
 				status = ats.addleftMenu(pid, menu_name, menu_ename,
 						menu_display, icon, menu_remark, table_field, tab_url,
-						parse);
+						parse,session);
 				if (status == "no") {
 					// 入库不成功，删除文件
 					MyFileUtil.delCopyFile(menu_ename, session);

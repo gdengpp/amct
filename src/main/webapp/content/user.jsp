@@ -369,7 +369,7 @@
 																				});
 																table
 																		.reload(
-																				'icondatagrid',
+																				'userdatagrid',
 																				{
 																					page : {
 																						curr : 1

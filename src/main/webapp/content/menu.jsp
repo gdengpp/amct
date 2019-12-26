@@ -415,6 +415,8 @@
 							$("#icon").val("");
 							var pid = null;
 							var data_menu;
+							$("input[name='menu_display'][value=1]").prop('checked', true);
+							form.render();
 							if (menu == "top") {
 								$(".tubiao").css("display", "none");
 								$("#icon").val("");
@@ -729,8 +731,9 @@
 							$("#menu_remark").val(data[0].remark);
 							$(
 									"input[name='menu_display'][value="
-											+ data[0].is_display + "]").attr(
+											+ data[0].is_display + "]").prop(
 									'checked', true);
+									form.render();
 							//查询子表
 							$
 									.ajax({

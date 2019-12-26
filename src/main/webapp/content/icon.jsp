@@ -27,9 +27,11 @@
 										class="layui-icon">&#xe654;</i>新增
 									</a> <a class="layui-btn layui-btn-primary icon_edit"> <i
 										class="layui-icon">&#xe642;</i>修改
-									</a> <c:if test="${user.role.role_code=='admin' }"> <a class="layui-btn layui-btn-primary icon_del"> <i
-										class="layui-icon">&#xe640;</i>删除
 									</a>
+									<c:if test="${user.role.role_code=='admin' }">
+										<a class="layui-btn layui-btn-primary icon_del"> <i
+											class="layui-icon">&#xe640;</i>删除
+										</a>
 									</c:if>
 								</div>
 							</div>
@@ -45,56 +47,56 @@
 	</div>
 
 	<div id="iconAdd" style="display:none;padding:30px;">
-			<div class="layui-row">
-				<div class="layui-col-md12">
-					<div class="layui-form-item">
-						<label for="icon_class" class="layui-form-label"> <span
-							style="color:red">*</span>图标路径
-						</label>
-						<div class="layui-input-block">
-							<input type="text" id="icon_class" name="icon_class"
-								autocomplete="off" class="layui-input">
-						</div>
+		<div class="layui-row">
+			<div class="layui-col-md12">
+				<div class="layui-form-item">
+					<label for="icon_class" class="layui-form-label"> <span
+						style="color:red">*</span>图标路径
+					</label>
+					<div class="layui-input-block">
+						<input type="text" id="icon_class" name="icon_class"
+							autocomplete="off" class="layui-input">
 					</div>
 				</div>
 			</div>
-			<div class="layui-row">
-				<div class="layui-col-md12">
-					<div class="layui-form-item">
-						<label for="icon_name" class="layui-form-label"> <span
-							style="color:red">*</span>图标名
-						</label>
-						<div class="layui-input-block">
-							<input type="text" id="icon_name" name="icon_name"
-								autocomplete="off" class="layui-input">
-						</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md12">
+				<div class="layui-form-item">
+					<label for="icon_name" class="layui-form-label"> <span
+						style="color:red">*</span>图标名
+					</label>
+					<div class="layui-input-block">
+						<input type="text" id="icon_name" name="icon_name"
+							autocomplete="off" class="layui-input">
 					</div>
 				</div>
 			</div>
-			<div class="layui-row">
-				<div class="layui-col-md12">
-					<div class="layui-form-item">
-						<label for="icon_code" class="layui-form-label"> <span
-							style="color:red">*</span>图标code
-						</label>
-						<div class="layui-input-block">
-							<input type="text" id="icon_code" name="icon_code"
-								autocomplete="off" class="layui-input">
-						</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md12">
+				<div class="layui-form-item">
+					<label for="icon_code" class="layui-form-label"> <span
+						style="color:red">*</span>图标code
+					</label>
+					<div class="layui-input-block">
+						<input type="text" id="icon_code" name="icon_code"
+							autocomplete="off" class="layui-input">
 					</div>
 				</div>
 			</div>
-			<div class="layui-row">
-				<div class="layui-col-md12">
-					<div class="layui-form-item">
-						<label for="remark" class="layui-form-label">图标说明 </label>
-						<div class="layui-input-block">
-							<input type="text" id="remark" name="remark" autocomplete="off"
-								class="layui-input">
-						</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md12">
+				<div class="layui-form-item">
+					<label for="remark" class="layui-form-label">图标说明 </label>
+					<div class="layui-input-block">
+						<input type="text" id="remark" name="remark" autocomplete="off"
+							class="layui-input">
 					</div>
 				</div>
 			</div>
+		</div>
 	</div>
 
 </body>
@@ -160,7 +162,15 @@
 				title : '图标',
 				align : 'left',
 				templet : function(d) {
-					return "<i class=\"layui-icon\">"+d.icon_code+"</i>";
+					return "<i class=\"layui-icon\">" + d.icon_code + "</i>";
+				}
+			}, {
+				field : 'icon_code',
+				title : '图标code',
+				align : 'left',
+				templet : function(d) {
+					var reg = new RegExp("&", "g");//g,表示全部替换。
+					return d.icon_code.replace(reg, "&amp;");
 				}
 			}, {
 				field : 'remark',

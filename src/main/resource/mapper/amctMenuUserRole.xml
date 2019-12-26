@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.amct.dao.amctMenuUserRoleDao">
+
+
+	<insert id="insertMenuRole">
+		insert into amct_menu_role(id,menu_id,role_id)
+		values(#{id},#{menu_id},#{role_id})
+	</insert>
+
+	<delete id="removeMenuRole">
+		DELETE from amct_menu_role
+		<where>
+			<if test="menu_id != null">
+				menu_id = #{menu_id}
+			</if>
+			<if test="role_id != null">
+				role_id = #{role_id}
+			</if>
+		</where>
+	</delete>
+
+	<insert id="insertUserRole">
+		insert into amct_user_role(id,user_id,role_id)
+		values(#{id},#{user_id},#{role_id})
+	</insert>
+
+	<delete id="removeUserRole">
+		DELETE from amct_user_role
+		<where>
+			<if test="user_id != null">
+				user_id = #{user_id}
+			</if>
+			<if test="role_id != null">
+				role_id = #{role_id}
+			</if>
+		</where>
+	</delete>
+</mapper>

@@ -46,7 +46,7 @@
 		c.role_status role_status
 		FROM
 		amct_user_info a
-		LEFT JOIN amct_menu_user_role b ON a.id = b.user_id
+		LEFT JOIN amct_user_role b ON a.id = b.user_id
 		LEFT JOIN amct_role c ON b.role_id = c.id where a.username = #{username,jdbcType=VARCHAR}
 	</select>
 

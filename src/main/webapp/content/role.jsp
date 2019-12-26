@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -17,7 +18,7 @@
 						<div class="layui-form">
 							<div class="layui-inline">
 								<div class="layui-input-inline">
-									<input type="text" value="" placeholder="用户账号"
+									<input type="text" value="" placeholder="角色名称"
 										class="layui-input search_input" />
 								</div>
 								<div class="layui-btn-group">
@@ -25,19 +26,25 @@
 										class="layui-icon">&#xe615;</i>查询
 									</a><a class="layui-btn layui-btn-primary resert_btn"> <i
 										class="layui-icon">&#xe615;</i>重置
-									</a> <a class="layui-btn layui-btn-primary user_add"> <i
+									</a> <a class="layui-btn layui-btn-primary role_add"> <i
 										class="layui-icon">&#xe654;</i>新增
-									</a> <a class="layui-btn layui-btn-primary user_edit"> <i
+									</a> <a class="layui-btn layui-btn-primary role_edit"> <i
 										class="layui-icon">&#xe642;</i>修改
-									</a> </a> <a class="layui-btn layui-btn-primary user_del"> <i
-										class="layui-icon">&#xe640;</i>删除
+									</a>
+									<c:if test="${user.role.role_code=='admin' }">
+										<a class="layui-btn layui-btn-primary role_del"> <i
+											class="layui-icon">&#xe640;</i>删除
+										</a>
+									</c:if>
+									<a class="layui-btn layui-btn-primary role_auth"> <i
+										class="layui-icon">&#xe672;</i>授权
 									</a>
 								</div>
 							</div>
 						</div>
-						<div class="layui-form icon_list">
-							<table class="layui-hide" id="userdatagrid"
-								lay-data="{id: 'userdatagrid'}" lay-filter="userTableFilter"></table>
+						<div class="layui-form role_list">
+							<table class="layui-hide" id="roledatagrid"
+								lay-data="{id: 'roledatagrid'}" lay-filter="roleTableFilter"></table>
 						</div>
 					</div>
 				</div>
@@ -45,42 +52,60 @@
 		</div>
 	</div>
 
-	<div id="iconAdd" style="display:none;padding:30px;">
-
-		<div class="layui-row">
-			<div class="layui-col-md4">
-				<div class="layui-upload">
-					<button type="button" class="layui-btn" id="test1">上传图片</button>
-					<div class="layui-upload-list">
-						<img class="layui-upload-img" id="demo1"
-							style="width: 100px;height: 100px;">
-						<p id="demoText"></p>
+	<div id="roleAdd" style="display:none;padding:30px;">
+		<form class="layui-form" action="">
+			<div class="layui-row">
+				<div class="layui-col-md12">
+					<div class="layui-form-item">
+						<label for="icon_class" class="layui-form-label"> <span
+							style="color:red">*</span>角色名称
+						</label>
+						<div class="layui-input-block">
+							<input type="text" id="role_name" name="role_name"
+								autocomplete="off" class="layui-input">
+						</div>
 					</div>
 				</div>
 			</div>
-			<div class="layui-col-md4">
-				<div class="layui-form-item">
-					<label for="icon_class" class="layui-form-label"> <span
-						style="color:red">*</span>图标路径
-					</label>
-					<div class="layui-input-block">
-						<input type="text" id="icon_class" name="icon_class"
-							autocomplete="off" class="layui-input">
+			<div class="layui-row">
+				<div class="layui-col-md12">
+					<div class="layui-form-item">
+						<label for="icon_class" class="layui-form-label"> <span
+							style="color:red">*</span>角色编码
+						</label>
+						<div class="layui-input-block">
+							<input type="text" id="role_code" name="role_code"
+								autocomplete="off" class="layui-input">
+						</div>
 					</div>
 				</div>
 			</div>
-			<div class="layui-col-md4">
-				<div class="layui-form-item">
-					<label for="icon_class" class="layui-form-label"> <span
-						style="color:red">*</span>图标路径
-					</label>
-					<div class="layui-input-block">
-						<input type="text" id="icon_class" name="icon_class"
-							autocomplete="off" class="layui-input">
+			<div class="layui-row">
+				<div class="layui-col-md12">
+					<div class="layui-form-item">
+						<label for="role_status" class="layui-form-label"> <span
+							style="color:red">*</span>角色状态
+						</label>
+						<div class="layui-input-block">
+							<input type="radio" name="role_status" value="0" title="正常"
+								checked="checked"> <input type="radio"
+								name="role_status" value="1" title="异常">
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+			<div class="layui-row">
+				<div class="layui-col-md12">
+					<div class="layui-form-item">
+						<label for="icon_class" class="layui-form-label">备注 </label>
+						<div class="layui-input-block">
+							<input type="text" id="remark" name="remark" autocomplete="off"
+								class="layui-input">
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
 	</div>
 
 </body>
@@ -118,7 +143,7 @@
 		layui
 				.use(
 						[ 'table', 'form', 'tree', 'layer', 'jquery',
-								'laydate', 'element','tree' ],
+								'laydate', 'element', 'tree' ],
 						function() {
 							var table = layui.table;
 							var layer = layui.layer;
@@ -145,7 +170,8 @@
 													obj.id = data[i].id;
 													obj.title = data[i].name;
 													obj.spread = true;
-													if (data[i].leftmenu && data[i].leftmenu.length > 0) {
+													if (data[i].leftmenu
+															&& data[i].leftmenu.length > 0) {
 														for (var j = 0; j < data[i].leftmenu.length; j++) {
 															var objleft = {};
 															var childrenleft = [];
@@ -153,26 +179,30 @@
 															objleft.id = data[i].leftmenu[j].id;
 															objleft.title = data[i].leftmenu[j].name;
 															objleft.spread = true;
-															if (data[i].leftmenu[j].child && data[i].leftmenu[j].child.length > 0) {
+															if (data[i].leftmenu[j].child
+																	&& data[i].leftmenu[j].child.length > 0) {
 																for (var m = 0; m < data[i].leftmenu[j].child.length; m++) {
 																	objleftchild.id = data[i].leftmenu[j].child[m].id;
-																	objleftchild.title =data[i].leftmenu[j].child[m].name;
+																	objleftchild.title = data[i].leftmenu[j].child[m].name;
 																	objleftchild.spread = true;
-																	childrenleft.push(objleft);
+																	childrenleft
+																			.push(objleft);
 																}
 															}
 															objleft.children = childrenleft;
-															children.push(objleft);
+															children
+																	.push(objleft);
 														}
 													}
 													obj.children = children;
 													menuData.push(obj);
 												}
 												tree.render({
-												      elem: '#menu_info',  //绑定元素
-												      data:menuData,
-												      showCheckbox:true,
-												    });
+													elem : '#menu_info', //绑定元素
+													data : menuData,
+													id : 'menu_info',
+													showCheckbox : true,
+												});
 											} else {
 												layer.msg(data.msg, {
 													icon : 5
@@ -188,9 +218,9 @@
 							//树形菜单--------------------------------------
 							table
 									.render({
-										elem : '#userdatagrid',
-										id : 'userdatagrid',
-										url : basurl + 'user/find',
+										elem : '#roledatagrid',
+										id : 'roledatagrid',
+										url : basurl + 'role/find',
 										limits : [ 10, 20, 30, 50, 100, 300,
 												600, 1000 ],
 										cols : [ [
@@ -199,66 +229,24 @@
 													type : 'checkbox'
 												},
 												{
-													field : 'name',
-													title : '用户名',
+													field : 'role_name',
+													title : '角色名称',
 													align : 'left'
 												},
 												{
-													field : 'username',
-													title : '用户账号',
+													field : 'role_code',
+													title : '角色编码',
 													align : 'left'
 												},
 												{
-													field : 'password',
-													title : '用户密码',
-													align : 'left',
-													width : 350
-												},
-												{
-													field : 'sex',
-													title : '性别',
+													field : 'role_status',
+													title : '角色状态',
 													align : 'left',
 													templet : function(d) {
-														if (d.sex == 1) {
-															return "女";
-														} else {
-															return "男";
-														}
-													}
-												},
-												{
-													field : 'url',
-													title : '头像',
-													align : 'left',
-													templet : function(d) {
-														if (d.sex == 1) {
-															return "<img src="+basurl+d.url+" class=\"layui-nav-img\">";
-														} else {
-															return "<img src="+basurl+d.url+" class=\"layui-nav-img\">";
-														}
-													}
-
-												},
-												{
-													field : 'phone',
-													title : '联系电话',
-													align : 'left'
-												},
-												{
-													field : 'email',
-													title : '邮箱',
-													align : 'left',
-													width : 200
-												},
-												{
-													field : 'status',
-													title : '状态',
-													align : 'left',
-													templet : function(d) {
-														if (d.status == 0) {
-															return "启用";
-														} else {
+														if (d.role_status == 1) {
 															return "<span style='color:red'>禁用</span>";
+														} else {
+															return "正常";
 														}
 													}
 												}, {
@@ -272,15 +260,15 @@
 										done : function(res, curr, count) {
 											$(".laytable-cell-checkbox").css(
 													"padding", "5px");
-											signleSelect($, 'userdatagrid');
+											signleSelect($, 'roledatagrid');
 										}
 									});
 
 							//查询
 							$(".search_btn").click(function() {
-								table.reload('userdatagrid', {
+								table.reload('roledatagrid', {
 									where : {
-										username : $(".search_input").val()
+										role_name : $(".search_input").val()
 									},
 									page : {
 										curr : 1
@@ -292,9 +280,9 @@
 							//重置
 							$(".resert_btn").click(function() {
 								$(".search_input").val("");
-								table.reload('userdatagrid', {
+								table.reload('roledatagrid', {
 									where : {
-										username : $(".search_input").val()
+										role_name : $(".search_input").val()
 									},
 									page : {
 										curr : 1
@@ -304,14 +292,14 @@
 							});
 
 							//新增
-							$(".user_add").click(function() {
+							$(".role_add").click(function() {
 								addAndEdit([]);
 							});
 							//修改
-							$(".user_edit").click(
+							$(".role_edit").click(
 									function() {
 										var topData = table
-												.checkStatus("userdatagrid");
+												.checkStatus("roledatagrid");
 										var data = topData.data;
 										if (data.length == 0) {
 											layer.msg("没有选择数据", {
@@ -322,10 +310,10 @@
 										addAndEdit(data);
 									});
 							//删除
-							$(".user_del").click(
+							$(".role_del").click(
 									function() {
 										var topData = table
-												.checkStatus("userdatagrid");
+												.checkStatus("roledatagrid");
 										var data = topData.data;
 										if (data.length == 0) {
 											layer.msg("未选择数据", {
@@ -339,7 +327,7 @@
 											title : '提示'
 										}, function(index) {
 											$.ajax({
-												url : basurl + "user/remove",
+												url : basurl + "role/remove",
 												method : 'get',
 												data : {
 													id : data[0].id,
@@ -350,7 +338,7 @@
 														icon : 6
 													});
 													table.reload(
-															'userdatagrid', {
+															'roledatagrid', {
 																page : {
 																	curr : 1
 																}
@@ -367,82 +355,221 @@
 									});
 
 							function addAndEdit(data) {
-								var url = "amct_icon/addIcon";
-								$("#icon_class").val("layui-icon ");
-								$("#icon_name").val("");
-								$("#icon_code").val("");
+								var url = "role/add";
+								$("#role_name").val("");
+								$("#role_code").val("");
 								$("#remark").val("");
-								$("img").removeAttr('src');
-								var id;
+								$("input[name='role_status'][value=0]").prop(
+										'checked', true);
+								var id = null;
 								if (data.length > 0) {
-									$('#demo1').attr('src',
-											basurl + data[0].url);
-									url = "amct_icon/modify";
-									$("#icon_class").val(data[0].icon_class);
-									$("#icon_name").val(data[0].icon_name);
-									$("#icon_code").val(data[0].icon_code);
+									url = "role/modify";
+									$("#role_name").val(data[0].role_name);
+									$("#role_code").val(data[0].role_code);
 									$("#remark").val(data[0].remark);
+									$(
+											"input[name='role_status'][value="
+													+ data[0].role_status + "]")
+											.prop('checked', true);
 									id = data[0].id;
 								}
-								layui.layer.open({
-									type : 1, //弹窗类型
-									title : "操作菜单", //显示标题
-									closeBtn : 1, //是否显示关闭按钮
-									anim : 0,
-									shade : 0.3,
-									shadeClose : false, //显示模态窗口
-									area : [ '500px', '400px' ], //宽高
-									content : $('#iconAdd'),
-									cancel : function(index, layero) {
-										layer.closeAll();
-										return false;
-									},
-									btn : [ "提交", "关闭" ],
-									yes : function(index, layero) {
-										var add = layer.load();
-										$.ajax({
-											url : basurl + url,
-											method : 'get',
-											data : {
-												id : id,
-												icon_class : $("#icon_class")
-														.val(),
-												icon_name : $("#icon_name")
-														.val(),
-												icon_code : $("#icon_code")
-														.val(),
-												remark : $("#remark").val()
+								form.render();
+								layui.layer
+										.open({
+											type : 1, //弹窗类型
+											title : "操作菜单", //显示标题
+											closeBtn : 1, //是否显示关闭按钮
+											anim : 0,
+											shade : 0.3,
+											shadeClose : false, //显示模态窗口
+											area : [ '500px', '400px' ], //宽高
+											content : $('#roleAdd'),
+											cancel : function(index, layero) {
+												layer.closeAll();
+												return false;
 											},
-											success : function(r) {
-												if (r == 1) {
-													layer.closeAll();
-													layer.msg("操作成功", {
-														icon : 6
-													});
-													table.reload(
-															'icondatagrid', {
-																page : {
-																	curr : 1
+											btn : [ "提交", "关闭" ],
+											yes : function(index, layero) {
+												var add = layer.load();
+												$
+														.ajax({
+															url : basurl + url,
+															method : 'get',
+															data : {
+																id : id,
+																role_name : $(
+																		"#role_name")
+																		.val(),
+																role_code : $(
+																		"#role_code")
+																		.val(),
+																remark : $(
+																		"#remark")
+																		.val(),
+																role_status : $(
+																		"input[name=role_status]:checked")
+																		.val()
+															},
+															success : function(
+																	r) {
+																if (r == 1) {
+																	layer
+																			.closeAll();
+																	layer
+																			.msg(
+																					"操作成功",
+																					{
+																						icon : 6
+																					});
+																	table
+																			.reload(
+																					'roledatagrid',
+																					{
+																						page : {
+																							curr : 1
+																						}
+																					});
+																} else {
+																	layer
+																			.close(add);
+																	layer
+																			.msg(
+																					"操作失败",
+																					{
+																						icon : 6
+																					});
 																}
-															});
-												} else {
-													layer.close(add);
-													layer.msg("操作失败", {
-														icon : 6
-													});
-												}
 
-											},
-											error : function() {
-												layer.close(add);
-												layer.msg("操作失败", {
-													icon : 5
-												});
+															},
+															error : function() {
+																layer
+																		.close(add);
+																layer
+																		.msg(
+																				"操作失败",
+																				{
+																					icon : 5
+																				});
+															}
+														});
 											}
 										});
+							}
+
+							//监听行单击事件（双击事件为：rowDouble）
+							table.on('row(roleTableFilter)', function(obj) {
+								var data = obj.data;
+								$.ajax({
+									url : basurl + 'role/getMenuId',
+									method : 'get',
+									data : {
+										role_id : data.id
+									},
+									success : function(r) {
+										//重载实例
+										tree.reload('menu_info', {
+
+										});
+										tree.setChecked('menu_info', r); //勾选指定节点
 									}
 								});
-							}
+								//标注选中样式
+								//obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
+							});
+
+							//授权
+							$(".role_auth")
+									.click(
+											function() {
+												var topData = table
+														.checkStatus("roledatagrid");
+												var data = topData.data;
+												if (data.length == 0) {
+													layer.msg("没有选择授权角色", {
+														icon : 5
+													});
+													return false;
+												}
+												var treeData = tree
+														.getChecked('menu_info');
+												if (treeData.length == 0) {
+													layer.msg("没有选择授权菜单", {
+														icon : 5
+													});
+													return false;
+												}
+												if(data[0].role_status==1){
+													layer.msg("角色异常，不可授权", {
+														icon : 5
+													});
+													return false;
+												}
+												var tree_id = [];
+												for (var i = 0; i < treeData.length; i++) {
+													tree_id
+															.push(treeData[i].id);
+													if (treeData[i].children.length > 0) {
+														for (var j = 0; j < treeData[i].children.length; j++) {
+															tree_id
+																	.push(treeData[i].children[j].id);
+															if (treeData[i].children[j].children.length > 0) {
+																for (var m = 0; m < treeData[i].children[j].children.length; m++) {
+																	tree_id
+																			.push(treeData[i].children[j].children[m].id);
+																}
+															}
+														}
+													}
+												}
+
+												$
+														.ajax({
+															url : basurl
+																	+ 'role/auth',
+															method : 'get',
+															data : {
+																role_id : data[0].id,
+																menu_id : JSON
+																		.stringify(tree_id),
+															},
+															success : function(
+																	r) {
+																if (r == 1) {
+																	layer
+																			.closeAll();
+																	layer
+																			.msg(
+																					"授权成功",
+																					{
+																						icon : 6
+																					});
+																	table
+																			.reload(
+																					'roledatagrid',
+																					{
+																						page : {
+																							curr : 1
+																						}
+																					});
+																} else {
+																	layer
+																			.msg(
+																					"授权失败",
+																					{
+																						icon : 5
+																					});
+																}
+															},
+															error : function() {
+																layer
+																		.msg(
+																				"授权失败",
+																				{
+																					icon : 5
+																				});
+															}
+														});
+											});
 						});
 	});
 </script>
