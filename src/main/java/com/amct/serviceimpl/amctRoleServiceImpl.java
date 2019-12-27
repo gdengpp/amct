@@ -96,4 +96,9 @@ public class amctRoleServiceImpl implements amctRoleService {
 		return ar.queryMenuRole(role_id);
 	}
 
+	@Override
+	public List<amctRole> findRole() {
+		return ar.queryRole();
+	}
+
 }

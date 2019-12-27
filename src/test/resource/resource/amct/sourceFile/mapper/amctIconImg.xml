@@ -10,11 +10,14 @@
 		select * from amct_icon_img
 		<where>
 			<if test="icon_name != null">
-				icon_name like #{icon_name,jdbcType=VARCHAR}
+				icon_name like #{icon_name,jdbcType=VARCHAR} and
+			</if>
+			<if test="1 == 1">
+				1=1
 			</if>
 			<!-- 判断是否有name查询 -->
+			limit #{begin},#{end}
 		</where>
-		limit #{begin},#{end}
 	</select>
 
 	<insert id="add">
@@ -37,7 +40,10 @@
 		select count(id) from amct_icon_img
 		<where>
 			<if test="icon_name != null">
-				icon_name like #{icon_name,jdbcType=VARCHAR}
+				icon_name like #{icon_name,jdbcType=VARCHAR} and
+			</if>
+			<if test="1 == 1">
+				1=1
 			</if>
 		</where>
 	</select>

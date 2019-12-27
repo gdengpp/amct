@@ -82,6 +82,29 @@ h2 {
 	</div>
 </body>
 <script type="text/javascript">
+   //回车搜索
+		$(document).keyup(function(event){
+			if(event.keyCode ==13){
+				let is_shade = $(".layui-layer-shade").length;
+				let btns = [".login_btn",[]];
+				let btn = btns[0];
+				let l = 0;
+				for (var i in btns[1]) {
+					if ($(btns[1][i]).parents(".layui-layer-page").length != 0) {
+						let layer_num = parseInt((""+$(btns[1][i]).parents(".layui-layer-page").attr("id")).replace(/layui-layer/g,""));
+						if (layer_num && layer_num > l) {
+							l = layer_num;
+							btn = btns[1][i];
+						}
+					}
+				}
+				if (btn != btns[0]) {
+					$(btn).click();
+				} else if (is_shade == 0) {
+					$(btn).click();
+				}
+			}
+		});
 	layui.use([ 'layer' ], function() {
 		var layer = layui.layer;
 		$(".login_btn").click(function() {

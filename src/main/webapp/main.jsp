@@ -24,12 +24,18 @@
 			</ul>
 			<ul class="layui-nav layui-layout-right top_right"
 				lay-filter="top_right">
-				<li class="layui-nav-item"><a href="javascript:;"> <img
+				<li class="layui-nav-item"><a href="javascript:;"> <img id="user_picture"
 						src="${user.url }" class="layui-nav-img"> ${user.username }
 				</a>
 					<dl class="layui-nav-child">
 						<dd>
 							<a href="javascript:;">基本资料</a>
+						</dd>
+						<dd>
+							<a href="javascript:;">修改密码</a>
+						</dd>
+						<dd>
+							<a href="javascript:;">修改头像</a>
 						</dd>
 						<dd>
 							<a href="javascript:;">设置</a>
@@ -133,16 +139,104 @@
 			</div>
 		</div>
 	</div>
+
+
+	<div id="modifyPass" style="display:none;padding:10px;margin-left: -40px;">
+		<form class="layui-form" action="">
+		<div class="layui-row">
+			<div class="layui-col-md12">
+				<div class="layui-form-item">
+					<label for="name" class="layui-form-label">新密码
+					</label>
+					<div class="layui-input-block">
+						<input type="password" id="password" name="password"
+							autocomplete="off" class="layui-input" placeholder="请输入新密码">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+		<div class="layui-col-md12">
+				<div class="layui-form-item">
+					<label for="username" class="layui-form-label">新密码
+					</label>
+					<div class="layui-input-block">
+						<input type="password" id="newpassword" name="newpassword"
+							autocomplete="off" class="layui-input" placeholder="请再次输入新密码">
+					</div>
+				</div>
+			</div>
+		</div>
+		</form>
+	</div>
+
+
+	<div id="modify_head_picture" style="display:none;padding:10px;margin-left: 26%;">
+		<div class="layui-upload">
+		  <div class="layui-upload-list">
+		    <img class="layui-upload-img" src="${user.url }" style="width: 45%;" id="demo1">
+		    <p id="demoText"></p>
+		  </div>
+		  <button type="button" class="layui-btn" id="test1">上传图片</button>
+		</div>   
+	</div>
+
+
+	<div id="setUp" style="display:none;padding:10px;">
+		<div class="layui-row">
+			<div class="layui-col-md4">
+				<div class="layui-upload">
+				  <div class="layui-upload-list">
+				    <img class="layui-upload-img" id="logo" style="width: 55%;">
+				    <p id="setText"></p>
+				  </div>
+				  <button type="button" class="layui-btn" id="set">上传图片</button>
+				</div>  
+			</div>
+			<div class="layui-col-md8">
+				<form class="layui-form" action="">
+					<div class="layui-row">
+						<div class="layui-col-md12">
+							<div class="layui-form-item">
+								<label for="sysname" class="layui-form-label"><span style="color:red">*</span>系统名称
+								</label>
+								<div class="layui-input-block">
+									<input type="text" id="sysname" name="sysname"
+										autocomplete="off" class="layui-input">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="layui-row">
+					<div class="layui-col-md12">
+							<div class="layui-form-item">
+								<label for="sysis_display" class="layui-form-label"><span style="color:red">*</span>是否显示
+								</label>
+								<div class="layui-input-block">
+									<input type="radio" name="sysis_display" value="1" title="显示"
+									checked="checked"> <input type="radio"
+									name="sysis_display" value="0" title="隐藏">
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
 </body>
 
 <script>
 	//JavaScript代码区域
 	layui
 			.use(
-					[ 'element', 'layer' ],
+					[ 'element', 'layer' ,'upload','form'],
 					function() {
 						var element = layui.element;
 						var layer = layui.layer;
+						var upload = layui.upload;
+						var form = layui.form;
 						$(function() {
 							$
 									.ajax({
@@ -329,9 +423,181 @@
 										}
 									});
 								}
-								console.log(elem)
 								if (text == "设置") {
-									layer.msg("您点击了设置，这里修改logog信息，上传logo图片");
+									layui.layer.open({
+										type : 1, //弹窗类型
+										title : "设置系统属性", //显示标题
+										anim : 0,
+										shade : 0.3,
+										shadeClose : false, //显示模态窗口
+										area : [ '500px', '270px' ], //宽高
+										content : $('#setUp'),
+										cancel : function(index, layero) {
+											layer.close(index);
+											return false;
+										},
+										success:function(){
+											$.ajax({
+												url : "${pageContext.request.contextPath}/logo/find",
+												method : 'get',
+												success : function(r) {
+													$("#sysname").val(r.name);
+													$("input[name='sysis_display'][value="+r.is_display+"]").prop('checked', true);
+													$("#logo").attr('src',r.url);
+													form.render();
+												}
+											});
+											
+											//上传图像
+											var uploadInst = upload.render({
+											    elem: '#set'
+											    ,url: '${pageContext.request.contextPath}/logo/upload'
+											    ,before: function(obj){
+											      //预读本地文件示例，不支持ie8
+											      obj.preview(function(index, file, result){
+											        $('#logo').attr('src', result); //图片链接（base64）
+											      });
+											    }
+											    ,done: function(res){
+											      //如果上传失败
+											      if(res.code > 0){
+											        return layer.msg('上传失败');
+											      }
+											      //上传成功
+											      layer.msg('上传成功,刷新页面查看');
+											    }
+											    ,error: function(){
+											      //演示失败状态，并实现重传
+											      var demoText = $('#setText');
+											      demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+											      demoText.find('.demo-reload').on('click', function(){
+											        uploadInst.upload();
+											      });
+											    }
+									  		});
+										},
+										btn : [ "提交", "关闭" ],
+										yes : function(index, layero) {
+											 var name = $("#sysname").val();
+											 if(!name){
+											 	layer.msg("系统名称不能为空",{icon:5});
+											 	return false;
+											 }
+											 var modify = layer.load();
+											 $.ajax({
+											 	url : "${pageContext.request.contextPath}/logo/modifyBase",
+												method : 'get',
+												data:{
+													name:name,
+													is_display:$("input[name=sysis_display]:checked").val()
+												},
+												success : function(r) {
+													layer.close(modify);
+													if(r==1){
+														layer.msg("修改成功",{icon:6});
+													}else{
+														layer.msg("修改失败",{icon:5});
+													}
+												}
+											 });
+											}
+										});
+								}
+								if (text == "修改密码") {
+									layui.layer.open({
+										type : 1, //弹窗类型
+										title : "修改密码", //显示标题
+										anim : 0,
+										shade : 0.3,
+										shadeClose : false, //显示模态窗口
+										area : [ '400px', '230px' ], //宽高
+										content : $('#modifyPass'),
+										cancel : function(index, layero) {
+											layer.close(index);
+											return false;
+										},
+										btn : [ "提交", "关闭" ],
+										yes : function(index, layero) {
+											var pass = $("#password").val();
+											var newpass = $("#newpassword").val();
+											if(!pass){
+												layer.msg("密码不能为空",{icon:5});
+												return false;
+											}
+											if(!newpass){
+												layer.msg("再次输入密码不能为空",{icon:5});
+												return false;
+											}
+											if(pass!=newpass){
+												layer.msg("两次输入密码不相同",{icon:5});
+												return false;
+											}
+											layer.load();
+											$.ajax({
+												url : "${pageContext.request.contextPath}/user/modifyPass",
+												method : 'get',
+												data:{
+													key:pass
+												},
+												success : function(r) {
+													layer.closeAll();
+													if(r==1){
+														layer.msg("修改成功,3秒后返回登录页面重新登录",{icon:6});
+														 setTimeout(function () { 
+														        location.href = "${pageContext.request.contextPath}/login/loginout";
+														    }, 3*1000);
+													}
+												}
+											});
+										}
+									});
+								}
+								if (text == "修改头像") {
+									
+									layui.layer.open({
+										type : 1, //弹窗类型
+										title : "修改头像", //显示标题
+										anim : 0,
+										shade : 0.3,
+										shadeClose : false, //显示模态窗口
+										area : [ '300px', '270px' ], //宽高
+										content : $('#modify_head_picture'),
+										cancel : function(index, layero) {
+											layer.close(index);
+											return false;
+										},
+										success:function(){
+											 //普通图片上传
+									  var uploadInst = upload.render({
+											    elem: '#test1'
+											    ,url: '${pageContext.request.contextPath}/user/upload'
+											    ,before: function(obj){
+											      //预读本地文件示例，不支持ie8
+											      obj.preview(function(index, file, result){
+											        $('#demo1').attr('src', result); //图片链接（base64）
+											      });
+											    }
+											    ,done: function(res){
+											      //如果上传失败
+											      if(res.code > 0){
+											        return layer.msg('上传失败');
+											      }
+											      //上传成功
+											      layer.msg('上传成功,刷新页面查看');
+											    }
+											    ,error: function(){
+											      //演示失败状态，并实现重传
+											      var demoText = $('#demoText');
+											      demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+											      demoText.find('.demo-reload').on('click', function(){
+											        uploadInst.upload();
+											      });
+											    }
+									  		});
+										},
+										});
+
+
 								}
 							});
 							//点击退了

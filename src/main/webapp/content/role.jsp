@@ -321,11 +321,12 @@
 											});
 											return false;
 										}
-										layer.load();
+										
 										layer.confirm('是否确定删除？', {
 											icon : 3,
 											title : '提示'
 										}, function(index) {
+										layer.load();
 											$.ajax({
 												url : basurl + "role/remove",
 												method : 'get',

@@ -6,29 +6,35 @@
 		select * from amct_log
 		<where>
 			<if test="user_name != null and user_name !='' ">
-				user_name = #{user_name}
+				user_name = #{user_name} and
 			</if>
 			<if test="status != null and status !=''">
-				and status = #{status}
+				status = #{status} and
 			</if>
 			<if test="menu_code != null and menu_code !=''">
-				and menu_code = #{menu_code}
+				menu_code = #{menu_code} and
 			</if>
+			<if test="1 == 1">
+				1=1
+			</if>
+			ORDER BY log_date DESC limit #{begin},#{end}
 		</where>
-		ORDER BY log_date DESC limit #{begin},#{end}
 	</select>
 
 	<select id="count" resultType="Integer">
 		select count(id) from amct_log
 		<where>
 			<if test="user_name != null and user_name !='' ">
-				user_name = #{user_name}
+				user_name = #{user_name} and
 			</if>
 			<if test="status != null and status !=''">
-				and status = #{status}
+				status = #{status} and
 			</if>
 			<if test="menu_code != null and menu_code !=''">
-				and menu_code = #{menu_code}
+				menu_code = #{menu_code} and
+			</if>
+			<if test="1 == 1">
+				1=1
 			</if>
 		</where>
 	</select>
@@ -48,7 +54,7 @@
 		SELECT DISTINCT menu_code
 		from amct_log
 	</select>
-
+	
 	<delete id="delAll">
 		delete from amct_log
 	</delete>

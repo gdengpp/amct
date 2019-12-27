@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.amct.dao.amctTopMenuDao">
+
+	<resultMap type="amctTopMenu" id="atmchild">
+		<id property="id" column="mid" />
+		<id property="name" column="mname" />
+		<id property="ename" column="mename" />
+		<id property="url" column="murl" />
+		<id property="is_display" column="mis_display" />
+		<id property="remark" column="mremark" />
+		<collection property="leftmenu" ofType="amctLeftMenu">
+			<id property="id" column="cmid" />
+			<id property="name" column="cmname" />
+			<id property="ename" column="cmename" />
+			<id property="url" column="cmurl" />
+			<id property="icon" column="cmicon" />
+			<id property="is_display" column="cmis_display" />
+			<id property="remark" column="cmremark" />
+			<collection property="child" ofType="amctLeftMenuChild">
+				<id property="id" column="dmcid" />
+				<id property="name" column="dmcname" />
+				<id property="ename" column="dmcename" />
+				<id property="url" column="dmcurl" />
+				<id property="is_display" column="dmis_display" />
+				<id property="icon" column="dmcicon" />
+				<id property="remark" column="dmcremark" />
+			</collection>
+		</collection>
+	</resultMap>
+	<select id="queryList" resultMap="atmchild">
+		SELECT
+		a.id mid,
+		a. NAME mname,
+		a.ename mename,
+		a.url murl,
+		a.is_display
+		mis_display,
+		a.remark mremark,
+		c.id cmid,
+		c. NAME cmname,
+		c.ename cmename,
+		c.url cmurl,
+		c.is_display cmis_display,
+		c.icon cmicon,
+		c.remark cmremark,
+		d.id dmcid,
+		d. NAME dmcname,
+		d.ename dmcename,
+		d.is_display dmis_display,
+		d.url dmcurl,
+		d.icon
+		dmcicon,
+		d.remark dmcremark
+		FROM
+		amct_top_menu a
+		LEFT
+		JOIN amct_left_menu
+		c ON a.id = c.top_menu_id
+		LEFT JOIN
+		amct_left_menu_child d ON c.id =
+		d.parentid
+		<where>
+			<if test="name != null">
+				a.name like #{name,jdbcType=VARCHAR} and
+			</if>
+			<if test="1 == 1">
+				1=1
+			</if>
+			<!-- 判断是否有name查询 -->
+			ORDER BY LENGTH(a.id) limit #{begin},#{end}
+		</where>
+	</select>
+	<select id="queryAll" resultMap="atmchild">
+		SELECT
+		a.id mid,
+		a. NAME mname,
+		a.ename mename,
+		a.url murl,
+		a.is_display
+		mis_display,
+		a.remark mremark,
+		c.id cmid,
+		c. NAME cmname,
+		c.ename cmename,
+		c.url cmurl,
+		c.is_display
+		cmis_display,
+		c.icon cmicon,
+		c.remark cmremark,
+		d.id dmcid,
+		d. NAME
+		dmcname,
+		d.ename dmcename,
+		d.url dmcurl,
+		d.is_display dmis_display,
+		d.icon
+		dmcicon,
+		d.remark dmcremark
+		FROM
+		amct_top_menu a
+		LEFT JOIN
+		amct_left_menu c ON a.id =
+		c.top_menu_id
+		LEFT JOIN amct_left_menu_child
+		d ON c.id = d.parentid
+		ORDER BY LENGTH(a.id) ASC
+	</select>
+	<!-- 查询logo信息 -->
+	<select id="queryLogo" resultType="amctSysLogo">
+		select * from amct_sys_logo
+	</select>
+	<!-- 查询用户信息 -->
+	<select id="queryUserInfo" resultType="amctUser">
+		select * from
+		amct_user_info
+	</select>
+	<insert id="insertMenu">
+		insert into
+		amct_top_menu(id,name,ename,url,is_display,remark)
+		values(#{id},#{name},#{ename},#{url},#{is_display},#{remark})
+	</insert>
+	<!-- 创建头部表 -->
+	<update id="addTopMenu">
+		CREATE TABLE ${tab_name} (${tab_field}) ENGINE=InnoDB
+		DEFAULT CHARSET=utf8mb4;
+	</update>
+	<!-- 删除表 -->
+	<delete id="delTab">
+		DROP TABLE ${tab_name};
+	</delete>
+	<delete id="delTopMenuById">
+		delete from amct_top_menu where id = #{id}
+	</delete>
+	<delete id="delLeftMenuByTopId">
+		delete from amct_left_menu where top_menu_id = #{id};
+	</delete>
+	<delete id="delLeftMenuChildByTopId">
+		DELETE from amct_left_menu_child where parentid in
+		(select id from amct_left_menu where top_menu_id=#{id});
+	</delete>
+	<delete id="delLeftMenuById">
+		delete from amct_left_menu where id = #{id};
+	</delete>
+	<delete id="delLeftMenuByLeftId">
+		delete from amct_left_menu_child where parentid =
+		#{id}
+	</delete>
+	<delete id="delLeftMenuChildById">
+		delete from amct_left_menu_child where id = #{id}
+	</delete>
+	<!-- 修改头部菜单 -->
+	<update id="updateTopMenu">
+		update amct_top_menu set
+		name=#{menu_name},is_display=#{menu_display},remark=#{menu_remark}
+		where id=#{id}
+	</update>
+
+	<update id="updateTabFiled">
+		${str}
+	</update>
+
+
+	<select id="cont" resultType="Integer">
+		SELECT
+		count(a.id)
+		FROM
+		amct_top_menu a
+		LEFT JOIN amct_left_menu
+		c ON
+		a.id =
+		c.top_menu_id
+		LEFT JOIN amct_left_menu_child d ON c.id =
+		d.parentid
+		<where>
+			<if test="name != null">
+				a.name like #{name,jdbcType=VARCHAR} and
+			</if>
+			<if test="1 == 1">
+				1=1
+			</if>
+		</where>
+	</select>
+</mapper>

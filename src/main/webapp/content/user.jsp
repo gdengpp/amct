@@ -46,42 +46,132 @@
 		</div>
 	</div>
 
-	<div id="iconAdd" style="display:none;padding:30px;">
-
+	<div id="userAdd" style="display:none;padding: 10px">
+	<form class="layui-form" action="">
 		<div class="layui-row">
-			<div class="layui-col-md4">
-				<div class="layui-upload">
-					<button type="button" class="layui-btn" id="test1">上传图片</button>
-					<div class="layui-upload-list">
-						<img class="layui-upload-img" id="demo1"
-							style="width: 100px;height: 100px;">
-						<p id="demoText"></p>
-					</div>
-				</div>
-			</div>
-			<div class="layui-col-md4">
+			<div class="layui-col-md6">
 				<div class="layui-form-item">
-					<label for="icon_class" class="layui-form-label"> <span
-						style="color:red">*</span>图标路径
+					<label for="name" class="layui-form-label"> <span
+						style="color:red">*</span>用户名
 					</label>
 					<div class="layui-input-block">
-						<input type="text" id="icon_class" name="icon_class"
+						<input type="text" id="name" name="name"
 							autocomplete="off" class="layui-input">
 					</div>
 				</div>
 			</div>
-			<div class="layui-col-md4">
+			<div class="layui-col-md6">
 				<div class="layui-form-item">
-					<label for="icon_class" class="layui-form-label"> <span
-						style="color:red">*</span>图标路径
+					<label for="username" class="layui-form-label"> <span
+						style="color:red">*</span>用户账号
 					</label>
 					<div class="layui-input-block">
-						<input type="text" id="icon_class" name="icon_class"
+						<input type="text" id="username" name="username"
 							autocomplete="off" class="layui-input">
 					</div>
 				</div>
 			</div>
 		</div>
+		<div class="layui-row">
+			<div class="layui-col-md6">
+				<div class="layui-form-item">
+					<label for="name" class="layui-form-label"> <span
+						style="color:red">*</span>用户密码
+					</label>
+					<div class="layui-input-block">
+						<input type="password" id="password" name="password"
+							autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md6">
+				<div class="layui-form-item">
+					<label for="username" class="layui-form-label">性别
+					</label>
+					<div class="layui-input-block">
+						<input type="radio" name="sex" value="0" title="男"
+								checked="checked"> <input type="radio"
+								name="sex" value="1" title="女">
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="layui-row">
+			<div class="layui-col-md12">
+				<div class="layui-form-item">
+					<label for="name" class="layui-form-label"> <span
+						style="color:red">*</span>角色
+					</label>
+					<div class="layui-input-block">
+						<select name="role_name" id="role_name">
+
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="layui-row">
+			<div class="layui-col-md6">
+				<div class="layui-form-item">
+					<label for="name" class="layui-form-label">联系电话
+					</label>
+					<div class="layui-input-block">
+						<input type="text" id="phone" name="phone"
+							autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md6">
+				<div class="layui-form-item">
+					<label for="username" class="layui-form-label">年龄
+					</label>
+					<div class="layui-input-block">
+						<input type="text" id="age" name="age"
+							autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md6">
+				<div class="layui-form-item">
+					<label for="name" class="layui-form-label">邮箱
+					</label>
+					<div class="layui-input-block">
+						<input type="text" id="email" name="email"
+							autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-md6">
+				<div class="layui-form-item">
+					<label for="username" class="layui-form-label">用户状态
+					</label>
+					<div class="layui-input-block">
+						<input type="radio" name="status" value="0" title="启用"
+								checked="checked"> <input type="radio"
+								name="status" value="1" title="禁用">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<div class="layui-col-md12">
+				<div class="layui-form-item">
+					<label for="username" class="layui-form-label">备注
+					</label>
+					<div class="layui-input-block">
+						<input type="text" id="remark" name="remark"
+							autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+		</form>
+		
+		
 	</div>
 
 </body>
@@ -128,6 +218,20 @@
 						var $ = layui.$;
 						form.render();
 						element.init();
+						
+						//角色信息
+						$.ajax({
+								url:basurl+"role/findRole",
+								method:'get',
+								success:function(r){
+									var html = "<option value='' selected=''>请选择角色</option>";
+									for(var i=0;i<r.length;i++){
+										html += "<option value="+r[i].id+">"+r[i].role_name+"</option>";
+									}
+									$("#role_name").append(html);
+									form.render();
+								}
+							});
 
 						table
 								.render({
@@ -155,7 +259,32 @@
 												field : 'password',
 												title : '用户密码',
 												align : 'left',
-												width : 350
+												templet : function(d) {
+														return "*******";
+												}
+											},{
+												field : 'role',
+												title : '角色',
+												align : 'left',
+												templet : function(d) {
+													if(d.role){
+														return d.role.role_name;
+													}else{
+														return "";
+													}
+												}
+											},{
+												field : 'url',
+												title : '头像',
+												align : 'left',
+												templet : function(d) {
+													if (d.sex == 1) {
+														return "<img src="+basurl+d.url+" class=\"layui-nav-img\">";
+													} else {
+														return "<img src="+basurl+d.url+" class=\"layui-nav-img\">";
+													}
+												}
+
 											},
 											{
 												field : 'sex',
@@ -170,17 +299,9 @@
 												}
 											},
 											{
-												field : 'url',
-												title : '头像',
-												align : 'left',
-												templet : function(d) {
-													if (d.sex == 1) {
-														return "<img src="+basurl+d.url+" class=\"layui-nav-img\">";
-													} else {
-														return "<img src="+basurl+d.url+" class=\"layui-nav-img\">";
-													}
-												}
-
+												field : 'age',
+												title : '年龄',
+												align : 'left'
 											},
 											{
 												field : 'phone',
@@ -262,6 +383,7 @@
 							}
 							addAndEdit(data);
 						});
+						
 						//删除
 						$(".user_del").click(function() {
 							var topData = table.checkStatus("userdatagrid");
@@ -272,11 +394,11 @@
 								});
 								return false;
 							}
-							layer.load();
 							layer.confirm('是否确定删除？', {
 								icon : 3,
 								title : '提示'
 							}, function(index) {
+								layer.load();
 								$.ajax({
 									url : basurl + "user/remove",
 									method : 'get',
@@ -305,22 +427,34 @@
 						});
 
 						function addAndEdit(data) {
-							var url = "amct_icon/addIcon";
-							$("#icon_class").val("layui-icon ");
-							$("#icon_name").val("");
-							$("#icon_code").val("");
+						$("input[name='sex'][value=0]").prop('checked', true);
+						$("input[name='status'][value=0]").prop('checked', true);
+						$("#role_name option:first").prop("selected", 'selected');
+							var url = "user/add";
+							$("#name").val("");
+							$("#username").val("");
+							$("#password").val("");
+							$("#age").val("");
+							$("#phone").val("");
+							$("#email").val("");
 							$("#remark").val("");
-							$("img").removeAttr('src');
-							var id;
+							var id=null;
 							if (data.length > 0) {
-								$('#demo1').attr('src', basurl + data[0].url);
-								url = "amct_icon/modify";
-								$("#icon_class").val(data[0].icon_class);
-								$("#icon_name").val(data[0].icon_name);
-								$("#icon_code").val(data[0].icon_code);
+								$("select").find("option[value="+data[0].role.id+"]").prop("selected",true);
+								$("#demo1").attr('src', basurl + data[0].url);
+								url = "user/modify";
+								$("#name").val(data[0].name);
+								$("#username").val(data[0].username);
+								$("#password").val(data[0].password);
+								$("#age").val(data[0].age);
+								$("#phone").val(data[0].phone);
+								$("#email").val(data[0].email);
 								$("#remark").val(data[0].remark);
+								$("input[name='sex'][value="+data[0].sex+"]").prop('checked', true);
+								$("input[name='status'][value="+data[0].status+"]").prop('checked', true);
 								id = data[0].id;
 							}
+							form.render();
 							layui.layer
 									.open({
 										type : 1, //弹窗类型
@@ -329,33 +463,47 @@
 										anim : 0,
 										shade : 0.3,
 										shadeClose : false, //显示模态窗口
-										area : [ '500px', '400px' ], //宽高
-										content : $('#iconAdd'),
+										area : [ '700px', '500px' ], //宽高
+										content : $('#userAdd'),
 										cancel : function(index, layero) {
 											layer.closeAll();
 											return false;
 										},
 										btn : [ "提交", "关闭" ],
 										yes : function(index, layero) {
+											if(!$("#name").val()){
+												layer.msg("用户名不能为空",{icon:5});
+												return false;
+											}
+											if(!$("#username").val()){
+												layer.msg("用户账号不能为空",{icon:5});
+												return false;
+											}
+											if(!$("#password").val()){
+												layer.msg("用户密码不能为空",{icon:5});
+												return false;
+											}
+											if(!$("#role_name").val()){
+												layer.msg("角色不能为空",{icon:5});
+												return false;
+											}
 											var add = layer.load();
 											$
 													.ajax({
 														url : basurl + url,
 														method : 'get',
 														data : {
+															role_id:$("#role_name").val(),
 															id : id,
-															icon_class : $(
-																	"#icon_class")
-																	.val(),
-															icon_name : $(
-																	"#icon_name")
-																	.val(),
-															icon_code : $(
-																	"#icon_code")
-																	.val(),
-															remark : $(
-																	"#remark")
-																	.val()
+															name:$("#name").val(),
+															username:$("#username").val(), 
+															password:$("#password").val(), 
+															sex:$("input[name=sex]:checked").val(), 
+															age:$("#age").val(),
+															phone:$("#phone").val(), 
+															email:$("#email").val(),
+															remark:$("#remark").val(),
+															status:$("input[name=status]:checked").val()
 														},
 														success : function(r) {
 															if (r == 1) {

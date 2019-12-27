@@ -22,8 +22,8 @@ public interface amctUserService {
 	/**
 	 * 增加用户
 	 */
-	Integer addUser(String name, String username, String password, Integer sex,
-			Integer age, String url, String phone, String email, String remark);
+	Integer addUser(String role_id,String name, String username, String password, Integer sex,
+			Integer age, String url, String phone, String email, String remark,Integer status);
 
 	/**
 	 * 删除用户
@@ -34,8 +34,18 @@ public interface amctUserService {
 	/**
 	 * 修改用户
 	 */
-	Integer modifyUser(String name, String username, String password, Integer sex,
-			Integer age, String url, String phone, String email, String remark);
+	Integer modifyUser(String role_id,String id,String name, String username, String password, Integer sex,
+			Integer age, String phone, String email, String remark,Integer status);
 	
 	Integer getCount(String username);
+	
+	/**
+	 * 修改密码
+	 */
+	Integer modifyPass(String password,String id);
+	
+	/**
+	 * 修改头像
+	 */
+	Integer modifyPicture(String url,String id);
 }

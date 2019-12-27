@@ -22,28 +22,28 @@
 		select * from amct_role
 		<where>
 			<if test="role_name != null">
-				role_name like #{role_name,jdbcType=VARCHAR} and
+				role_name like #{role_name,jdbcType=VARCHAR}
 			</if>
-			<if test="1 == 1">
-				1=1
-			</if>
-			limit #{begin},#{end}
 		</where>
+		limit #{begin},#{end}
 	</select>
 
 	<select id="count" resultType="Integer">
 		select count(id) from amct_role
 		<where>
 			<if test="role_name != null">
-				role_name like #{role_name,jdbcType=VARCHAR} and
-			</if>
-			<if test="1 == 1">
-				1=1
+				role_name like #{role_name,jdbcType=VARCHAR}
 			</if>
 		</where>
 	</select>
-	
+
 	<select id="queryMenuRole" resultType="String">
-		select menu_id from amct_menu_role where menu_id not in (select id from amct_top_menu) and role_id=#{role_id}
+		select menu_id from
+		amct_menu_role where menu_id not in (select id from amct_top_menu) and
+		role_id=#{role_id}
+	</select>
+	
+	<select id="queryRole" resultType="amctRole">
+		select * from amct_role
 	</select>
 </mapper>

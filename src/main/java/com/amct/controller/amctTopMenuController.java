@@ -35,7 +35,13 @@ public class amctTopMenuController {
 	@RequestMapping("/findAll")
 	public List<amctTopMenu> find(HttpSession session) {
 		amctUser user = (amctUser) session.getAttribute("user");
-		if (user.getRole().getRole_code().equals("admin")) {
+		if(user==null){
+			return null;
+		}
+		if(user.getRole()==null){
+			return null;
+		}
+		if ("admin".equals(user.getRole().getRole_code())) {
 			return ats.findAllAdmin();
 		}
 		return ats.findAll(user.getId());
@@ -71,7 +77,13 @@ public class amctTopMenuController {
 		amctUser user = (amctUser) session.getAttribute("user");
 		List<amctTopMenu> list;
 		Integer count;
-		if (user.getRole().getRole_code().equals("admin")) {
+		if(user==null){
+			return null;
+		}
+		if(user.getRole()==null){
+			return null;
+		}
+		if ("admin".equals(user.getRole().getRole_code())) {
 			list = ats.findListAdmin(name, page, limit);
 			count = ats.getContAdmin(name);
 		} else {

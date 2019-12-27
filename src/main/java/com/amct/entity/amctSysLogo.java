@@ -15,22 +15,25 @@ public class amctSysLogo implements Serializable {
 
 	private String url;
 
+	private Integer is_display;
+
 	public amctSysLogo() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public amctSysLogo(Integer id, String name, String url) {
+	public amctSysLogo(Integer id, String name, String url, Integer is_display) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.url = url;
+		this.is_display = is_display;
 	}
 
 	@Override
 	public String toString() {
 		return "amctSysLogo [id=" + id + ", name=" + name + ", url=" + url
-				+ "]";
+				+ ", is_display=" + is_display + "]";
 	}
 
 	public Integer getId() {
@@ -55,6 +58,18 @@ public class amctSysLogo implements Serializable {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public Integer getIs_display() {
+		return is_display;
+	}
+
+	public void setIs_display(Integer is_display) {
+		this.is_display = is_display;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 }

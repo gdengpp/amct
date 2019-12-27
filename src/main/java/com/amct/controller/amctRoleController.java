@@ -81,4 +81,10 @@ public class amctRoleController {
 	public List<String> getMenuId(String role_id){
 		return rs.getMenuId(role_id);
 	}
+	
+	@RequestMapping("/findRole")
+	@ResponseBody
+	public List<amctRole> findRole(){
+		return rs.findRole();
+	}
 }

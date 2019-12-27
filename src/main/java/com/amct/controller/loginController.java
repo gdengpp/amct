@@ -45,16 +45,4 @@ public class loginController {
 		}
 		return "fail";
 	}
-
-	/**
-	 * 注册
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/regest", method = RequestMethod.GET)
-	public Integer regest(String name, String username, String user_key,
-			Integer sex, Integer age, String phone, String email,
-			String remark, HttpSession session) {
-		return us.addUser(name, username, user_key, sex, age, null, phone,
-				email, remark);
-	}
 }

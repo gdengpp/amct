@@ -32,4 +32,9 @@ public interface amctRoleDao {
 	Integer count(@Param("role_name") String role_name);
 	
 	List<String> queryMenuRole(@Param("role_id") String role_id);
+	
+	/**
+	 * 查询作为下拉
+	 */
+	List<amctRole> queryRole();
 }

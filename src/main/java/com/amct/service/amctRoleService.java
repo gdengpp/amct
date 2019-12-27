@@ -34,4 +34,6 @@ public interface amctRoleService {
 	
 	List<String> getMenuId(String role_id);
 	
+	List<amctRole> findRole();
+	
 }

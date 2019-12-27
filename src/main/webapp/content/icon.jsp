@@ -239,11 +239,11 @@
 				});
 				return false;
 			}
-			layer.load();
 			layer.confirm('是否确定删除？', {
 				icon : 3,
 				title : '提示'
 			}, function(index) {
+			layer.load();
 				$.ajax({
 					url : basurl + "amct_icon/remove",
 					method : 'get',
@@ -301,6 +301,18 @@
 				},
 				btn : [ "提交", "关闭" ],
 				yes : function(index, layero) {
+					if($("#icon_class").val()=="layui-icon "){
+						layer.msg("图标路径不能为空",{icon:5});
+						return false;
+					}
+					if(!$("#icon_name").val()){
+						layer.msg("图标名不能为空",{icon:5});
+						return false;
+					}
+					if(!$("#icon_code").val()){
+						layer.msg("图标code不能为空",{icon:5});
+						return false;
+					}
 					var add = layer.load();
 					$.ajax({
 						url : basurl + url,

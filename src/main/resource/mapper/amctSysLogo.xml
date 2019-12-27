@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.amct.dao.amctSysLogoDao">
+
+	<select id="query" resultType="amctSysLogo">
+		select * from amct_sys_logo
+	</select>
+
+	<update id="upate">
+		update amct_sys_logo set url = #{url}
+	</update>
+
+	<update id="updateBase">
+		update amct_sys_logo set name =
+		#{name},is_display=#{is_display}
+	</update>
+</mapper>

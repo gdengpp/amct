@@ -33,4 +33,11 @@ public interface amctUserDao {
 	 * 修改用户
 	 */
 	Integer updateUser(amctUser user);
+	
+	/**
+	 * 修改密码
+	 */
+	Integer updatePass(@Param("password") String password,@Param("id") String id);
+	
+	Integer updatePic(@Param("url") String url,@Param("id") String id);
 }

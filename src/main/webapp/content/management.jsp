@@ -7,6 +7,9 @@
 <jsp:include page="../index.jsp"></jsp:include>
 </head>
 
+<body>
+<!-- 
 <body style="background-image: url(../static/image/timg.jpg)">
+ -->
 </body>
 </html>

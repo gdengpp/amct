@@ -29,7 +29,8 @@
 	<select id="queryByUsername" resultMap="user">
 		SELECT
 		a.id id,
-		a. NAME NAME,
+		a. NAME
+		NAME,
 		a.username username,
 		a. PASSWORD PASSWORD,
 		a.sex sex,
@@ -38,16 +39,20 @@
 		a.phone phone,
 		a.email email,
 		a. STATUS STATUS,
-		a.remark remark,
+		a.remark
+		remark,
 		c.id rid,
 		c.remark rremaek,
 		c.role_code role_code,
-		c.role_name role_name,
+		c.role_name
+		role_name,
 		c.role_status role_status
 		FROM
 		amct_user_info a
-		LEFT JOIN amct_user_role b ON a.id = b.user_id
-		LEFT JOIN amct_role c ON b.role_id = c.id where a.username = #{username,jdbcType=VARCHAR}
+		LEFT JOIN
+		amct_user_role b ON a.id = b.user_id
+		LEFT JOIN amct_role c ON b.role_id
+		= c.id where a.username = #{username,jdbcType=VARCHAR}
 	</select>
 
 	<insert id="insertUser">
@@ -56,18 +61,38 @@
 		values(#{id},#{name},#{username},#{password},#{sex},#{age},#{url},#{phone},#{email},#{remark},#{status})
 	</insert>
 
-	<select id="queryAll" resultType="amctUser">
-		select * from amct_user_info
+	<select id="queryAll" resultMap="user">
+		SELECT
+		a.id id,
+		a. NAME NAME,
+		a.username username,
+		a. PASSWORD PASSWORD,
+		a.sex sex,
+		a.age age,
+		a.url url,
+		a.phone phone,
+		a.email email,
+		a. STATUS
+		STATUS,
+		a.remark remark,
+		c.id rid,
+		c.remark rremaek,
+		c.role_code
+		role_code,
+		c.role_name role_name,
+		c.role_status role_status
+		FROM
+		amct_user_info a
+		LEFT JOIN amct_user_role b ON a.id = b.user_id
+		LEFT
+		JOIN amct_role c ON b.role_id = c.id
 		<where>
 			<if test="username != null">
-				username like #{username,jdbcType=VARCHAR} and
-			</if>
-			<if test="1 == 1">
-				1=1
+				username like #{username,jdbcType=VARCHAR}
 			</if>
 			<!-- 判断是否有name查询 -->
-			limit #{begin},#{end}
 		</where>
+		limit #{begin},#{end}
 	</select>
 
 	<delete id="delById">
@@ -76,7 +101,7 @@
 
 	<update id="updateUser">
 		update amct_user_info set
-		name=#{name},username=#{username},status=#{status},password=#{password},sex=#{sex},age=#{age},url=#{url},phone=#{phone},email=#{email},remark=#{remark}
+		name=#{name},username=#{username},status=#{status},status=#{status},password=#{password},sex=#{sex},age=#{age},phone=#{phone},email=#{email},remark=#{remark}
 		where id =#{id}
 	</update>
 
@@ -84,11 +109,16 @@
 		select count(id) from amct_user_info
 		<where>
 			<if test="username != null">
-				username like #{username,jdbcType=VARCHAR} and
-			</if>
-			<if test="1 == 1">
-				1=1
+				username like #{username,jdbcType=VARCHAR}
 			</if>
 		</where>
 	</select>
+	
+	<update id="updatePass">
+		update amct_user_info set password=#{password} where id=#{id}
+	</update>
+	
+	<update id="updatePic">
+		update amct_user_info set url=#{url} where id=#{id}
+	</update>
 </mapper>

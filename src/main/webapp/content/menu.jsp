@@ -40,13 +40,14 @@
 						<div class="layui-form">
 							<div class="layui-inline">
 								<div class="layui-btn-group">
-									</a> <a class="layui-btn layui-btn-primary left_menu_add"> <i
+									 <a class="layui-btn layui-btn-primary left_menu_add"> <i
 										class="layui-icon">&#xe654;</i>新增
 									</a> <a class="layui-btn layui-btn-primary left_menu_edit"> <i
 										class="layui-icon">&#xe642;</i>修改
-									</a> </a> <a class="layui-btn layui-btn-primary left_menu_del"> <i
+									</a> <c:if test="${user.role.role_code=='admin' }"> <a class="layui-btn layui-btn-primary left_menu_del"> <i
 										class="layui-icon">&#xe640;</i>删除
 									</a>
+									</c:if>
 								</div>
 							</div>
 						</div>
@@ -59,13 +60,14 @@
 						<div class="layui-form">
 							<div class="layui-inline">
 								<div class="layui-btn-group">
-									</a> <a class="layui-btn layui-btn-primary left_child_menu_add">
+									 <a class="layui-btn layui-btn-primary left_child_menu_add">
 										<i class="layui-icon">&#xe654;</i>新增
 									</a> <a class="layui-btn layui-btn-primary left_child_menu_edit">
 										<i class="layui-icon">&#xe642;</i>修改
-									</a> </a> <a class="layui-btn layui-btn-primary left_child_menu_del">
+									</a> <c:if test="${user.role.role_code=='admin' }"> <a class="layui-btn layui-btn-primary left_child_menu_del">
 										<i class="layui-icon">&#xe640;</i>删除
 									</a>
+									</c:if>
 								</div>
 							</div>
 						</div>

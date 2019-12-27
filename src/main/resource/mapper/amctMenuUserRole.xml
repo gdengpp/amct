@@ -12,10 +12,10 @@
 		DELETE from amct_menu_role
 		<where>
 			<if test="menu_id != null">
-				menu_id = #{menu_id}
+				menu_id = #{menu_id} 
 			</if>
 			<if test="role_id != null">
-				role_id = #{role_id}
+				and role_id = #{role_id}
 			</if>
 		</where>
 	</delete>
@@ -32,7 +32,7 @@
 				user_id = #{user_id}
 			</if>
 			<if test="role_id != null">
-				role_id = #{role_id}
+				and role_id = #{role_id}
 			</if>
 		</where>
 	</delete>
