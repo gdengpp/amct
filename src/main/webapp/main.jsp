@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 
@@ -70,7 +71,7 @@
 
 	<div id="userInfo" style="display:none;padding:10px;">
 		<div class="layui-card">
-			<div class="layui-card-header">基本信息</div>
+			
 			<div class="layui-card-body">
 				<div class="layui-row" style="margin-left: 3%;">
 					<div class="layui-row">
@@ -138,7 +139,55 @@
 				</div>
 			</div>
 		</div>
-	</div>
+		
+		
+		
+		<div class="layui-card">
+			<div class="layui-card-header">角色信息</div>
+			<div class="layui-card-body">
+				<div class="layui-row" style="margin-left: 3%;">
+							<form class="layui-form" action="">
+					<div class="layui-row">
+						<div class="layui-col-md4">
+								<div class="layui-inline">
+									<div class="layui-input-inline">
+										<label class="layui-form-label">角色名称：</label>
+										<div class="layui-form-mid layui-word-aux">${user.role.role_name }</div>
+									</div>
+								</div>
+								</div>
+								<div class="layui-col-md4">
+								<div class="layui-inline">
+									<div class="layui-input-inline">
+										<label class="layui-form-label">角色编码：</label>
+										<div class="layui-form-mid layui-word-aux">${user.role.role_code }</div>
+									</div>
+								</div>
+								</div>
+								<div class="layui-col-md4">
+								<c:if test="${user.role.role_status==0 }">
+									<div class="layui-inline">
+										<div class="layui-input-inline">
+											<label class="layui-form-label">角色状态：</label>
+											<div class="layui-form-mid layui-word-aux">正常</div>
+										</div>
+									</div>
+								</c:if>
+								<c:if test="${user.role.role_status==1 }">
+									<div class="layui-inline">
+										<div class="layui-input-inline">
+											<label class="layui-form-label">角色状态：</label>
+											<div class="layui-form-mid layui-word-aux">异常</div>
+										</div>
+									</div>
+								</c:if>
+								</div>
+						</div>
+							</form>
+					</div>
+				</div>
+			</div>
+		</div>
 
 
 	<div id="modifyPass" style="display:none;padding:10px;margin-left: -40px;">
@@ -410,7 +459,7 @@
 										anim : 0,
 										shade : 0.3,
 										shadeClose : false, //显示模态窗口
-										area : [ '600px', '400px' ], //宽高
+										area : [ '700px', '480px' ], //宽高
 										content : $('#userInfo'),
 										cancel : function(index, layero) {
 											layer.close(index)

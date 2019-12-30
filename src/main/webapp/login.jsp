@@ -8,7 +8,7 @@
 <style type="text/css">
 .login {
 	width: 400px;
-	height: 270px;
+	height: 250px;
 	position: absolute;
 	margin: 15% 40%;
 	padding: 35px;
