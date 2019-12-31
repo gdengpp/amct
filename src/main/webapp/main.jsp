@@ -292,6 +292,11 @@
 										url : "${pageContext.request.contextPath}/top_menu/findAll",
 										method : 'get',
 										success : function(r) {
+										if(r==""){
+											layer.msg("登录过期，请重新登录",{icon:5});
+											location.href = "login.jsp";
+											return false;
+										}
 											var headHtml = "";
 											for (var i = 1; i < r.length; i++) {
 												if (r[i].is_display == 1) {
