@@ -77,7 +77,8 @@ public class amctRoleServiceImpl implements amctRoleService {
 		/**
 		 * 先删除，后授权
 		 */
-		amurd.removeMenuRole(menu_id, role_id);
+		
+		amurd.removeMenuRole(null, role_id);
 		
 		@SuppressWarnings("unchecked")
 		List<String> list = (List<String>) JSON.parse(menu_id);

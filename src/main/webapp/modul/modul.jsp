@@ -128,10 +128,11 @@
 							var layer = layui.layer;
 							form = layui.form;
 							var element = layui.element;
-var $ = layui.$;
-form.render();
-element.init();
-table.render({
+							var $ = layui.$;
+							form.render();
+							element.init();
+							table
+									.render({
 										elem : '#datagrid',
 										id : 'datagrid',
 										url : '${pageContext.request.contextPath}/dengpp/findAll',
@@ -179,11 +180,19 @@ table.render({
 									page : {
 										curr : 1
 									}
-});});
-$(".search_add").click(function() {
-$("#name").val('');$("#age").val('');$("#email").val('');$("#sex").val('');$("#iphone").val('');
-layui.layer.open({
-																										type : 1,
+								});
+							});
+							$(".search_add")
+									.click(
+											function() {
+												$("#name").val('');
+												$("#age").val('');
+												$("#email").val('');
+												$("#sex").val('');
+												$("#iphone").val('');
+												layui.layer
+														.open({
+															type : 1,
 															title : "新增",
 															closeBtn : 1,
 															anim : 0,
@@ -203,8 +212,10 @@ layui.layer.open({
 															yes : function(
 																	index,
 																	layero) {
-																var add = layer.load();
-$.ajax({
+																var add = layer
+																		.load();
+																$
+																		.ajax({
 																			url : '${pageContext.request.contextPath}/dengpp/add',
 																			method : 'post',
 																			data : {
@@ -278,13 +289,16 @@ $.ajax({
 													layer.msg("请选择数据", {
 														icon : 5
 													});
-return false;}
-$("#iphone").val(data[0].iphone);
-$("#sex").val(data[0].sex);
-$("#email").val(data[0].email);
-$("#age").val(data[0].age);
-$("#name").val(data[0].name);
-layui.layer.open({
+													return false;
+												}
+												$("#iphone")
+														.val(data[0].iphone);
+												$("#sex").val(data[0].sex);
+												$("#email").val(data[0].email);
+												$("#age").val(data[0].age);
+												$("#name").val(data[0].name);
+												layui.layer
+														.open({
 															type : 1,
 															title : "编辑",
 															closeBtn : 1,
@@ -305,8 +319,10 @@ layui.layer.open({
 															yes : function(
 																	index,
 																	layero) {
-																var edit = layer.load();
-$.ajax({
+																var edit = layer
+																		.load();
+																$
+																		.ajax({
 																			url : '${pageContext.request.contextPath}/dengpp/modify',
 																			method : 'post',
 																			data : {
@@ -384,14 +400,18 @@ $.ajax({
 													return false;
 												}
 												layer
-														.confirm('是否确定删除？', {
+														.confirm(
+																'是否确定删除？',
+																{
 																	icon : 3,
 																	title : '提示'
 																},
 																function(index) {
 																	if (index) {
-layer.load();
-$.ajax({
+																		layer
+																				.load();
+																		$
+																				.ajax({
 																					url : '${pageContext.request.contextPath}/dengpp/remove',
 																					method : 'get',
 																					data : {

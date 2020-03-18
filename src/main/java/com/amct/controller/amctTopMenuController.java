@@ -41,6 +41,7 @@ public class amctTopMenuController {
 		if(user.getRole()==null){
 			return null;
 		}
+		//超级管理员无论怎么授权都可以看到所有
 		if ("admin".equals(user.getRole().getRole_code())) {
 			return ats.findAllAdmin();
 		}
@@ -526,8 +527,23 @@ public class amctTopMenuController {
 				} else {
 					try {
 						// 重启tomcat
-						Runtime.getRuntime().exec(
-								"/appdata/amct/restart_web.py");
+						Process exec = Runtime.getRuntime().exec("/appdata/amct/restart_web.py");
+						exec.waitFor();
+						logger.log(((amctUser) session.getAttribute("user"))
+								.getUsername(), "重启tomcat exec+"+exec, "error",
+								"top_menu");
+						logger.log(((amctUser) session.getAttribute("user"))
+								.getUsername(), "重启tomcat execgetErrorStream+"+exec.getErrorStream(), "error",
+								"top_menu");
+						logger.log(((amctUser) session.getAttribute("user"))
+								.getUsername(), "重启tomcat exec.getInputStream()+"+exec.getInputStream(), "error",
+								"top_menu");
+						logger.log(((amctUser) session.getAttribute("user"))
+								.getUsername(), "重启tomcat exec.getOutputStream()+"+exec.getOutputStream(), "error",
+								"top_menu");
+						logger.log(((amctUser) session.getAttribute("user"))
+								.getUsername(), "重启tomcat exec.exitValue()+"+exec.exitValue(), "error",
+								"top_menu");
 					} catch (Exception e) {
 						logger.log(((amctUser) session.getAttribute("user"))
 								.getUsername(), "重启tomcat" + e, "error",

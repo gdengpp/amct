@@ -321,12 +321,12 @@
 											});
 											return false;
 										}
-										
+
 										layer.confirm('是否确定删除？', {
 											icon : 3,
 											title : '提示'
 										}, function(index) {
-										layer.load();
+											layer.load();
 											$.ajax({
 												url : basurl + "role/remove",
 												method : 'get',
@@ -485,11 +485,18 @@
 												var topData = table
 														.checkStatus("roledatagrid");
 												var data = topData.data;
+												console.log(data)
 												if (data.length == 0) {
 													layer.msg("没有选择授权角色", {
 														icon : 5
 													});
 													return false;
+												}
+												if (data[0].role_code == "admin") {
+													layer.msg("超级管理员，无需授权", {
+														icon : 5
+													});
+													return;
 												}
 												var treeData = tree
 														.getChecked('menu_info');
@@ -499,7 +506,7 @@
 													});
 													return false;
 												}
-												if(data[0].role_status==1){
+												if (data[0].role_status == 1) {
 													layer.msg("角色异常，不可授权", {
 														icon : 5
 													});

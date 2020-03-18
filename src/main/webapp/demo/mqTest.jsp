@@ -11,6 +11,8 @@
 <head>
 <base href="<%=basePath%>">
 
+
+
 <title>My JSP 'mqTest.jsp' starting page</title>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/static/mqjs/jquery-1.4.2.min.js"></script>
@@ -21,7 +23,6 @@
 </head>
 
 <body>
-
 </body>
 <script type="text/javascript">
 	$(function() {

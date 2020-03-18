@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : localhost_3306
-Source Server Version : 50556
-Source Host           : localhost:3306
+Source Server         : amct192.168.202.144
+Source Server Version : 50728
+Source Host           : 192.168.202.144:3306
 Source Database       : amct
 
 Target Server Type    : MYSQL
-Target Server Version : 50556
+Target Server Version : 50728
 File Encoding         : 65001
 
-Date: 2019-12-27 16:50:42
+Date: 2019-12-31 16:22:11
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -236,6 +236,22 @@ CREATE TABLE `amct_log` (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for amct_menu
+-- ----------------------------
+DROP TABLE IF EXISTS `amct_menu`;
+CREATE TABLE `amct_menu` (
+  `id` varchar(64) NOT NULL,
+  `code` int(8) DEFAULT NULL,
+  `father_menu` varchar(16) DEFAULT NULL,
+  `menu_name` varchar(16) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Records of amct_menu
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for amct_menu_monitor
 -- ----------------------------
 DROP TABLE IF EXISTS `amct_menu_monitor`;
@@ -276,11 +292,14 @@ CREATE TABLE `amct_menu_role` (
 -- ----------------------------
 INSERT INTO `amct_menu_role` VALUES ('04ad0d73-4356-400c-a950-09876b2de990', '44', 'b51eb5c0-4e9b-460c-91a0-f1904a1b02c9');
 INSERT INTO `amct_menu_role` VALUES ('06e7d41e-8a50-4425-a9fd-27b73af5e26f', '33', 'b51eb5c0-4e9b-460c-91a0-f1904a1b02c9');
+INSERT INTO `amct_menu_role` VALUES ('0cd2cf56-1a1a-4be2-aa6f-179295a080ea', '44', 'b51eb5c0-4e9b-460c-91a0-f1904a1b02c9');
 INSERT INTO `amct_menu_role` VALUES ('0f630dbc-9248-4d0a-b391-74935d62a81f', '55', 'b51eb5c0-4e9b-460c-91a0-f1904a1b02c9');
 INSERT INTO `amct_menu_role` VALUES ('1', '11', '1');
 INSERT INTO `amct_menu_role` VALUES ('2', '22', '1');
 INSERT INTO `amct_menu_role` VALUES ('5', '33', '1');
+INSERT INTO `amct_menu_role` VALUES ('5e8ba9ed-5da6-4480-b586-cae75a35f546', '1', 'b51eb5c0-4e9b-460c-91a0-f1904a1b02c9');
 INSERT INTO `amct_menu_role` VALUES ('6', '44', '1');
+INSERT INTO `amct_menu_role` VALUES ('60cd8f81-eb70-4919-9c06-6a9de84c0cad', '11', 'b51eb5c0-4e9b-460c-91a0-f1904a1b02c9');
 INSERT INTO `amct_menu_role` VALUES ('7', '55', '1');
 INSERT INTO `amct_menu_role` VALUES ('7594e9aa-a0b9-4ebb-bd59-b261e515ef11', '1', 'b51eb5c0-4e9b-460c-91a0-f1904a1b02c9');
 INSERT INTO `amct_menu_role` VALUES ('9', '1', '1');
@@ -322,7 +341,7 @@ CREATE TABLE `amct_sys_logo` (
 -- ----------------------------
 -- Records of amct_sys_logo
 -- ----------------------------
-INSERT INTO `amct_sys_logo` VALUES ('1', 'amct', 'static\\image\\c5ae389fa32a45318ee048e4b1512386.jpg', '1');
+INSERT INTO `amct_sys_logo` VALUES ('1', '自动', 'static/image/woman.jpg', '1');
 
 -- ----------------------------
 -- Table structure for amct_top_menu
@@ -365,9 +384,8 @@ CREATE TABLE `amct_user_info` (
 -- ----------------------------
 -- Records of amct_user_info
 -- ----------------------------
-INSERT INTO `amct_user_info` VALUES ('1', '邓朋朋', 'admin', '5c6EJ0R3K502636f6d157bace371aa88ec6b7e', '0', '27', 'static\\image\\eb4f310f19c54eefb8ebfaf7f73c198a.jpg', '18798477113', '1047267211@qq.com', '0', 'title在html中属于特殊的节点');
-INSERT INTO `amct_user_info` VALUES ('9c299b84-e18f-4f59-81c8-89b3346c0815', 'dengpp', 'dengpp', '0b28DG0KD2886eedf274f295fe4e6ba5a9c403', '0', '22', 'static/image/man.jpg', '15692719375', '', '0', '');
-INSERT INTO `amct_user_info` VALUES ('e5564cfc-09f5-4fd5-a77e-ab1c0fb8fb74', 'test', 'test', '8f8FV9BIA92db162d386bc90d0f3dcabbeb4d4', '0', null, 'static\\image\\3378a47249a4436da90d70e764f2d177.jpg', '15692719375', '', '0', '');
+INSERT INTO `amct_user_info` VALUES ('1', '超级', 'admin', '1f3ZJKTOBa76ed585a7e2087cd2b7618ffe998', '0', '27', 'static/image/b3fa21467216427c8a64a895a4307ee4.jpg', '18798477113', '1047267211@qq.com', '0', '');
+INSERT INTO `amct_user_info` VALUES ('9c299b84-e18f-4f59-81c8-89b3346c0815', 'dengpp', 'dengpp', '472S826XM1d70fe9d03af711e42991ee293cd4', '0', '22', 'static/image/man.jpg', '15692719375', '', '0', '');
 
 -- ----------------------------
 -- Table structure for amct_user_role
@@ -383,6 +401,5 @@ CREATE TABLE `amct_user_role` (
 -- ----------------------------
 -- Records of amct_user_role
 -- ----------------------------
-INSERT INTO `amct_user_role` VALUES ('a62db668-9f32-4656-8887-d0d26d24b18c', '1', '1');
-INSERT INTO `amct_user_role` VALUES ('b21b37d0-860f-435d-af57-a90e3cb6fec8', 'e5564cfc-09f5-4fd5-a77e-ab1c0fb8fb74', 'b51eb5c0-4e9b-460c-91a0-f1904a1b02c9');
-INSERT INTO `amct_user_role` VALUES ('d7da52de-60a6-4dd0-89cb-9446dcc63050', '9c299b84-e18f-4f59-81c8-89b3346c0815', 'b51eb5c0-4e9b-460c-91a0-f1904a1b02c9');
+INSERT INTO `amct_user_role` VALUES ('5df2c29d-be02-4e31-b902-dc089ccf82c8', '1', '1');
+INSERT INTO `amct_user_role` VALUES ('bfb547f3-c09d-469e-b0d0-30d443a8a6e5', '9c299b84-e18f-4f59-81c8-89b3346c0815', 'b51eb5c0-4e9b-460c-91a0-f1904a1b02c9');
